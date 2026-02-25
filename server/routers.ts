@@ -312,6 +312,7 @@ export const appRouter = router({
         imageUrl: z.string().optional().nullable(),
         sizes: z.array(z.string()).optional(),
         description: z.string().optional(),
+        discountPercent: z.string().optional().nullable(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.storeId);

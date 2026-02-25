@@ -1,12 +1,26 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { X, Upload, Package, Loader2, Plus } from "lucide-react";
 import type { Category, Subcategory } from "../../../drizzle/schema";
 
+interface ProductData {
+  id: number;
+  name: string;
+  brand: string | null;
+  price: string;
+  description: string | null;
+  imageUrl: string | null;
+  sizes: string | null;
+  categoryId: number;
+  subcategoryId: number | null;
+  discountPercent: string | null;
+}
+
 interface Props {
   storeId: number;
   productId: number | null;
+  editProduct?: ProductData | null;
   categories: Category[];
   subcategories: Subcategory[];
   onClose: () => void;
@@ -16,28 +30,57 @@ interface Props {
 const CLOTHING_SIZES = ["PP", "P", "M", "G", "GG", "XGG"];
 const SHOE_SIZES = ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"];
 
-export default function ProductModal({ storeId, productId, categories, subcategories, onClose, onSuccess }: Props) {
-  const [name, setName] = useState("");
-  const [brand, setBrand] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState<number | "">(categories[0]?.id || "");
-  const [subcategoryId, setSubcategoryId] = useState<number | "">("");
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+export default function ProductModal({ storeId, productId, editProduct, categories, subcategories, onClose, onSuccess }: Props) {
+  const isEditing = !!editProduct;
+
+  const [name, setName] = useState(editProduct?.name ?? "");
+  const [brand, setBrand] = useState(editProduct?.brand ?? "");
+  const [price, setPrice] = useState(editProduct?.price ?? "");
+  const [description, setDescription] = useState(editProduct?.description ?? "");
+  const [categoryId, setCategoryId] = useState<number | "">(editProduct?.categoryId ?? categories[0]?.id ?? "");
+  const [subcategoryId, setSubcategoryId] = useState<number | "">(editProduct?.subcategoryId ?? "");
+  const [selectedSizes, setSelectedSizes] = useState<string[]>(
+    editProduct?.sizes ? JSON.parse(editProduct.sizes) : []
+  );
   const [customSize, setCustomSize] = useState("");
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(editProduct?.imageUrl ?? null);
   const [imageFile, setImageFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const [sizeType, setSizeType] = useState<"clothing" | "shoes" | "custom">("clothing");
-  const [discountPercent, setDiscountPercent] = useState("");
+  const [discountPercent, setDiscountPercent] = useState(editProduct?.discountPercent ?? "");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Sync state when editProduct changes
+  useEffect(() => {
+    if (editProduct) {
+      setName(editProduct.name);
+      setBrand(editProduct.brand ?? "");
+      setPrice(editProduct.price);
+      setDescription(editProduct.description ?? "");
+      setCategoryId(editProduct.categoryId);
+      setSubcategoryId(editProduct.subcategoryId ?? "");
+      setSelectedSizes(editProduct.sizes ? JSON.parse(editProduct.sizes) : []);
+      setImagePreview(editProduct.imageUrl ?? null);
+      setDiscountPercent(editProduct.discountPercent ?? "");
+      setImageFile(null);
+    }
+  }, [editProduct?.id]);
+
   const uploadImageMutation = trpc.products.uploadImage.useMutation();
+
   const createProductMutation = trpc.products.create.useMutation({
     onSuccess: () => {
       toast.success("Produto adicionado!");
       onSuccess();
     },
     onError: (err) => toast.error(err.message || "Erro ao criar produto"),
+  });
+
+  const updateProductMutation = trpc.products.update.useMutation({
+    onSuccess: () => {
+      toast.success("Produto atualizado!");
+      onSuccess();
+    },
+    onError: (err) => toast.error(err.message || "Erro ao atualizar produto"),
   });
 
   const filteredSubs = subcategories.filter(s => s.categoryId === Number(categoryId));
@@ -76,10 +119,15 @@ export default function ProductModal({ storeId, productId, categories, subcatego
     e.preventDefault();
     if (!name.trim() || !price || !categoryId) return;
 
-    let imageUrl: string | undefined;
+    let imageUrl: string | undefined | null = isEditing ? editProduct?.imageUrl : undefined;
     if (imageFile) {
       try {
-        const result = await uploadImageMutation.mutateAsync({ fileBase64: imageFile.fileBase64, mimeType: imageFile.mimeType, fileName: imageFile.fileName, storeId });
+        const result = await uploadImageMutation.mutateAsync({
+          fileBase64: imageFile.fileBase64,
+          mimeType: imageFile.mimeType,
+          fileName: imageFile.fileName,
+          storeId,
+        });
         imageUrl = result.url;
       } catch {
         toast.error("Erro ao fazer upload da imagem");
@@ -87,21 +135,37 @@ export default function ProductModal({ storeId, productId, categories, subcatego
       }
     }
 
-    createProductMutation.mutate({
-      storeId,
-      categoryId: Number(categoryId),
-      subcategoryId: subcategoryId ? Number(subcategoryId) : undefined,
-      name: name.trim(),
-      brand: brand.trim() || undefined,
-      price,
-      imageUrl,
-      sizes: selectedSizes,
-      description: description.trim() || undefined,
-      discountPercent: discountPercent ? discountPercent : undefined,
-    });
+    if (isEditing && editProduct) {
+      updateProductMutation.mutate({
+        id: editProduct.id,
+        storeId,
+        categoryId: Number(categoryId),
+        subcategoryId: subcategoryId ? Number(subcategoryId) : null,
+        name: name.trim(),
+        brand: brand.trim() || undefined,
+        price,
+        imageUrl: imageUrl ?? undefined,
+        sizes: selectedSizes,
+        description: description.trim() || undefined,
+        discountPercent: discountPercent || null,
+      });
+    } else {
+      createProductMutation.mutate({
+        storeId,
+        categoryId: Number(categoryId),
+        subcategoryId: subcategoryId ? Number(subcategoryId) : undefined,
+        name: name.trim(),
+        brand: brand.trim() || undefined,
+        price,
+        imageUrl: imageUrl ?? undefined,
+        sizes: selectedSizes,
+        description: description.trim() || undefined,
+        discountPercent: discountPercent || undefined,
+      });
+    }
   };
 
-  const isLoading = uploadImageMutation.isPending || createProductMutation.isPending;
+  const isLoading = uploadImageMutation.isPending || createProductMutation.isPending || updateProductMutation.isPending;
   const currentSizes = sizeType === "clothing" ? CLOTHING_SIZES : sizeType === "shoes" ? SHOE_SIZES : [];
 
   return (
@@ -114,7 +178,7 @@ export default function ProductModal({ storeId, productId, categories, subcatego
               <Package className="w-5 h-5 text-white" />
             </div>
             <h2 className="text-lg font-bold text-gray-900">
-              {productId ? "Editar produto" : "Novo produto"}
+              {isEditing ? "Editar produto" : "Novo produto"}
             </h2>
           </div>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors">
@@ -143,6 +207,9 @@ export default function ProductModal({ storeId, productId, categories, subcatego
                   )}
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                {isEditing && imagePreview && (
+                  <p className="text-xs text-gray-400 mt-1">Clique na imagem para substituir</p>
+                )}
               </div>
             </div>
 
@@ -178,7 +245,7 @@ export default function ProductModal({ storeId, productId, categories, subcatego
               {/* Price */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Preço (R$) <span className="text-red-500">*</span>
+                  Preço <span className="text-red-500">*</span>
                 </label>
                 <div className="flex">
                   <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-500">R$</span>
@@ -359,9 +426,7 @@ export default function ProductModal({ storeId, productId, categories, subcatego
                   <Loader2 className="w-4 h-4 animate-spin" />
                   A guardar...
                 </>
-              ) : (
-                "Adicionar produto"
-              )}
+              ) : isEditing ? "Guardar alterações" : "Adicionar produto"}
             </button>
           </div>
         </form>

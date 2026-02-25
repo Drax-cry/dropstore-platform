@@ -22,6 +22,18 @@ export default function StoreManager({ storeId, onBack }: Props) {
   const [addingSubFor, setAddingSubFor] = useState<number | null>(null);
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<number | null>(null);
+  const [editingProductData, setEditingProductData] = useState<{
+    id: number;
+    name: string;
+    brand: string | null;
+    price: string;
+    description: string | null;
+    imageUrl: string | null;
+    sizes: string | null;
+    categoryId: number;
+    subcategoryId: number | null;
+    discountPercent: string | null;
+  } | null>(null);
 
   const utils = trpc.useUtils();
 
@@ -335,7 +347,22 @@ export default function StoreManager({ storeId, onBack }: Props) {
                       )}
                       <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          onClick={() => { setEditingProduct(product.id); setShowProductModal(true); }}
+                          onClick={() => {
+                            setEditingProduct(product.id);
+                            setEditingProductData({
+                              id: product.id,
+                              name: product.name,
+                              brand: product.brand,
+                              price: product.price,
+                              description: product.description ?? null,
+                              imageUrl: product.imageUrl,
+                              sizes: product.sizes,
+                              categoryId: product.categoryId,
+                              subcategoryId: product.subcategoryId,
+                              discountPercent: product.discountPercent ?? null,
+                            });
+                            setShowProductModal(true);
+                          }}
                           className="p-1.5 bg-white rounded-lg shadow text-gray-500 hover:text-gray-800"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -394,12 +421,14 @@ export default function StoreManager({ storeId, onBack }: Props) {
         <ProductModal
           storeId={storeId}
           productId={editingProduct}
+          editProduct={editingProductData}
           categories={categories || []}
           subcategories={allSubcategories || []}
-          onClose={() => { setShowProductModal(false); setEditingProduct(null); }}
+          onClose={() => { setShowProductModal(false); setEditingProduct(null); setEditingProductData(null); }}
           onSuccess={() => {
             setShowProductModal(false);
             setEditingProduct(null);
+            setEditingProductData(null);
             utils.products.listByStore.invalidate({ storeId });
           }}
         />

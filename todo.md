@@ -62,3 +62,9 @@
 - [x] Seleção de moeda automática por país (€, R$, €, $, COP)
 - [x] Exibir moeda correta nos preços da vitrine
 - [x] Prefixo correto no link do WhatsApp
+
+## Edição de Produto
+- [x] Verificar/corrigir router update produto
+- [x] ProductModal suporta modo edição (pré-preencher campos)
+- [x] Botão editar no StoreManager abre modal com dados do produto
+- [x] Mutation de update envia todos os campos (nome, preço, desconto, tamanhos, imagem)
