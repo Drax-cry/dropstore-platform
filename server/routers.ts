@@ -70,7 +70,6 @@ export const appRouter = router({
         logoUrl: z.string().optional(),
         whatsappNumber: z.string().optional(),
         primaryColor: z.string().optional(),
-        promotionalCode: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         // Verificar se o utilizador já tem uma loja
@@ -99,7 +98,6 @@ export const appRouter = router({
           logoUrl: input.logoUrl,
           whatsappNumber: input.whatsappNumber,
           primaryColor: input.primaryColor ?? "#000000",
-          promotionalCode: input.promotionalCode,
         });
         return { slug };
       }),
@@ -276,9 +274,6 @@ export const appRouter = router({
         imageUrl: z.string().optional(),
         sizes: z.array(z.string()).optional(),
         description: z.string().optional(),
-        isPromotion: z.number().optional(),
-        promotionType: z.enum(["percentage", "fixed"]).optional(),
-        promotionDiscount: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.storeId);
@@ -295,9 +290,6 @@ export const appRouter = router({
           imageUrl: input.imageUrl,
           sizes: input.sizes ? JSON.stringify(input.sizes) : "[]",
           description: input.description,
-          isPromotion: input.isPromotion || 0,
-          promotionType: input.promotionType,
-          promotionDiscount: input.promotionDiscount,
         });
         return { success: true };
       }),

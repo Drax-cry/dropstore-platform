@@ -43,13 +43,6 @@
       "when": 1772033252026,
       "tag": "0005_puzzling_microbe",
       "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1772035101622,
-      "tag": "0006_right_fenris",
-      "breakpoints": true
     }
   ]
 }
