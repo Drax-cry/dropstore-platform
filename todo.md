@@ -106,3 +106,11 @@
 - [x] EditStoreModal com campos de endereço, telefone, email e redes sociais
 - [x] Router update store aceita os novos campos
 - [x] Rodapé da vitrine exibe contactos e ícones das redes sociais
+
+## Autenticação Própria (Email/Password)
+- [x] Schema: tabela users com email, password (hash), name, role
+- [x] Backend: router auth com register, login, logout, me usando email/password + JWT
+- [x] Remover dependência do Manus OAuth do frontend
+- [x] Página de login/registo com design do welcome-portal (split-screen, animações framer-motion)
+- [x] Guards de rota baseados no novo sistema de auth
+- [x] Instalar framer-motion no projeto

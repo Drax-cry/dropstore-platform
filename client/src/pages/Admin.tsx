@@ -1,6 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { getLoginUrl } from "@/const";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import {
@@ -49,7 +48,7 @@ export default function Admin() {
           </div>
           <h1 className="text-2xl font-bold mb-3">Acesso Restrito</h1>
           <p className="text-gray-500 mb-6">Precisa de iniciar sessão para aceder ao painel.</p>
-          <a href={getLoginUrl()} className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors">
+          <a href="/auth" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors">
             Iniciar Sessão
           </a>
         </div>
