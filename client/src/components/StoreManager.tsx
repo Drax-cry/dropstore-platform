@@ -108,59 +108,62 @@ export default function StoreManager({ storeId, onBack }: Props) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={onBack}
-            className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 lg:hidden"
+            className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 lg:hidden flex-shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{store.name}</h1>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">{store.slogan}</p>
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 truncate">{store.name}</h1>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1 truncate">{store.slogan}</p>
           </div>
         </div>
       </div>
 
       {/* Store Link */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
         <div className="min-w-0">
           <p className="text-xs text-blue-600 font-medium mb-1">Link da vitrine</p>
-          <p className="text-sm text-blue-900 truncate font-mono">{storeUrl}</p>
+          <p className="text-xs sm:text-sm text-blue-900 truncate font-mono">{storeUrl}</p>
         </div>
         <button
           onClick={handleCopyUrl}
-          className="flex-shrink-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto justify-center"
+          className="flex-shrink-0 flex items-center justify-center gap-1.5 sm:gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors w-full sm:w-auto"
         >
           <Copy className="w-4 h-4" />
-          Copiar
+          <span className="hidden sm:inline">Copiar</span>
+          <span className="sm:hidden">Copy</span>
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-200 overflow-x-auto">
+      <div className="flex gap-1 sm:gap-2 border-b border-gray-200 overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
         {(["categories", "products"] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
               activeTab === tab
                 ? "border-black text-gray-900"
                 : "border-transparent text-gray-600 hover:text-gray-900"
             }`}
           >
             {tab === "categories" ? (
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 sm:gap-2">
                 <Tag className="w-4 h-4" />
-                Categorias
+                <span className="hidden sm:inline">Categorias</span>
+                <span className="sm:hidden">Cats</span>
               </span>
             ) : (
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 sm:gap-2">
                 <Package className="w-4 h-4" />
-                Produtos
+                <span className="hidden sm:inline">Produtos</span>
+                <span className="sm:hidden">Prods</span>
               </span>
             )}
           </button>
@@ -168,7 +171,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
       </div>
 
       {/* Content */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {activeTab === "categories" ? (
           <>
             {/* Create Category */}

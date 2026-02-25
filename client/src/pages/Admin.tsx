@@ -68,31 +68,31 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 px-4 sm:px-6 py-4">
+      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden p-2 hover:bg-gray-100 rounded-lg text-gray-600"
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <ShoppingBag className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-7 sm:w-8 h-7 sm:h-8 bg-black rounded-lg flex items-center justify-center flex-shrink-0">
+                <ShoppingBag className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
               </div>
-              <span className="font-bold text-gray-900 hidden sm:inline">DropStore</span>
+              <span className="font-bold text-sm sm:text-base text-gray-900 hidden sm:inline">DropStore</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <div className="text-right hidden xs:block">
-              <p className="text-xs sm:text-sm font-medium text-gray-900">{user?.name}</p>
-              <p className="text-xs text-gray-500">{user?.email}</p>
+          <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
+            <div className="text-right hidden sm:block">
+              <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{user?.name}</p>
+              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
             <button
               onClick={() => logout()}
-              className="p-2 sm:px-4 sm:py-2 hover:bg-gray-100 rounded-lg text-gray-600 text-sm font-medium transition-colors flex items-center gap-2"
+              className="p-2 sm:px-3 md:px-4 sm:py-2 hover:bg-gray-100 rounded-lg text-gray-600 text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 sm:gap-2"
             >
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline">Sair</span>
@@ -101,10 +101,10 @@ export default function Admin() {
         </div>
       </header>
 
-      <div className="flex flex-col lg:flex-row gap-0 lg:gap-6 max-w-7xl mx-auto">
+      <div className="flex flex-col lg:flex-row gap-0 lg:gap-4 xl:gap-6 max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
         {/* Sidebar */}
         <aside
-          className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:inset-auto lg:w-72 pt-20 lg:pt-6 px-4 lg:px-6 py-6 overflow-y-auto ${
+          className={`fixed inset-y-0 left-0 z-30 w-60 sm:w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:inset-auto lg:w-64 xl:w-72 pt-20 lg:pt-6 px-3 sm:px-4 lg:px-5 xl:px-6 py-4 sm:py-6 overflow-y-auto ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
