@@ -25,6 +25,10 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  getBannersByStore,
+  createBanner,
+  deleteBanner,
+  updateBannerOrder,
 } from "./db";
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
@@ -352,6 +356,79 @@ export const appRouter = router({
         const buffer = Buffer.from(input.fileBase64, "base64");
         const ext = input.fileName.split(".").pop() || "jpg";
         const key = `products/${input.storeId}-${nanoid(8)}.${ext}`;
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        return { url };
+      }),
+  }),
+
+  // ---- BANNERS ----
+  banners: router({
+    list: publicProcedure
+      .input(z.object({ storeId: z.number() }))
+      .query(async ({ input }) => {
+        return getBannersByStore(input.storeId);
+      }),
+
+    create: protectedProcedure
+      .input(z.object({
+        storeId: z.number(),
+        imageUrl: z.string(),
+        title: z.string().optional(),
+        linkUrl: z.string().optional(),
+        order: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        await createBanner({
+          storeId: input.storeId,
+          imageUrl: input.imageUrl,
+          title: input.title,
+          linkUrl: input.linkUrl,
+          order: input.order ?? 0,
+        });
+        return { success: true };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number(), storeId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        await deleteBanner(input.id);
+        return { success: true };
+      }),
+
+    reorder: protectedProcedure
+      .input(z.object({ id: z.number(), storeId: z.number(), order: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        await updateBannerOrder(input.id, input.order);
+        return { success: true };
+      }),
+
+    uploadImage: protectedProcedure
+      .input(z.object({
+        fileBase64: z.string(),
+        mimeType: z.string(),
+        fileName: z.string(),
+        storeId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        const buffer = Buffer.from(input.fileBase64, "base64");
+        const ext = input.fileName.split(".").pop() || "jpg";
+        const key = `banners/${input.storeId}-${nanoid(8)}.${ext}`;
         const { url } = await storagePut(key, buffer, input.mimeType);
         return { url };
       }),

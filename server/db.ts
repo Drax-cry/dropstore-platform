@@ -1,6 +1,6 @@
 import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, stores, categories, subcategories, products, InsertStore, InsertCategory, InsertSubcategory, InsertProduct } from "../drizzle/schema";
+import { InsertUser, users, stores, categories, subcategories, products, storeBanners, InsertStore, InsertCategory, InsertSubcategory, InsertProduct, InsertStoreBanner } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -209,4 +209,31 @@ export async function deleteProduct(id: number) {
   const db = await getDb();
   if (!db) throw new Error("DB not available");
   await db.update(products).set({ isActive: 0 }).where(eq(products.id, id));
+}
+
+// ---- BANNERS ----
+export async function getBannersByStore(storeId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB not available");
+  return db.select().from(storeBanners)
+    .where(eq(storeBanners.storeId, storeId))
+    .orderBy(storeBanners.order);
+}
+
+export async function createBanner(data: InsertStoreBanner) {
+  const db = await getDb();
+  if (!db) throw new Error("DB not available");
+  await db.insert(storeBanners).values(data);
+}
+
+export async function deleteBanner(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB not available");
+  await db.delete(storeBanners).where(eq(storeBanners.id, id));
+}
+
+export async function updateBannerOrder(id: number, order: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB not available");
+  await db.update(storeBanners).set({ order }).where(eq(storeBanners.id, id));
 }

@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useParams } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn } from "lucide-react";
+import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
 
 function useScrollFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -199,6 +199,21 @@ export default function StoreFront() {
     { enabled: !!store?.id }
   );
 
+  const { data: banners } = trpc.banners.list.useQuery(
+    { storeId: store?.id || 0 },
+    { enabled: !!store?.id }
+  );
+
+  const [bannerIndex, setBannerIndex] = useState(0);
+
+  useEffect(() => {
+    if (!banners || banners.length <= 1) return;
+    const timer = setInterval(() => {
+      setBannerIndex(prev => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [banners]);
+
   // Set first category as active when loaded
   useEffect(() => {
     if (categories && categories.length > 0 && activeCategoryId === null) {
@@ -321,6 +336,58 @@ export default function StoreFront() {
           </div>
         </div>
       </header>
+
+      {/* Banner Carousel */}
+      {banners && banners.length > 0 && (
+        <div className="relative w-full overflow-hidden bg-gray-100" style={{ maxHeight: 320 }}>
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${bannerIndex * 100}%)` }}
+          >
+            {banners.map((banner, i) => (
+              <div key={banner.id} className="w-full flex-shrink-0 relative">
+                <img
+                  src={banner.imageUrl}
+                  alt={banner.title ?? `Banner ${i + 1}`}
+                  className="w-full object-cover"
+                  style={{ maxHeight: 320, minHeight: 160 }}
+                />
+                {banner.title && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-6 py-4">
+                    <p className="text-white font-bold text-lg sm:text-xl drop-shadow">{banner.title}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          {banners.length > 1 && (
+            <>
+              <button
+                onClick={() => setBannerIndex(prev => (prev - 1 + banners.length) % banners.length)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow transition-all"
+              >
+                <ChevronLeft className="w-5 h-5 text-gray-700" />
+              </button>
+              <button
+                onClick={() => setBannerIndex(prev => (prev + 1) % banners.length)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow transition-all"
+              >
+                <ChevronRight className="w-5 h-5 text-gray-700" />
+              </button>
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                {banners.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setBannerIndex(i)}
+                    className="w-2 h-2 rounded-full transition-all"
+                    style={{ backgroundColor: i === bannerIndex ? primaryColor : "rgba(255,255,255,0.6)" }}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Hero Section */}
       <section

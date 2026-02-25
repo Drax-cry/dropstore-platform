@@ -68,3 +68,11 @@
 - [x] ProductModal suporta modo edição (pré-preencher campos)
 - [x] Botão editar no StoreManager abre modal com dados do produto
 - [x] Mutation de update envia todos os campos (nome, preço, desconto, tamanhos, imagem)
+
+## Edição de Loja e Banners
+- [x] Tabela store_banners no schema (imageUrl, ordem, link opcional)
+- [x] Router: update store (logo, nome, slogan, whatsapp)
+- [x] Router: CRUD de banners (criar, listar, eliminar, reordenar)
+- [x] Modal de edição da loja no painel admin
+- [x] Gestor de banners no painel admin (upload, lista, remover)
+- [x] Carrossel de banners na vitrine pública com auto-play e dots

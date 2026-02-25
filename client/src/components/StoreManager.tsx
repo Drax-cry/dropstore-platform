@@ -6,13 +6,15 @@ import {
   X, Check, Loader2, Upload, ChevronDown, ChevronRight
 } from "lucide-react";
 import ProductModal from "./ProductModal";
+import EditStoreModal from "./EditStoreModal";
+import BannerManager from "./BannerManager";
 
 interface Props {
   storeId: number;
   onBack: () => void;
 }
 
-type Tab = "categories" | "products";
+type Tab = "categories" | "products" | "banners";
 
 export default function StoreManager({ storeId, onBack }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("categories");
@@ -21,6 +23,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
   const [expandedCat, setExpandedCat] = useState<number | null>(null);
   const [addingSubFor, setAddingSubFor] = useState<number | null>(null);
   const [showProductModal, setShowProductModal] = useState(false);
+  const [showEditStoreModal, setShowEditStoreModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<number | null>(null);
   const [editingProductData, setEditingProductData] = useState<{
     id: number;
@@ -118,15 +121,24 @@ export default function StoreManager({ storeId, onBack }: Props) {
             </div>
           </div>
         </div>
-        <a
-          href={`/loja/${currentStore?.slug}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors self-start sm:self-auto"
-        >
-          <ExternalLink className="w-4 h-4" />
-          Ver vitrine
-        </a>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={() => setShowEditStoreModal(true)}
+            className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <Edit2 className="w-4 h-4" />
+            Editar loja
+          </button>
+          <a
+            href={`/loja/${currentStore?.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Ver vitrine
+          </a>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -134,6 +146,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
         {([
           { key: "categories", label: "Categorias", icon: Tag },
           { key: "products", label: "Produtos", icon: Package },
+          { key: "banners", label: "Banners", icon: Layers },
         ] as const).map(tab => (
           <button
             key={tab.key}
@@ -417,6 +430,19 @@ export default function StoreManager({ storeId, onBack }: Props) {
         </div>
       )}
 
+      {/* Banners Tab */}
+      {activeTab === "banners" && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-semibold text-gray-800">Banners da loja</h2>
+              <p className="text-xs text-gray-400 mt-0.5">Exibidos em carrossel no topo da vitrine</p>
+            </div>
+          </div>
+          <BannerManager storeId={storeId} />
+        </div>
+      )}
+
       {showProductModal && (
         <ProductModal
           storeId={storeId}
@@ -430,6 +456,17 @@ export default function StoreManager({ storeId, onBack }: Props) {
             setEditingProduct(null);
             setEditingProductData(null);
             utils.products.listByStore.invalidate({ storeId });
+          }}
+        />
+      )}
+
+      {showEditStoreModal && currentStore && (
+        <EditStoreModal
+          store={currentStore}
+          onClose={() => setShowEditStoreModal(false)}
+          onSuccess={() => {
+            setShowEditStoreModal(false);
+            utils.stores.myStores.invalidate();
           }}
         />
       )}

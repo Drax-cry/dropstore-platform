@@ -92,3 +92,18 @@ export const products = mysqlTable("products", {
 
 export type Product = typeof products.$inferSelect;
 export type InsertProduct = typeof products.$inferInsert;
+
+// Tabela de banners da loja
+export const storeBanners = mysqlTable("store_banners", {
+  id: int("id").autoincrement().primaryKey(),
+  storeId: int("storeId").notNull(),
+  imageUrl: text("imageUrl").notNull(),
+  linkUrl: text("linkUrl"),
+  title: varchar("title", { length: 255 }),
+  order: int("order").default(0),
+  isActive: int("isActive").default(1),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type StoreBanner = typeof storeBanners.$inferSelect;
+export type InsertStoreBanner = typeof storeBanners.$inferInsert;
