@@ -70,32 +70,32 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const isLoading = uploadLogoMutation.isPending || createStoreMutation.isPending;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-black rounded-xl flex items-center justify-center">
-              <Store className="w-5 h-5 text-white" />
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 sticky top-0 bg-white">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="w-8 sm:w-9 h-8 sm:h-9 bg-black rounded-xl flex items-center justify-center flex-shrink-0">
+              <Store className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
             </div>
-            <h2 className="text-lg font-bold text-gray-900">Criar nova loja</h2>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 truncate">Criar nova loja</h2>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
           {/* Logo Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Logo da loja</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Logo da loja</label>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors"
+              className="border-2 border-dashed border-gray-200 rounded-xl p-4 sm:p-6 text-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors"
             >
               {logoPreview ? (
                 <div className="flex flex-col items-center gap-2">
-                  <img src={logoPreview} alt="Logo preview" className="w-20 h-20 object-contain rounded-lg" />
+                  <img src={logoPreview} alt="Logo preview" className="w-16 sm:w-20 h-16 sm:h-20 object-contain rounded-lg" />
                   <span className="text-xs text-gray-400">Clique para alterar</span>
                 </div>
               ) : (

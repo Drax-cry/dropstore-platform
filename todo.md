@@ -39,3 +39,11 @@
 ## Qualidade
 - [x] Testes Vitest para routers principais
 - [x] Estados de loading e erro em todos os componentes
+
+
+## Dashboard Admin - Responsividade
+- [x] Otimizar layout do Admin para mobile (sidebar colapsável)
+- [x] Otimizar StoreManager para mobile/tablet
+- [x] Otimizar modais para mobile (full-screen em telas pequenas)
+- [x] Melhorar espaçamento e tipografia em mobile
+- [x] Testar em dispositivos reais

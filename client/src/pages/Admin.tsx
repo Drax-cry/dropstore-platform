@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import {
   ShoppingBag, Plus, Store, ExternalLink, Trash2, Settings,
-  LogOut, ChevronRight, Package, Tag, Layers
+  LogOut, ChevronRight, Package, Tag, Layers, Menu, X
 } from "lucide-react";
 import { toast } from "sonner";
 import CreateStoreModal from "@/components/CreateStoreModal";
@@ -16,6 +16,7 @@ export default function Admin() {
   const [, navigate] = useLocation();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { data: stores, isLoading: storesLoading, refetch } = trpc.stores.myStores.useQuery(
     undefined,
@@ -60,8 +61,28 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {/* Mobile menu button */}
+      <div className="md:hidden fixed top-4 left-4 z-50">
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-lg bg-white border border-gray-100 hover:bg-gray-50"
+        >
+          {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
+
+      {/* Sidebar overlay mobile */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 z-20"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-100 flex flex-col fixed h-full z-10">
+      <aside className={`w-64 bg-white border-r border-gray-100 flex flex-col fixed md:relative h-full z-30 transition-transform duration-300 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      }`}>
         <div className="p-5 border-b border-gray-100">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
@@ -128,16 +149,16 @@ export default function Admin() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 p-8">
+      <main className="flex-1 md:ml-64 p-4 sm:p-6 md:p-8 pt-16 md:pt-8">
         {!selectedStoreId ? (
           <div>
-            <div className="mb-8">
-              <h1 className="text-2xl font-bold text-gray-900">Bem-vindo, {user?.name?.split(" ")[0] || "utilizador"}!</h1>
-              <p className="text-gray-500 mt-1">Gerencie as suas lojas e catálogos de produtos.</p>
+            <div className="mb-6 sm:mb-8">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Bem-vindo, {user?.name?.split(" ")[0] || "utilizador"}!</h1>
+              <p className="text-sm sm:text-base text-gray-500 mt-1">Gerencie as suas lojas e catálogos de produtos.</p>
             </div>
 
             {storesLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="bg-white rounded-2xl p-6 border border-gray-100 animate-pulse">
                     <div className="h-12 w-12 bg-gray-200 rounded-xl mb-4" />
@@ -147,7 +168,7 @@ export default function Admin() {
                 ))}
               </div>
             ) : stores && stores.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {stores.map(store => (
                   <div key={store.id} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all group">
                     <div className="flex items-start justify-between mb-4">
@@ -232,7 +253,7 @@ export default function Admin() {
                   Criar a minha primeira loja
                 </button>
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto text-left">
+                <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto text-left">
                   {[
                     { icon: Store, step: "1", title: "Crie a loja", desc: "Defina nome, logo e informações" },
                     { icon: Tag, step: "2", title: "Adicione categorias", desc: "Organize os seus produtos" },

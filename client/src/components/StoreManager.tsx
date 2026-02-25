@@ -83,23 +83,23 @@ export default function StoreManager({ storeId, onBack }: Props) {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <button
             onClick={onBack}
-            className="p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors"
+            className="p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors flex-shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">{currentStore?.name || "Loja"}</h1>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-sm text-gray-400">dropstore.manus.space/loja/{currentStore?.slug}</span>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{currentStore?.name || "Loja"}</h1>
+            <div className="flex items-center gap-2 mt-0.5 overflow-x-auto">
+              <span className="text-xs sm:text-sm text-gray-400 truncate">dropstore.manus.space/loja/{currentStore?.slug}</span>
               <a
                 href={`/loja/${currentStore?.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 flex-shrink-0"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
@@ -110,15 +110,16 @@ export default function StoreManager({ storeId, onBack }: Props) {
           href={`/loja/${currentStore?.slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+          className="flex items-center justify-center sm:justify-start gap-2 border border-gray-200 text-gray-600 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium hover:bg-gray-50 transition-colors flex-shrink-0"
         >
           <ExternalLink className="w-4 h-4" />
-          Ver vitrine
+          <span className="hidden sm:inline">Ver vitrine</span>
+          <span className="sm:hidden">Ver</span>
         </a>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-fit mb-8">
+      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-full sm:w-fit mb-6 sm:mb-8 overflow-x-auto">
         {([
           { key: "categories", label: "Categorias", icon: Tag },
           { key: "products", label: "Produtos", icon: Package },
@@ -140,21 +141,21 @@ export default function StoreManager({ storeId, onBack }: Props) {
 
       {/* Categories Tab */}
       {activeTab === "categories" && (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-gray-800">Categorias e Subcategorias</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-gray-800">Categorias e Subcategorias</h2>
           </div>
 
           {/* Add Category */}
-          <div className="bg-white rounded-xl border border-gray-100 p-4">
-            <p className="text-sm font-medium text-gray-700 mb-3">Nova categoria</p>
-            <div className="flex gap-2">
+          <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-4">
+            <p className="text-xs sm:text-sm font-medium text-gray-700 mb-3">Nova categoria</p>
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={newCatName}
                 onChange={e => setNewCatName(e.target.value)}
                 placeholder="Nome da categoria (ex: Roupas, Tênis...)"
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-black"
                 onKeyDown={e => {
                   if (e.key === "Enter" && newCatName.trim()) {
                     createCatMutation.mutate({ storeId, name: newCatName.trim() });
@@ -168,10 +169,11 @@ export default function StoreManager({ storeId, onBack }: Props) {
                   }
                 }}
                 disabled={createCatMutation.isPending || !newCatName.trim()}
-                className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                className="bg-black text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5 whitespace-nowrap"
               >
                 {createCatMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                Adicionar
+                <span className="hidden sm:inline">Adicionar</span>
+                <span className="sm:hidden">Add</span>
               </button>
             </div>
           </div>
@@ -179,10 +181,10 @@ export default function StoreManager({ storeId, onBack }: Props) {
           {/* Categories List */}
           {catsLoading ? (
             <div className="space-y-2">
-              {[1, 2, 3].map(i => <div key={i} className="h-14 bg-gray-100 rounded-xl animate-pulse" />)}
+              {[1, 2, 3].map(i => <div key={i} className="h-12 sm:h-14 bg-gray-100 rounded-xl animate-pulse" />)}
             </div>
           ) : categories && categories.length > 0 ? (
-            <div className="space-y-2">
+            <div className="space-y-2 sm:space-y-2">
               {categories.map(cat => {
                 const subs = getSubsForCategory(cat.id);
                 const isExpanded = expandedCat === cat.id;
