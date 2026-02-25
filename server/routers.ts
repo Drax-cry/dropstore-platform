@@ -72,6 +72,15 @@ export const appRouter = router({
         primaryColor: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
+        // Verificar se o utilizador já tem uma loja
+        const userStores = await getStoresByUserId(ctx.user.id);
+        if (userStores && userStores.length > 0) {
+          throw new TRPCError({ 
+            code: "FORBIDDEN", 
+            message: "Você já possui uma loja. Limite de uma loja por conta." 
+          });
+        }
+        
         const baseSlug = slugify(input.name);
         let slug = baseSlug;
         let existing = await getStoreBySlug(slug);

@@ -100,10 +100,16 @@ export default function Admin() {
 
           <button
             onClick={() => setShowCreateModal(true)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-gray-100 transition-colors mt-2 border border-dashed border-gray-200"
+            disabled={stores && stores.length > 0}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors mt-2 border border-dashed ${
+              stores && stores.length > 0
+                ? "text-gray-300 border-gray-100 cursor-not-allowed bg-gray-50"
+                : "text-gray-500 hover:bg-gray-100 border-gray-200"
+            }`}
+            title={stores && stores.length > 0 ? "Limite de uma loja por conta" : ""}
           >
             <Plus className="w-4 h-4" />
-            <span>Nova loja</span>
+            <span>{stores && stores.length > 0 ? "Limite atingido" : "Nova loja"}</span>
           </button>
         </nav>
 
