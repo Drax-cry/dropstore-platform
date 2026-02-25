@@ -138,6 +138,7 @@ export default function StoreFront() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [activeSubId, setActiveSubId] = useState<number | null>(null);
+  const [priceFilter, setPriceFilter] = useState<"asc" | "desc" | "none">("none");
 
   const { data: store, isLoading: storeLoading, error: storeError } = trpc.stores.getBySlug.useQuery(
     { slug: slug || "" },
@@ -188,8 +189,15 @@ export default function StoreFront() {
         (p.brand && p.brand.toLowerCase().includes(q))
       );
     }
+    
+    if (priceFilter === "asc") {
+      products = [...products].sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (priceFilter === "desc") {
+      products = [...products].sort((a, b) => Number(b.price) - Number(a.price));
+    }
+    
     return products;
-  }, [allProducts, activeCategoryId, activeSubId, searchQuery]);
+  }, [allProducts, activeCategoryId, activeSubId, searchQuery, priceFilter]);
 
   const primaryColor = store?.primaryColor || "#000000";
 
@@ -353,17 +361,34 @@ export default function StoreFront() {
 
       {/* Products Grid */}
       <main className="container py-10">
-        {/* Search results info */}
-        {searchQuery && (
-          <div className="mb-6 flex items-center gap-2">
-            <p className="text-sm text-gray-500">
-              {filteredProducts.length} resultado{filteredProducts.length !== 1 ? "s" : ""} para "{searchQuery}"
-            </p>
-            <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline">
-              Limpar
-            </button>
+        {/* Search results info and Price Filter */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {searchQuery && (
+              <>
+                <p className="text-sm text-gray-500">
+                  {filteredProducts.length} resultado{filteredProducts.length !== 1 ? "s" : ""} para "{searchQuery}"
+                </p>
+                <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline">
+                  Limpar
+                </button>
+              </>
+            )}
           </div>
-        )}
+          
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-500 font-medium">Ordenar:</span>
+            <select
+              value={priceFilter}
+              onChange={(e) => setPriceFilter(e.target.value as "asc" | "desc" | "none")}
+              className="text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-white cursor-pointer"
+            >
+              <option value="none">Padrão</option>
+              <option value="asc">Menor Preço</option>
+              <option value="desc">Maior Preço</option>
+            </select>
+          </div>
+        </div>
 
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
