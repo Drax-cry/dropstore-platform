@@ -257,8 +257,14 @@ export default function StoreFront() {
             </div>
 
             {/* Category nav (desktop) */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {categories?.map(cat => (
+            <nav className="hidden lg:flex items-center gap-2">
+              <a
+                href={`/loja/${slug}/categorias`}
+                className="px-3 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
+              >
+                Ver Todas
+              </a>
+              {categories?.slice(0, 3).map(cat => (
                 <button
                   key={cat.id}
                   onClick={() => { setActiveCategoryId(cat.id); setActiveSubId(null); }}
@@ -298,13 +304,19 @@ export default function StoreFront() {
 
       {/* Mobile Category Nav */}
       {categories && categories.length > 0 && (
-        <div className="lg:hidden sticky top-16 z-40 bg-white border-b border-gray-100 py-3">
-          <div className="flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide">
+        <div className="lg:hidden sticky top-14 sm:top-16 z-40 bg-white border-b border-gray-100 py-2 sm:py-3">
+          <div className="flex gap-1.5 sm:gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide">
+            <a
+              href={`/loja/${slug}/categorias`}
+              className="flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+            >
+              Ver Todas
+            </a>
             {categories.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => { setActiveCategoryId(cat.id); setActiveSubId(null); }}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   activeCategoryId === cat.id ? "text-white" : "bg-gray-100 text-gray-600"
                 }`}
                 style={activeCategoryId === cat.id ? { backgroundColor: primaryColor } : {}}

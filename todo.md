@@ -48,3 +48,12 @@
 - [x] Otimizar página de login para mobile
 - [x] Otimizar página de apresentação para mobile
 - [x] Testar em dispositivos reais (mobile, tablet, desktop)
+
+
+## Secção de Categorias
+- [x] Criar página dedicada de categorias com grid de cards
+- [x] Exibir contagem de produtos por categoria
+- [x] Cards com ícones/cores por categoria
+- [x] Navegação entre categorias e subcategorias
+- [x] Link para voltar à vitrine principal
+- [x] Responsividade completa para mobile/tablet/desktop
