@@ -222,8 +222,8 @@ export default function StoreFront() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="container">
-          <div className="flex items-center justify-between h-16 gap-4">
+        <div className="container px-4 sm:px-6">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
             {/* Logo */}
             <div className="flex items-center gap-3 flex-shrink-0">
               {store.logoUrl ? (
@@ -233,32 +233,38 @@ export default function StoreFront() {
                   <ShoppingBag className="w-5 h-5 text-white" />
                 </div>
               )}
-              <span className="font-bold text-base text-gray-900 hidden sm:block" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <span className="font-bold text-sm sm:text-base text-gray-900 hidden xs:block" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 {store.name}
               </span>
             </div>
 
             {/* Search */}
-            <div className="flex-1 max-w-md relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <div className="flex-1 max-w-xs sm:max-w-md relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 sm:w-4 h-3.5 sm:h-4 text-gray-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Pesquisar produtos..."
-                className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:bg-white transition-all"
+                placeholder="Pesquisar..."
+                className="w-full pl-8 sm:pl-9 pr-3 sm:pr-4 py-1.5 sm:py-2 bg-gray-100 rounded-full text-xs sm:text-sm focus:outline-none focus:ring-2 focus:bg-white transition-all"
                 style={{ "--tw-ring-color": primaryColor } as React.CSSProperties}
               />
               {searchQuery && (
-                <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                  <X className="w-4 h-4" />
+                <button onClick={() => setSearchQuery("")} className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <X className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                 </button>
               )}
             </div>
 
             {/* Category nav (desktop) */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {categories?.map(cat => (
+            <nav className="hidden lg:flex items-center gap-2">
+              <a
+                href={`/loja/${slug}/categorias`}
+                className="px-3 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
+              >
+                Ver Todas
+              </a>
+              {categories?.slice(0, 3).map(cat => (
                 <button
                   key={cat.id}
                   onClick={() => { setActiveCategoryId(cat.id); setActiveSubId(null); }}
@@ -277,34 +283,40 @@ export default function StoreFront() {
 
       {/* Hero Section */}
       <section
-        className="py-16 px-4 text-center relative overflow-hidden"
+        className="py-12 sm:py-16 px-4 text-center relative overflow-hidden"
         style={{ background: `linear-gradient(135deg, ${primaryColor}08 0%, ${primaryColor}03 100%)` }}
       >
         <div className="max-w-2xl mx-auto">
           {store.logoUrl && (
-            <img src={store.logoUrl} alt={store.name} className="h-20 w-auto object-contain mx-auto mb-6" />
+            <img src={store.logoUrl} alt={store.name} className="h-16 sm:h-20 w-auto object-contain mx-auto mb-4 sm:mb-6" />
           )}
           <h1
-            className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 animate-fade-in"
+            className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 animate-fade-in leading-tight"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {store.slogan || store.name}
           </h1>
           {store.slogan && (
-            <p className="text-lg text-gray-500 animate-slide-up">{store.name}</p>
+            <p className="text-sm sm:text-lg text-gray-500 animate-slide-up">{store.name}</p>
           )}
         </div>
       </section>
 
       {/* Mobile Category Nav */}
       {categories && categories.length > 0 && (
-        <div className="lg:hidden sticky top-16 z-40 bg-white border-b border-gray-100 py-3">
-          <div className="flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide">
+        <div className="lg:hidden sticky top-14 sm:top-16 z-40 bg-white border-b border-gray-100 py-2 sm:py-3">
+          <div className="flex gap-1.5 sm:gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide">
+            <a
+              href={`/loja/${slug}/categorias`}
+              className="flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+            >
+              Ver Todas
+            </a>
             {categories.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => { setActiveCategoryId(cat.id); setActiveSubId(null); }}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   activeCategoryId === cat.id ? "text-white" : "bg-gray-100 text-gray-600"
                 }`}
                 style={activeCategoryId === cat.id ? { backgroundColor: primaryColor } : {}}
@@ -352,11 +364,11 @@ export default function StoreFront() {
       )}
 
       {/* Products Grid */}
-      <main className="container py-10">
+      <main className="container px-4 sm:px-6 py-6 sm:py-10">
         {/* Search results info */}
         {searchQuery && (
-          <div className="mb-6 flex items-center gap-2">
-            <p className="text-sm text-gray-500">
+          <div className="mb-4 sm:mb-6 flex items-center gap-2">
+            <p className="text-xs sm:text-sm text-gray-500">
               {filteredProducts.length} resultado{filteredProducts.length !== 1 ? "s" : ""} para "{searchQuery}"
             </p>
             <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline">
@@ -366,7 +378,7 @@ export default function StoreFront() {
         )}
 
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
             {filteredProducts.map(product => (
               <ProductCard
                 key={product.id}
@@ -377,22 +389,22 @@ export default function StoreFront() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <ShoppingBag className="w-8 h-8 text-gray-300" />
+          <div className="text-center py-12 sm:py-20">
+            <div className="w-14 sm:w-16 h-14 sm:h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <ShoppingBag className="w-7 sm:w-8 h-7 sm:h-8 text-gray-300" />
             </div>
-            <p className="text-gray-500 font-medium">Nenhum produto encontrado</p>
+            <p className="text-gray-500 font-medium text-sm sm:text-base">Nenhum produto encontrado</p>
             {searchQuery && (
-              <p className="text-gray-400 text-sm mt-1">Tente pesquisar por outro termo</p>
+              <p className="text-gray-400 text-xs sm:text-sm mt-1">Tente pesquisar por outro termo</p>
             )}
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-8 mt-10">
-        <div className="container text-center">
-          <p className="text-sm text-gray-400">
+      <footer className="border-t border-gray-100 py-6 sm:py-8 mt-8 sm:mt-10">
+        <div className="container px-4 sm:px-6 text-center">
+          <p className="text-xs sm:text-sm text-gray-400">
             {store.name} · Powered by{" "}
             <a href="/" className="font-medium text-gray-600 hover:text-gray-900">DropStore</a>
           </p>

@@ -41,9 +41,19 @@
 - [x] Estados de loading e erro em todos os componentes
 
 
-## Dashboard Admin - Responsividade
-- [x] Otimizar layout do Admin para mobile (sidebar colapsável)
-- [x] Otimizar StoreManager para mobile/tablet
+## Responsividade
+- [x] Otimizar painel admin para mobile (sidebar colapsável, layout stack)
+- [x] Otimizar StoreFront para mobile (grid responsivo, touch-friendly)
 - [x] Otimizar modais para mobile (full-screen em telas pequenas)
-- [x] Melhorar espaçamento e tipografia em mobile
-- [x] Testar em dispositivos reais
+- [x] Otimizar página de login para mobile
+- [x] Otimizar página de apresentação para mobile
+- [x] Testar em dispositivos reais (mobile, tablet, desktop)
+
+
+## Secção de Categorias
+- [x] Criar página dedicada de categorias com grid de cards
+- [x] Exibir contagem de produtos por categoria
+- [x] Cards com ícones/cores por categoria
+- [x] Navegação entre categorias e subcategorias
+- [x] Link para voltar à vitrine principal
+- [x] Responsividade completa para mobile/tablet/desktop

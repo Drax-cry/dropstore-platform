@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import StoreFront from "./pages/StoreFront";
+import CategoriesPage from "./pages/CategoriesPage";
 import Presentation from "./pages/Presentation";
 
 function Router() {
@@ -14,6 +15,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/admin" component={Admin} />
+      <Route path="/loja/:slug/categorias" component={CategoriesPage} />
       <Route path="/loja/:slug" component={StoreFront} />
       <Route path="/apresentacao" component={Presentation} />
       <Route path="/404" component={NotFound} />
