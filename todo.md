@@ -39,3 +39,11 @@
 ## Qualidade
 - [x] Testes Vitest para routers principais
 - [x] Estados de loading e erro em todos os componentes
+
+## Responsividade Completa (Sem Alterar Design)
+- [ ] Home.tsx (login) responsiva para mobile/tablet
+- [ ] Admin.tsx responsivo com sidebar colapsável em mobile
+- [ ] StoreManager.tsx responsivo
+- [ ] CreateStoreModal responsivo
+- [ ] ProductModal responsivo
+- [ ] StoreFront.tsx responsivo

@@ -64,13 +64,13 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="pt-20 pb-24 px-4">
+      <section className="pt-12 sm:pt-20 pb-16 sm:pb-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-full mb-8">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
             Plataforma de catálogos online
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-black mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-black mb-6 leading-tight">
             O Melhor Drop
             <br />
             <span className="text-gray-400">é Aqui.</span>
@@ -115,7 +115,7 @@ export default function Home() {
       {/* Benefits */}
       <section className="py-20">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
               <h2 className="text-3xl font-bold text-black mb-4">
                 Tudo incluído, sem complicações
@@ -182,7 +182,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8">
-        <div className="container flex items-center justify-between">
+        <div className="container flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-black rounded-md flex items-center justify-center">
               <ShoppingBag className="w-3 h-3 text-white" />

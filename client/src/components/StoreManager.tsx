@@ -83,23 +83,23 @@ export default function StoreManager({ storeId, onBack }: Props) {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors"
+            className="p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors flex-shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">{currentStore?.name || "Loja"}</h1>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{currentStore?.name || "Loja"}</h1>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-sm text-gray-400">dropstore.manus.space/loja/{currentStore?.slug}</span>
+              <span className="text-xs sm:text-sm text-gray-400 truncate">dropstore.manus.space/loja/{currentStore?.slug}</span>
               <a
                 href={`/loja/${currentStore?.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 flex-shrink-0"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
@@ -110,7 +110,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
           href={`/loja/${currentStore?.slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors self-start sm:self-auto"
         >
           <ExternalLink className="w-4 h-4" />
           Ver vitrine
@@ -118,7 +118,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-fit mb-8">
+      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-full sm:w-fit mb-6 sm:mb-8">
         {([
           { key: "categories", label: "Categorias", icon: Tag },
           { key: "products", label: "Produtos", icon: Package },
@@ -126,7 +126,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeTab === tab.key
                 ? "bg-white text-gray-900 shadow-sm"
                 : "text-gray-500 hover:text-gray-700"
@@ -308,7 +308,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
           )}
 
           {productsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {[1, 2, 3, 4].map(i => (
                 <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 animate-pulse">
                   <div className="h-32 bg-gray-200 rounded-lg mb-3" />
@@ -318,7 +318,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
               ))}
             </div>
           ) : products && products.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {products.map(product => {
                 const category = categories?.find(c => c.id === product.categoryId);
                 const sub = allSubcategories?.find(s => s.id === product.subcategoryId);

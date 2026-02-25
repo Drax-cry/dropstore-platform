@@ -285,21 +285,21 @@ export default function StoreFront() {
 
       {/* Hero Section */}
       <section
-        className="py-16 px-4 text-center relative overflow-hidden"
+        className="py-10 sm:py-16 px-4 text-center relative overflow-hidden"
         style={{ background: `linear-gradient(135deg, ${primaryColor}08 0%, ${primaryColor}03 100%)` }}
       >
         <div className="max-w-2xl mx-auto">
           {store.logoUrl && (
-            <img src={store.logoUrl} alt={store.name} className="h-20 w-auto object-contain mx-auto mb-6" />
+            <img src={store.logoUrl} alt={store.name} className="h-14 sm:h-20 w-auto object-contain mx-auto mb-4 sm:mb-6" />
           )}
           <h1
-            className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 animate-fade-in"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 animate-fade-in"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {store.slogan || store.name}
           </h1>
           {store.slogan && (
-            <p className="text-lg text-gray-500 animate-slide-up">{store.name}</p>
+            <p className="text-base sm:text-lg text-gray-500 animate-slide-up">{store.name}</p>
           )}
         </div>
       </section>
@@ -360,7 +360,7 @@ export default function StoreFront() {
       )}
 
       {/* Products Grid */}
-      <main className="container py-10">
+      <main className="container py-6 sm:py-10">
         {/* Search results info and Price Filter */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-2">
