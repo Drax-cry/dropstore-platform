@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { X, Upload, Package, Loader2, Plus } from "lucide-react";
+import { X, Upload, Package, Loader2, Plus, Link, FolderOpen } from "lucide-react";
 import type { Category, Subcategory } from "../../../drizzle/schema";
 
 interface ProductData {
@@ -47,6 +47,8 @@ export default function ProductModal({ storeId, productId, editProduct, categori
   const [imageFile, setImageFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const [sizeType, setSizeType] = useState<"clothing" | "shoes" | "custom">("clothing");
   const [discountPercent, setDiscountPercent] = useState(editProduct?.discountPercent ?? "");
+  const [imageInputMode, setImageInputMode] = useState<"file" | "url">("file");
+  const [imageUrl, setImageUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync state when editProduct changes
@@ -62,8 +64,19 @@ export default function ProductModal({ storeId, productId, editProduct, categori
       setImagePreview(editProduct.imageUrl ?? null);
       setDiscountPercent(editProduct.discountPercent ?? "");
       setImageFile(null);
+      setImageUrl("");
     }
   }, [editProduct?.id]);
+
+  const handleImageUrlChange = (url: string) => {
+    setImageUrl(url);
+    if (url.trim()) {
+      setImagePreview(url.trim());
+      setImageFile(null);
+    } else {
+      setImagePreview(isEditing ? editProduct?.imageUrl ?? null : null);
+    }
+  };
 
   const uploadImageMutation = trpc.products.uploadImage.useMutation();
 
@@ -119,8 +132,13 @@ export default function ProductModal({ storeId, productId, editProduct, categori
     e.preventDefault();
     if (!name.trim() || !price || !categoryId) return;
 
-    let imageUrl: string | undefined | null = isEditing ? editProduct?.imageUrl : undefined;
-    if (imageFile) {
+    let finalImageUrl: string | undefined | null = isEditing ? editProduct?.imageUrl : undefined;
+
+    // Se inseriu URL diretamente, usa essa URL
+    if (imageInputMode === "url" && imageUrl.trim()) {
+      finalImageUrl = imageUrl.trim();
+    } else if (imageFile) {
+      // Upload de arquivo
       try {
         const result = await uploadImageMutation.mutateAsync({
           fileBase64: imageFile.fileBase64,
@@ -128,7 +146,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
           fileName: imageFile.fileName,
           storeId,
         });
-        imageUrl = result.url;
+        finalImageUrl = result.url;
       } catch {
         toast.error("Erro ao fazer upload da imagem");
         return;
@@ -144,7 +162,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
         name: name.trim(),
         brand: brand.trim() || undefined,
         price,
-        imageUrl: imageUrl ?? undefined,
+        imageUrl: finalImageUrl ?? undefined,
         sizes: selectedSizes,
         description: description.trim() || undefined,
         discountPercent: discountPercent || null,
@@ -157,7 +175,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
         name: name.trim(),
         brand: brand.trim() || undefined,
         price,
-        imageUrl: imageUrl ?? undefined,
+        imageUrl: finalImageUrl ?? undefined,
         sizes: selectedSizes,
         description: description.trim() || undefined,
         discountPercent: discountPercent || undefined,
@@ -193,22 +211,76 @@ export default function ProductModal({ storeId, productId, editProduct, categori
               {/* Image Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Imagem do produto</label>
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-gray-200 rounded-xl overflow-hidden cursor-pointer hover:border-gray-300 transition-colors aspect-square flex items-center justify-center bg-gray-50"
-                >
-                  {imagePreview ? (
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="flex flex-col items-center gap-2 text-gray-400 p-6">
-                      <Upload className="w-8 h-8" />
-                      <span className="text-sm text-center">Clique para adicionar imagem</span>
-                    </div>
-                  )}
+
+                {/* Tabs: Arquivo / URL */}
+                <div className="flex gap-1 mb-3 bg-gray-100 rounded-lg p-1">
+                  <button
+                    type="button"
+                    onClick={() => { setImageInputMode("file"); setImageUrl(""); setImagePreview(isEditing ? editProduct?.imageUrl ?? null : null); setImageFile(null); }}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                      imageInputMode === "file" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <FolderOpen className="w-3.5 h-3.5" />
+                    Arquivo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setImageInputMode("url"); setImageFile(null); }}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                      imageInputMode === "url" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <Link className="w-3.5 h-3.5" />
+                    URL
+                  </button>
                 </div>
-                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                {isEditing && imagePreview && (
-                  <p className="text-xs text-gray-400 mt-1">Clique na imagem para substituir</p>
+
+                {imageInputMode === "file" ? (
+                  <>
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="border-2 border-dashed border-gray-200 rounded-xl overflow-hidden cursor-pointer hover:border-gray-300 transition-colors aspect-square flex items-center justify-center bg-gray-50"
+                    >
+                      {imagePreview ? (
+                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center gap-2 text-gray-400 p-6">
+                          <Upload className="w-8 h-8" />
+                          <span className="text-sm text-center">Clique para adicionar imagem</span>
+                        </div>
+                      )}
+                    </div>
+                    <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                    {isEditing && imagePreview && (
+                      <p className="text-xs text-gray-400 mt-1">Clique na imagem para substituir</p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="url"
+                      value={imageUrl}
+                      onChange={e => handleImageUrlChange(e.target.value)}
+                      placeholder="https://exemplo.com/imagem.jpg"
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black mb-2"
+                    />
+                    <div className="border-2 border-dashed border-gray-200 rounded-xl overflow-hidden aspect-square flex items-center justify-center bg-gray-50">
+                      {imagePreview ? (
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                          onError={() => setImagePreview(null)}
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center gap-2 text-gray-400 p-6">
+                          <Link className="w-8 h-8" />
+                          <span className="text-sm text-center">Pré-visualização da URL</span>
+                        </div>
+                      )}
+                    </div>
+                  </>
                 )}
               </div>
             </div>

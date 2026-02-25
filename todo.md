@@ -76,3 +76,8 @@
 - [x] Modal de edição da loja no painel admin
 - [x] Gestor de banners no painel admin (upload, lista, remover)
 - [x] Carrossel de banners na vitrine pública com auto-play e dots
+
+## Imagem do Produto por URL
+- [x] ProductModal com tabs: "Upload de arquivo" e "URL da imagem"
+- [x] Pré-visualização da imagem ao inserir URL
+- [x] Validação básica de URL de imagem
