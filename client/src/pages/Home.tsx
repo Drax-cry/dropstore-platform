@@ -44,7 +44,7 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="border-b border-gray-100 sticky top-0 z-50 bg-white/95 backdrop-blur-sm">
-        <div className="container px-4 sm:px-6 flex items-center justify-between h-14 sm:h-16">
+        <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
               <ShoppingBag className="w-4 h-4 text-white" />
@@ -64,18 +64,18 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="pt-12 sm:pt-20 pb-16 sm:pb-24 px-4">
+      <section className="pt-20 pb-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-full mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-full mb-8">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-            Plataforma de catalagos online
+            Plataforma de catálogos online
           </div>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-black mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-black mb-6 leading-tight">
             O Melhor Drop
             <br />
-            <span className="text-gray-400">eh Aqui.</span>
+            <span className="text-gray-400">é Aqui.</span>
           </h1>
-          <p className="text-sm sm:text-lg text-gray-500 max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+          <p className="text-lg text-gray-500 max-w-xl mx-auto mb-10 leading-relaxed">
             Crie o seu catálogo online profissional em minutos. Partilhe com os seus clientes e receba pedidos pelo WhatsApp.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
