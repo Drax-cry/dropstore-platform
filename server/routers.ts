@@ -70,6 +70,8 @@ export const appRouter = router({
         logoUrl: z.string().optional(),
         whatsappNumber: z.string().optional(),
         primaryColor: z.string().optional(),
+        country: z.string().optional(),
+        currency: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         // Verificar se o utilizador já tem uma loja
@@ -98,6 +100,8 @@ export const appRouter = router({
           logoUrl: input.logoUrl,
           whatsappNumber: input.whatsappNumber,
           primaryColor: input.primaryColor ?? "#000000",
+          country: input.country ?? "BR",
+          currency: input.currency ?? "BRL",
         });
         return { slug };
       }),

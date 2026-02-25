@@ -33,6 +33,8 @@ export const stores = mysqlTable("stores", {
   logoUrl: text("logoUrl"),
   whatsappNumber: varchar("whatsappNumber", { length: 30 }),
   primaryColor: varchar("primaryColor", { length: 20 }).default("#000000"),
+  country: varchar("country", { length: 10 }).default("BR"),
+  currency: varchar("currency", { length: 10 }).default("BRL"),
   isActive: int("isActive").default(1),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

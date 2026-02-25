@@ -23,7 +23,19 @@ function useScrollFadeIn() {
   return ref;
 }
 
-function ProductCard({ product, whatsapp, primaryColor }: {
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  BRL: "R$",
+  EUR: "€",
+  ARS: "$",
+  COP: "$",
+};
+
+function formatPrice(value: number, currency: string | null): string {
+  const symbol = CURRENCY_SYMBOLS[currency ?? "BRL"] ?? "R$";
+  return `${symbol} ${value.toFixed(2).replace(".", ",")}`;
+}
+
+function ProductCard({ product, whatsapp, primaryColor, currency }: {
   product: {
     id: number;
     name: string;
@@ -35,6 +47,7 @@ function ProductCard({ product, whatsapp, primaryColor }: {
   };
   whatsapp: string | null;
   primaryColor: string | null;
+  currency: string | null;
 }) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [imageError, setImageError] = useState(false);
@@ -48,16 +61,16 @@ function ProductCard({ product, whatsapp, primaryColor }: {
 
   const handleWhatsApp = () => {
     if (!whatsapp) return;
+    // O número já está armazenado com o código do país (sem +)
     const number = whatsapp.replace(/\D/g, "");
-    const fullNumber = number.startsWith("55") ? number : `55${number}`;
     const sizeText = selectedSize ? ` | Tamanho: ${selectedSize}` : "";
     const priceText = discountPct > 0
-      ? `R$ ${finalPrice.toFixed(2)} (${discountPct}% OFF)`
-      : `R$ ${originalPrice.toFixed(2)}`;
+      ? `${formatPrice(finalPrice, currency)} (${discountPct}% OFF)`
+      : formatPrice(originalPrice, currency);
     const msg = encodeURIComponent(
       `Olá! Tenho interesse no produto:\n\n*${product.name}*${product.brand ? ` - ${product.brand}` : ""}\nPreço: ${priceText}${sizeText}\n\nPoderia me dar mais informações?`
     );
-    window.open(`https://wa.me/${fullNumber}?text=${msg}`, "_blank");
+    window.open(`https://wa.me/${number}?text=${msg}`, "_blank");
   };
 
   return (
@@ -102,15 +115,15 @@ function ProductCard({ product, whatsapp, primaryColor }: {
         {discountPct > 0 ? (
           <div className="mb-3">
             <p className="text-xs text-gray-400 line-through">
-              R$ {originalPrice.toFixed(2).replace(".", ",")}
+              {formatPrice(originalPrice, currency)}
             </p>
             <p className="text-lg font-bold text-red-600">
-              R$ {finalPrice.toFixed(2).replace(".", ",")}
+              {formatPrice(finalPrice, currency)}
             </p>
           </div>
         ) : (
           <p className="text-lg font-bold text-gray-900 mb-3">
-            R$ {originalPrice.toFixed(2).replace(".", ",")}
+            {formatPrice(originalPrice, currency)}
           </p>
         )}
 
@@ -424,6 +437,7 @@ export default function StoreFront() {
                 product={product}
                 whatsapp={store.whatsappNumber}
                 primaryColor={primaryColor}
+                currency={store.currency ?? "BRL"}
               />
             ))}
           </div>

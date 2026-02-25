@@ -54,3 +54,11 @@
 - [x] Atualizar router para aceitar discountPercent
 - [x] Exibir preço original riscado e preço final na vitrine
 - [x] Badge de desconto no card do produto
+
+## País, Prefixo e Moeda
+- [x] Adicionar colunas country e currency na tabela stores
+- [x] Atualizar CreateStoreModal com seletor de país (PT, BR, ES, AR, CO)
+- [x] Prefixo telefónico automático por país (+351, +55, +34, +54, +57)
+- [x] Seleção de moeda automática por país (€, R$, €, $, COP)
+- [x] Exibir moeda correta nos preços da vitrine
+- [x] Prefixo correto no link do WhatsApp

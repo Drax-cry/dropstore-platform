@@ -64,6 +64,13 @@
       "when": 1772037120618,
       "tag": "0008_fine_scalphunter",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1772037682906,
+      "tag": "0009_pale_northstar",
+      "breakpoints": true
     }
   ]
 }

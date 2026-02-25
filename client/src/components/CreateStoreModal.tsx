@@ -8,6 +8,14 @@ interface Props {
   onSuccess: () => void;
 }
 
+const COUNTRIES = [
+  { code: "BR", name: "Brasil", flag: "🇧🇷", dialCode: "+55", currency: "BRL", currencySymbol: "R$", currencyName: "Real Brasileiro" },
+  { code: "PT", name: "Portugal", flag: "🇵🇹", dialCode: "+351", currency: "EUR", currencySymbol: "€", currencyName: "Euro" },
+  { code: "ES", name: "Espanha", flag: "🇪🇸", dialCode: "+34", currency: "EUR", currencySymbol: "€", currencyName: "Euro" },
+  { code: "AR", name: "Argentina", flag: "🇦🇷", dialCode: "+54", currency: "ARS", currencySymbol: "$", currencyName: "Peso Argentino" },
+  { code: "CO", name: "Colômbia", flag: "🇨🇴", dialCode: "+57", currency: "COP", currencySymbol: "$", currencyName: "Peso Colombiano" },
+];
+
 export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const [name, setName] = useState("");
   const [slogan, setSlogan] = useState("");
@@ -15,6 +23,7 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const [primaryColor, setPrimaryColor] = useState("#000000");
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadLogoMutation = trpc.stores.uploadLogo.useMutation();
@@ -25,6 +34,11 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
     },
     onError: (err) => toast.error(err.message || "Erro ao criar loja"),
   });
+
+  const handleCountryChange = (code: string) => {
+    const country = COUNTRIES.find(c => c.code === code);
+    if (country) setSelectedCountry(country);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,9 +75,11 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
     createStoreMutation.mutate({
       name: name.trim(),
       slogan: slogan.trim() || undefined,
-      whatsappNumber: whatsapp.trim() || undefined,
+      whatsappNumber: whatsapp.trim() ? `${selectedCountry.dialCode.replace("+", "")}${whatsapp.trim().replace(/\D/g, "")}` : undefined,
       primaryColor,
       logoUrl,
+      country: selectedCountry.code,
+      currency: selectedCountry.currency,
     });
   };
 
@@ -142,20 +158,63 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             />
           </div>
 
+          {/* Country Selector */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">País</label>
+            <div className="grid grid-cols-5 gap-2">
+              {COUNTRIES.map(country => (
+                <button
+                  key={country.code}
+                  type="button"
+                  onClick={() => handleCountryChange(country.code)}
+                  className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all ${
+                    selectedCountry.code === country.code
+                      ? "border-black bg-gray-50"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <span className="text-2xl">{country.flag}</span>
+                  <span className="text-xs font-medium text-gray-700">{country.dialCode}</span>
+                  <span className="text-xs text-gray-400 truncate w-full text-center">{country.code}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-400 mt-1.5">
+              País selecionado: <span className="font-medium text-gray-700">{selectedCountry.flag} {selectedCountry.name}</span>
+            </p>
+          </div>
+
           {/* WhatsApp */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Número WhatsApp</label>
             <div className="flex">
-              <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-500">+55</span>
+              <span className="flex items-center gap-1.5 px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-600 font-medium whitespace-nowrap">
+                {selectedCountry.flag} {selectedCountry.dialCode}
+              </span>
               <input
                 type="tel"
                 value={whatsapp}
                 onChange={e => setWhatsapp(e.target.value)}
-                placeholder="11999999999"
+                placeholder={selectedCountry.code === "BR" ? "11999999999" : selectedCountry.code === "PT" ? "912345678" : "999999999"}
                 className="flex-1 border border-gray-200 rounded-r-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
               />
             </div>
-            <p className="text-xs text-gray-400 mt-1">Inclua o DDD sem espaços ou traços</p>
+            <p className="text-xs text-gray-400 mt-1">Número sem código do país (já incluído automaticamente)</p>
+          </div>
+
+          {/* Currency Info */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Moeda</label>
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="w-10 h-10 bg-white rounded-lg border border-gray-200 flex items-center justify-center text-lg font-bold text-gray-700">
+                {selectedCountry.currencySymbol}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-800">{selectedCountry.currencyName}</p>
+                <p className="text-xs text-gray-400">Código: {selectedCountry.currency} · Símbolo: {selectedCountry.currencySymbol}</p>
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-1">Moeda definida automaticamente pelo país selecionado</p>
           </div>
 
           {/* Primary Color */}
