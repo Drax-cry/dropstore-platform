@@ -39,3 +39,12 @@
 ## Qualidade
 - [x] Testes Vitest para routers principais
 - [x] Estados de loading e erro em todos os componentes
+
+
+## Responsividade
+- [x] Otimizar painel admin para mobile (sidebar colapsável, layout stack)
+- [x] Otimizar StoreFront para mobile (grid responsivo, touch-friendly)
+- [x] Otimizar modais para mobile (full-screen em telas pequenas)
+- [x] Otimizar página de login para mobile
+- [x] Otimizar página de apresentação para mobile
+- [x] Testar em dispositivos reais (mobile, tablet, desktop)
