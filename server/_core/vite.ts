@@ -58,7 +58,25 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  // Assets com hash no nome (gerados pelo Vite) podem ser cacheados agressivamente.
+  // O HTML principal nunca deve ser cacheado para garantir que o utilizador
+  // recebe sempre a versão mais recente da aplicação.
+  app.use(
+    express.static(distPath, {
+      maxAge: "1y",           // assets com hash: 1 ano
+      immutable: true,        // indica que o ficheiro nunca muda
+      etag: true,
+      lastModified: true,
+      setHeaders(res, filePath) {
+        // HTML e JSON não devem ser cacheados
+        if (filePath.endsWith(".html") || filePath.endsWith(".json")) {
+          res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+          res.setHeader("Pragma", "no-cache");
+          res.setHeader("Expires", "0");
+        }
+      },
+    })
+  );
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {

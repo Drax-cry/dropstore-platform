@@ -114,3 +114,15 @@
 - [x] Página de login/registo com design do welcome-portal (split-screen, animações framer-motion)
 - [x] Guards de rota baseados no novo sistema de auth
 - [x] Instalar framer-motion no projeto
+
+## Autoscaling / Alta Disponibilidade (10k+ utilizadores)
+- [x] Servidor stateless: JWT puro sem estado em memória
+- [x] Rate limiting por IP nos endpoints de auth e API
+- [x] Compressão gzip/brotli nas respostas HTTP
+- [x] Headers de cache HTTP para assets estáticos e respostas públicas
+- [x] Connection pooling na base de dados (mysql2 pool)
+- [x] Índices na base de dados para queries frequentes
+- [x] Health check endpoint GET /api/health
+- [x] Graceful shutdown (SIGTERM/SIGINT)
+- [x] Timeout e retry nas queries de base de dados
+- [x] Documentação de arquitetura de deploy para autoscaling
