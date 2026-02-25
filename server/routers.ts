@@ -26,7 +26,7 @@ import {
   updateProduct,
   deleteProduct,
 } from "./db";
-import { storagePut } from "./localStorage";
+import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
 
 function slugify(text: string): string {
