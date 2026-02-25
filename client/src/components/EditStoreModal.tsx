@@ -354,7 +354,7 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
           {activeTab === "social" && (
             <>
               <p className="text-xs text-gray-400 -mt-1">
-                Insira apenas o nome de utilizador ou o URL completo do perfil. Os ícones serão exibidos na vitrine.
+                Cole o URL completo do seu perfil (ex: https://www.instagram.com/seu_usuario/) ou apenas o nome de utilizador.
               </p>
 
               {/* Instagram */}
@@ -363,18 +363,13 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                   <Instagram className="w-4 h-4 text-gray-400" />
                   Instagram
                 </label>
-                <div className="flex">
-                  <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-400">
-                    instagram.com/
-                  </span>
-                  <input
-                    type="text"
-                    value={instagram}
-                    onChange={e => setInstagram(e.target.value)}
-                    placeholder="nomeusuario"
-                    className="flex-1 border border-gray-200 rounded-r-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={instagram}
+                  onChange={e => setInstagram(e.target.value)}
+                  placeholder="https://www.instagram.com/seu_usuario/ ou seu_usuario"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                />
               </div>
 
               {/* Facebook */}
@@ -383,18 +378,13 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                   <Facebook className="w-4 h-4 text-gray-400" />
                   Facebook
                 </label>
-                <div className="flex">
-                  <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-400">
-                    facebook.com/
-                  </span>
-                  <input
-                    type="text"
-                    value={facebook}
-                    onChange={e => setFacebook(e.target.value)}
-                    placeholder="nomepagina"
-                    className="flex-1 border border-gray-200 rounded-r-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={facebook}
+                  onChange={e => setFacebook(e.target.value)}
+                  placeholder="https://www.facebook.com/sua_pagina/ ou sua_pagina"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                />
               </div>
 
               {/* TikTok */}
@@ -403,18 +393,13 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                   <Music2 className="w-4 h-4 text-gray-400" />
                   TikTok
                 </label>
-                <div className="flex">
-                  <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-400">
-                    tiktok.com/@
-                  </span>
-                  <input
-                    type="text"
-                    value={tiktok}
-                    onChange={e => setTiktok(e.target.value)}
-                    placeholder="nomeusuario"
-                    className="flex-1 border border-gray-200 rounded-r-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={tiktok}
+                  onChange={e => setTiktok(e.target.value)}
+                  placeholder="https://www.tiktok.com/@seu_usuario/ ou seu_usuario"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                />
               </div>
 
               {/* YouTube */}
@@ -423,18 +408,13 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                   <Youtube className="w-4 h-4 text-gray-400" />
                   YouTube
                 </label>
-                <div className="flex">
-                  <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-400">
-                    youtube.com/
-                  </span>
-                  <input
-                    type="text"
-                    value={youtube}
-                    onChange={e => setYoutube(e.target.value)}
-                    placeholder="@canal ou c/canal"
-                    className="flex-1 border border-gray-200 rounded-r-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={youtube}
+                  onChange={e => setYoutube(e.target.value)}
+                  placeholder="https://www.youtube.com/c/seu_canal/ ou seu_canal"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                />
               </div>
             </>
           )}

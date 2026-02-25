@@ -567,46 +567,46 @@ export default function StoreFront() {
                   <div className="flex flex-wrap gap-3">
                     {store.instagram && (
                       <a
-                        href={`https://instagram.com/${store.instagram}`}
+                        href={store.instagram.startsWith('http') ? store.instagram : `https://www.instagram.com/${store.instagram}/`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
                       >
                         <Instagram className="w-4 h-4" />
-                        <span>@{store.instagram}</span>
+                        <span>@{store.instagram.split('/').filter(Boolean).pop() || store.instagram}</span>
                       </a>
                     )}
                     {store.facebook && (
                       <a
-                        href={`https://facebook.com/${store.facebook}`}
+                        href={store.facebook.startsWith('http') ? store.facebook : `https://www.facebook.com/${store.facebook}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
                       >
                         <Facebook className="w-4 h-4" />
-                        <span>{store.facebook}</span>
+                        <span>{store.facebook.split('/').filter(Boolean).pop() || store.facebook}</span>
                       </a>
                     )}
                     {store.tiktok && (
                       <a
-                        href={`https://tiktok.com/@${store.tiktok}`}
+                        href={store.tiktok.startsWith('http') ? store.tiktok : `https://www.tiktok.com/@${store.tiktok}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
                       >
                         <Music2 className="w-4 h-4" />
-                        <span>@{store.tiktok}</span>
+                        <span>@{store.tiktok.split('/').filter(Boolean).pop() || store.tiktok}</span>
                       </a>
                     )}
                     {store.youtube && (
                       <a
-                        href={`https://youtube.com/${store.youtube}`}
+                        href={store.youtube.startsWith('http') ? store.youtube : `https://www.youtube.com/c/${store.youtube}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
                       >
                         <Youtube className="w-4 h-4" />
-                        <span>{store.youtube}</span>
+                        <span>{store.youtube.split('/').filter(Boolean).pop() || store.youtube}</span>
                       </a>
                     )}
                   </div>

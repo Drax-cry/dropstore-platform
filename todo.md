@@ -115,6 +115,9 @@
 - [x] Guards de rota baseados no novo sistema de auth
 - [x] Instalar framer-motion no projeto
 
+## URLs Completas de Redes Sociais
+- [x] Permitir URLs completas nos campos de redes sociais (Instagram, Facebook, TikTok, YouTube)
+
 ## Autoscaling / Alta Disponibilidade (10k+ utilizadores)
 - [x] Servidor stateless: JWT puro sem estado em memória
 - [x] Rate limiting por IP nos endpoints de auth e API
