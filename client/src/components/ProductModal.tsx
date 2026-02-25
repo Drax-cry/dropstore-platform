@@ -49,6 +49,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
   const [discountPercent, setDiscountPercent] = useState(editProduct?.discountPercent ?? "");
   const [imageInputMode, setImageInputMode] = useState<"file" | "url">("file");
   const [imageUrl, setImageUrl] = useState("");
+  const [imageLoadError, setImageLoadError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync state when editProduct changes
@@ -70,11 +71,12 @@ export default function ProductModal({ storeId, productId, editProduct, categori
 
   const handleImageUrlChange = (url: string) => {
     setImageUrl(url);
+    setImageLoadError(false);
     if (url.trim()) {
       setImagePreview(url.trim());
       setImageFile(null);
     } else {
-      setImagePreview(isEditing ? editProduct?.imageUrl ?? null : null);
+      setImagePreview(null);
     }
   };
 
@@ -216,7 +218,13 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                 <div className="flex gap-1 mb-3 bg-gray-100 rounded-lg p-1">
                   <button
                     type="button"
-                    onClick={() => { setImageInputMode("file"); setImageUrl(""); setImagePreview(isEditing ? editProduct?.imageUrl ?? null : null); setImageFile(null); }}
+                    onClick={() => {
+                      setImageInputMode("file");
+                      setImageUrl("");
+                      setImageLoadError(false);
+                      setImagePreview(isEditing ? editProduct?.imageUrl ?? null : null);
+                      setImageFile(null);
+                    }}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                       imageInputMode === "file" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
                     }`}
@@ -226,7 +234,17 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setImageInputMode("url"); setImageFile(null); }}
+                    onClick={() => {
+                      setImageInputMode("url");
+                      setImageFile(null);
+                      setImageLoadError(false);
+                      // Se estiver editando e tiver imageUrl existente, preenche o campo
+                      const existingUrl = isEditing ? editProduct?.imageUrl ?? "" : "";
+                      if (existingUrl && !imageUrl) {
+                        setImageUrl(existingUrl);
+                        setImagePreview(existingUrl);
+                      }
+                    }}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                       imageInputMode === "url" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
                     }`}
@@ -259,27 +277,44 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                 ) : (
                   <>
                     <input
-                      type="url"
+                      type="text"
                       value={imageUrl}
                       onChange={e => handleImageUrlChange(e.target.value)}
+                      onPaste={e => {
+                        // Captura paste imediato
+                        const pasted = e.clipboardData.getData("text");
+                        if (pasted) {
+                          setTimeout(() => handleImageUrlChange(pasted), 0);
+                        }
+                      }}
                       placeholder="https://exemplo.com/imagem.jpg"
                       className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black mb-2"
+                      autoFocus
                     />
                     <div className="border-2 border-dashed border-gray-200 rounded-xl overflow-hidden aspect-square flex items-center justify-center bg-gray-50">
-                      {imagePreview ? (
+                      {imagePreview && !imageLoadError ? (
                         <img
                           src={imagePreview}
                           alt="Preview"
                           className="w-full h-full object-cover"
-                          onError={() => setImagePreview(null)}
+                          onLoad={() => setImageLoadError(false)}
+                          onError={() => setImageLoadError(true)}
                         />
+                      ) : imageLoadError ? (
+                        <div className="flex flex-col items-center gap-2 text-red-400 p-6">
+                          <Link className="w-8 h-8" />
+                          <span className="text-xs text-center">Não foi possível carregar a imagem. Verifique a URL.</span>
+                        </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2 text-gray-400 p-6">
                           <Link className="w-8 h-8" />
-                          <span className="text-sm text-center">Pré-visualização da URL</span>
+                          <span className="text-sm text-center">Cole a URL da imagem acima</span>
                         </div>
                       )}
                     </div>
+                    {imagePreview && !imageLoadError && (
+                      <p className="text-xs text-green-600 mt-1">✓ Imagem carregada com sucesso</p>
+                    )}
                   </>
                 )}
               </div>

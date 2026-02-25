@@ -81,3 +81,7 @@
 - [x] ProductModal com tabs: "Upload de arquivo" e "URL da imagem"
 - [x] Pré-visualização da imagem ao inserir URL
 - [x] Validação básica de URL de imagem
+
+## Bug: Imagem por URL não carrega
+- [x] Corrigir pré-visualização de imagem ao inserir URL no ProductModal
+- [x] Garantir que a URL é enviada ao backend ao guardar o produto
