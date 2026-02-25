@@ -138,6 +138,7 @@ export default function StoreFront() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [activeSubId, setActiveSubId] = useState<number | null>(null);
+  const [sortBy, setSortBy] = useState<"recent" | "price-high" | "price-low">("recent");
 
   const { data: store, isLoading: storeLoading, error: storeError } = trpc.stores.getBySlug.useQuery(
     { slug: slug || "" },
@@ -188,8 +189,18 @@ export default function StoreFront() {
         (p.brand && p.brand.toLowerCase().includes(q))
       );
     }
-    return products;
-  }, [allProducts, activeCategoryId, activeSubId, searchQuery]);
+    
+    // Aplicar ordenacao
+    switch (sortBy) {
+      case "price-high":
+        return [...products].sort((a, b) => Number(b.price) - Number(a.price));
+      case "price-low":
+        return [...products].sort((a, b) => Number(a.price) - Number(b.price));
+      case "recent":
+      default:
+        return [...products].reverse();
+    }
+  }, [allProducts, activeCategoryId, activeSubId, searchQuery, sortBy]);
 
   const primaryColor = store?.primaryColor || "#000000";
 
@@ -374,6 +385,25 @@ export default function StoreFront() {
             <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline">
               Limpar
             </button>
+          </div>
+        )}
+
+        {/* Sort selector */}
+        {filteredProducts.length > 0 && (
+          <div className="mb-6 flex items-center justify-end">
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-600">Ordenar por:</label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm font-medium focus:outline-none focus:ring-2 transition-all"
+                style={{ "--tw-ring-color": primaryColor } as React.CSSProperties}
+              >
+                <option value="recent">Mais Recentes</option>
+                <option value="price-low">Menor Preco</option>
+                <option value="price-high">Maior Preco</option>
+              </select>
+            </div>
           </div>
         )}
 

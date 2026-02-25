@@ -57,3 +57,12 @@
 - [x] Navegação entre categorias e subcategorias
 - [x] Link para voltar à vitrine principal
 - [x] Responsividade completa para mobile/tablet/desktop
+
+
+## Ordenacao de Produtos
+- [x] Adicionar selector de ordenacao na pagina de categorias
+- [x] Implementar ordenacao por mais recentes
+- [x] Implementar ordenacao por maior preco
+- [x] Implementar ordenacao por menor preco
+- [x] Adicionar selector de ordenacao na vitrine (StoreFront)
+- [x] Persistir preferencia de ordenacao (localStorage)

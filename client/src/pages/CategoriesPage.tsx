@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useParams, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { ArrowLeft, Tag, Package, ChevronRight, Search, X } from "lucide-react";
+import { ArrowLeft, Tag, Package, ChevronRight, Search, X, ArrowUpDown } from "lucide-react";
 
 function useScrollFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,6 +37,7 @@ export default function CategoriesPage() {
   const [, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [sortBy, setSortBy] = useState<"recent" | "price-high" | "price-low">("recent");
 
   const { data: store, isLoading: storeLoading } = trpc.stores.getBySlug.useQuery(
     { slug: slug || "" },
@@ -89,13 +90,37 @@ export default function CategoriesPage() {
     return allSubcategories.filter(s => s.categoryId === selectedCategoryId);
   }, [selectedCategoryId, allSubcategories]);
 
-  // Produtos da categoria selecionada
+  // Produtos da categoria selecionada com ordenação
   const selectedCategoryProducts = useMemo(() => {
     if (!selectedCategoryId || !allProducts) return [];
-    return allProducts.filter(p => p.categoryId === selectedCategoryId);
-  }, [selectedCategoryId, allProducts]);
+    let products = allProducts.filter(p => p.categoryId === selectedCategoryId);
+    
+    // Aplicar ordenação
+    switch (sortBy) {
+      case "price-high":
+        return [...products].sort((a, b) => Number(b.price) - Number(a.price));
+      case "price-low":
+        return [...products].sort((a, b) => Number(a.price) - Number(b.price));
+      case "recent":
+      default:
+        return [...products].reverse(); // Mais recentes primeiro (IDs maiores)
+    }
+  }, [selectedCategoryId, allProducts, sortBy]);
 
   const primaryColor = store?.primaryColor || "#000000";
+
+  // Função para obter label de ordenação
+  const getSortLabel = () => {
+    switch (sortBy) {
+      case "price-high":
+        return "Maior Preço";
+      case "price-low":
+        return "Menor Preço";
+      case "recent":
+      default:
+        return "Mais Recentes";
+    }
+  };
 
   if (storeLoading) {
     return (
@@ -160,6 +185,24 @@ export default function CategoriesPage() {
 
         {/* Produtos */}
         <main className="container px-4 sm:px-6 py-6 sm:py-10">
+          {selectedCategoryProducts.length > 0 && (
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900">Produtos</h2>
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-600">Ordenar por:</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm font-medium focus:outline-none focus:ring-2 transition-all"
+                  style={{ "--tw-ring-color": primaryColor } as React.CSSProperties}
+                >
+                  <option value="recent">Mais Recentes</option>
+                  <option value="price-low">Menor Preço</option>
+                  <option value="price-high">Maior Preço</option>
+                </select>
+              </div>
+            </div>
+          )}
           {selectedCategoryProducts.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
               {selectedCategoryProducts.map(product => (
