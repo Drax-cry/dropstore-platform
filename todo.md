@@ -85,3 +85,7 @@
 ## Bug: Imagem por URL não carrega
 - [x] Corrigir pré-visualização de imagem ao inserir URL no ProductModal
 - [x] Garantir que a URL é enviada ao backend ao guardar o produto
+
+## Suporte a URL do Google Drive
+- [x] Converter automaticamente link de partilha do Google Drive em link direto de imagem
+- [x] Mostrar aviso ao utilizador quando a URL é convertida

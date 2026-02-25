@@ -69,11 +69,33 @@ export default function ProductModal({ storeId, productId, editProduct, categori
     }
   }, [editProduct?.id]);
 
+  // Converte URLs do Google Drive em links diretos de imagem
+  const convertGoogleDriveUrl = (url: string): string => {
+    // Formato: https://drive.google.com/file/d/FILE_ID/view?...
+    const fileMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch) {
+      return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`;
+    }
+    // Formato: https://drive.google.com/open?id=FILE_ID
+    const openMatch = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
+    if (openMatch) {
+      return `https://drive.google.com/uc?export=view&id=${openMatch[1]}`;
+    }
+    // Formato: https://docs.google.com/uc?id=FILE_ID
+    const docsMatch = url.match(/docs\.google\.com\/uc\?.*id=([a-zA-Z0-9_-]+)/);
+    if (docsMatch) {
+      return `https://drive.google.com/uc?export=view&id=${docsMatch[1]}`;
+    }
+    return url;
+  };
+
   const handleImageUrlChange = (url: string) => {
+    const trimmed = url.trim();
     setImageUrl(url);
     setImageLoadError(false);
-    if (url.trim()) {
-      setImagePreview(url.trim());
+    if (trimmed) {
+      const converted = convertGoogleDriveUrl(trimmed);
+      setImagePreview(converted);
       setImageFile(null);
     } else {
       setImagePreview(null);
@@ -281,16 +303,21 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                       value={imageUrl}
                       onChange={e => handleImageUrlChange(e.target.value)}
                       onPaste={e => {
-                        // Captura paste imediato
                         const pasted = e.clipboardData.getData("text");
                         if (pasted) {
                           setTimeout(() => handleImageUrlChange(pasted), 0);
                         }
                       }}
-                      placeholder="https://exemplo.com/imagem.jpg"
-                      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black mb-2"
+                      placeholder="Cole URL ou link do Google Drive..."
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black mb-1"
                       autoFocus
                     />
+                    {imageUrl && convertGoogleDriveUrl(imageUrl.trim()) !== imageUrl.trim() && (
+                      <p className="text-xs text-blue-600 mb-2">🔗 Link do Google Drive detectado e convertido automaticamente</p>
+                    )}
+                    {!imageUrl && (
+                      <p className="text-xs text-gray-400 mb-2">Suporta links do Google Drive, Imgur, e outros</p>
+                    )}
                     <div className="border-2 border-dashed border-gray-200 rounded-xl overflow-hidden aspect-square flex items-center justify-center bg-gray-50">
                       {imagePreview && !imageLoadError ? (
                         <img
