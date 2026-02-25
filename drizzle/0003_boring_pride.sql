@@ -1,0 +1,1 @@
+ALTER TABLE `products` MODIFY COLUMN `sizes` varchar(1000);
