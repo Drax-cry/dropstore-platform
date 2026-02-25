@@ -23,15 +23,49 @@ interface Props {
   editProduct?: ProductData | null;
   categories: Category[];
   subcategories: Subcategory[];
+  storeCountry?: string;
   onClose: () => void;
   onSuccess: () => void;
 }
 
+// Tamanhos de roupa por país
+const CLOTHING_SIZES_BY_COUNTRY: Record<string, string[]> = {
+  BR: ["PP", "P", "M", "G", "GG", "XGG"],
+  PT: ["XS", "S", "M", "L", "XL", "XXL"],
+  ES: ["XS", "S", "M", "L", "XL", "XXL"],
+  AR: ["XS", "S", "M", "L", "XL", "XXL"],
+  CO: ["XS", "S", "M", "L", "XL", "XXL"],
+};
+
+// Tamanhos de ténis por país
+const SHOE_SIZES_BY_COUNTRY: Record<string, string[]> = {
+  BR: ["33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
+  PT: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"],
+  ES: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"],
+  AR: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"],
+  CO: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"],
+};
+
+// Labels descritivos dos tamanhos de roupa por país
+const CLOTHING_SIZE_LABELS: Record<string, Record<string, string>> = {
+  BR: { PP: "PP", P: "P", M: "M", G: "G", GG: "GG", XGG: "XGG" },
+  PT: { XS: "XS (34-36)", S: "S (38-40)", M: "M (42-44)", L: "L (46-48)", XL: "XL (50-52)", XXL: "XXL (54-56)" },
+  ES: { XS: "XS (34-36)", S: "S (38-40)", M: "M (42-44)", L: "L (46-48)", XL: "XL (50-52)", XXL: "XXL (54-56)" },
+  AR: { XS: "XS", S: "S", M: "M", L: "L", XL: "XL", XXL: "XXL" },
+  CO: { XS: "XS", S: "S", M: "M", L: "L", XL: "XL", XXL: "XXL" },
+};
+
+// Fallbacks
 const CLOTHING_SIZES = ["PP", "P", "M", "G", "GG", "XGG"];
 const SHOE_SIZES = ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"];
 
-export default function ProductModal({ storeId, productId, editProduct, categories, subcategories, onClose, onSuccess }: Props) {
+export default function ProductModal({ storeId, productId, editProduct, categories, subcategories, storeCountry = "BR", onClose, onSuccess }: Props) {
   const isEditing = !!editProduct;
+
+  // Tamanhos adaptados ao país da loja
+  const clothingSizes = CLOTHING_SIZES_BY_COUNTRY[storeCountry] ?? CLOTHING_SIZES;
+  const shoeSizes = SHOE_SIZES_BY_COUNTRY[storeCountry] ?? SHOE_SIZES;
+  const clothingLabels = CLOTHING_SIZE_LABELS[storeCountry] ?? {};
 
   const [name, setName] = useState(editProduct?.name ?? "");
   const [brand, setBrand] = useState(editProduct?.brand ?? "");
@@ -208,7 +242,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
   };
 
   const isLoading = uploadImageMutation.isPending || createProductMutation.isPending || updateProductMutation.isPending;
-  const currentSizes = sizeType === "clothing" ? CLOTHING_SIZES : sizeType === "shoes" ? SHOE_SIZES : [];
+  const currentSizes = sizeType === "clothing" ? clothingSizes : sizeType === "shoes" ? shoeSizes : [];
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
@@ -469,7 +503,11 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                     sizeType === type ? "bg-black text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
-                  {type === "clothing" ? "Roupas (P/M/G)" : type === "shoes" ? "Tênis (34-45)" : "Personalizado"}
+                  {type === "clothing"
+                    ? `Roupas (${clothingSizes.slice(0,3).join("/")})`
+                    : type === "shoes"
+                    ? `Tênis (${shoeSizes[0]}-${shoeSizes[shoeSizes.length-1]})`
+                    : "Personalizado"}
                 </button>
               ))}
             </div>
@@ -487,7 +525,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                         : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
                     }`}
                   >
-                    {size}
+                    {sizeType === "clothing" && clothingLabels[size] ? clothingLabels[size] : size}
                   </button>
                 ))}
               </div>

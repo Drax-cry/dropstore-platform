@@ -450,6 +450,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
           editProduct={editingProductData}
           categories={categories || []}
           subcategories={allSubcategories || []}
+          storeCountry={currentStore?.country ?? "BR"}
           onClose={() => { setShowProductModal(false); setEditingProduct(null); setEditingProductData(null); }}
           onSuccess={() => {
             setShowProductModal(false);

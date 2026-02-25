@@ -89,3 +89,8 @@
 ## Suporte a URL do Google Drive
 - [x] Converter automaticamente link de partilha do Google Drive em link direto de imagem
 - [x] Mostrar aviso ao utilizador quando a URL é convertida
+
+## Tamanhos por País
+- [x] Tabelas de tamanhos de roupa por país (BR, PT, ES, AR, CO)
+- [x] Tabelas de tamanhos de ténis por país
+- [x] ProductModal usa tamanhos do país da loja automaticamente
