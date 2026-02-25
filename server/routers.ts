@@ -274,6 +274,7 @@ export const appRouter = router({
         imageUrl: z.string().optional(),
         sizes: z.array(z.string()).optional(),
         description: z.string().optional(),
+        discountPercent: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.storeId);
@@ -290,6 +291,7 @@ export const appRouter = router({
           imageUrl: input.imageUrl,
           sizes: input.sizes ? JSON.stringify(input.sizes) : "[]",
           description: input.description,
+          discountPercent: input.discountPercent,
         });
         return { success: true };
       }),

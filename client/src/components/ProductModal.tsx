@@ -28,6 +28,7 @@ export default function ProductModal({ storeId, productId, categories, subcatego
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const [sizeType, setSizeType] = useState<"clothing" | "shoes" | "custom">("clothing");
+  const [discountPercent, setDiscountPercent] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadImageMutation = trpc.products.uploadImage.useMutation();
@@ -96,6 +97,7 @@ export default function ProductModal({ storeId, productId, categories, subcatego
       imageUrl,
       sizes: selectedSizes,
       description: description.trim() || undefined,
+      discountPercent: discountPercent ? discountPercent : undefined,
     });
   };
 
@@ -191,6 +193,29 @@ export default function ProductModal({ storeId, productId, categories, subcatego
                     className="flex-1 border border-gray-200 rounded-r-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
                   />
                 </div>
+              </div>
+
+              {/* Discount */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Desconto (%)</label>
+                <div className="flex">
+                  <input
+                    type="number"
+                    step="1"
+                    min="0"
+                    max="99"
+                    value={discountPercent}
+                    onChange={e => setDiscountPercent(e.target.value)}
+                    placeholder="Ex: 10"
+                    className="flex-1 border border-gray-200 rounded-l-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                  />
+                  <span className="flex items-center px-3 bg-gray-50 border border-l-0 border-gray-200 rounded-r-xl text-sm text-gray-500">%</span>
+                </div>
+                {discountPercent && price && (
+                  <p className="text-xs text-green-600 mt-1">
+                    Preço com desconto: R$ {(parseFloat(price) * (1 - parseFloat(discountPercent) / 100)).toFixed(2)}
+                  </p>
+                )}
               </div>
 
               {/* Category */}

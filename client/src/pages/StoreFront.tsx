@@ -31,6 +31,7 @@ function ProductCard({ product, whatsapp, primaryColor }: {
     price: string;
     imageUrl: string | null;
     sizes: string | null;
+    discountPercent?: string | null;
   };
   whatsapp: string | null;
   primaryColor: string | null;
@@ -41,13 +42,20 @@ function ProductCard({ product, whatsapp, primaryColor }: {
   const sizes: string[] = product.sizes ? JSON.parse(product.sizes) : [];
   const color = primaryColor || "#000000";
 
+  const discountPct = product.discountPercent ? parseFloat(product.discountPercent) : 0;
+  const originalPrice = Number(product.price);
+  const finalPrice = discountPct > 0 ? originalPrice * (1 - discountPct / 100) : originalPrice;
+
   const handleWhatsApp = () => {
     if (!whatsapp) return;
     const number = whatsapp.replace(/\D/g, "");
     const fullNumber = number.startsWith("55") ? number : `55${number}`;
     const sizeText = selectedSize ? ` | Tamanho: ${selectedSize}` : "";
+    const priceText = discountPct > 0
+      ? `R$ ${finalPrice.toFixed(2)} (${discountPct}% OFF)`
+      : `R$ ${originalPrice.toFixed(2)}`;
     const msg = encodeURIComponent(
-      `Olá! Tenho interesse no produto:\n\n*${product.name}*${product.brand ? ` - ${product.brand}` : ""}\nPreço: R$ ${Number(product.price).toFixed(2)}${sizeText}\n\nPoderia me dar mais informações?`
+      `Olá! Tenho interesse no produto:\n\n*${product.name}*${product.brand ? ` - ${product.brand}` : ""}\nPreço: ${priceText}${sizeText}\n\nPoderia me dar mais informações?`
     );
     window.open(`https://wa.me/${fullNumber}?text=${msg}`, "_blank");
   };
@@ -79,14 +87,32 @@ function ProductCard({ product, whatsapp, primaryColor }: {
             </span>
           </div>
         )}
+        {discountPct > 0 && (
+          <div className="absolute top-3 right-3">
+            <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm">
+              -{discountPct}%
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div className="p-4">
         <h3 className="font-semibold text-gray-900 mb-1 text-sm leading-tight">{product.name}</h3>
-        <p className="text-lg font-bold text-gray-900 mb-3">
-          R$ {Number(product.price).toFixed(2).replace(".", ",")}
-        </p>
+        {discountPct > 0 ? (
+          <div className="mb-3">
+            <p className="text-xs text-gray-400 line-through">
+              R$ {originalPrice.toFixed(2).replace(".", ",")}
+            </p>
+            <p className="text-lg font-bold text-red-600">
+              R$ {finalPrice.toFixed(2).replace(".", ",")}
+            </p>
+          </div>
+        ) : (
+          <p className="text-lg font-bold text-gray-900 mb-3">
+            R$ {originalPrice.toFixed(2).replace(".", ",")}
+          </p>
+        )}
 
         {/* Size Selector */}
         {sizes.length > 0 && (

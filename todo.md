@@ -47,3 +47,10 @@
 - [ ] CreateStoreModal responsivo
 - [ ] ProductModal responsivo
 - [ ] StoreFront.tsx responsivo
+
+## Desconto no Produto
+- [x] Adicionar coluna discountPercent na tabela products
+- [x] Adicionar campo de desconto no ProductModal
+- [x] Atualizar router para aceitar discountPercent
+- [x] Exibir preço original riscado e preço final na vitrine
+- [x] Badge de desconto no card do produto

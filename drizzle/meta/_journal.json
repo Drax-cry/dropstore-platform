@@ -57,6 +57,13 @@
       "when": 1772035684404,
       "tag": "0007_jittery_phalanx",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1772037120618,
+      "tag": "0008_fine_scalphunter",
+      "breakpoints": true
     }
   ]
 }
