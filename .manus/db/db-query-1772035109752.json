@@ -1,0 +1,9 @@
+{
+  "query": "\nALTER TABLE stores ADD COLUMN promotionalCode VARCHAR(50) NULL;\nALTER TABLE products ADD COLUMN isPromotion INT DEFAULT 0;\nALTER TABLE products ADD COLUMN promotionDiscount DECIMAL(5, 2) NULL;\nALTER TABLE products ADD COLUMN promotionType ENUM('percentage', 'fixed') NULL;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3mZv6GBgcMQKXyT.root --database jdJmiUPhANN27bg8N7Grdt --execute \nALTER TABLE stores ADD COLUMN promotionalCode VARCHAR(50) NULL;\nALTER TABLE products ADD COLUMN isPromotion INT DEFAULT 0;\nALTER TABLE products ADD COLUMN promotionDiscount DECIMAL(5, 2) NULL;\nALTER TABLE products ADD COLUMN promotionType ENUM('percentage', 'fixed') NULL;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 985
+}

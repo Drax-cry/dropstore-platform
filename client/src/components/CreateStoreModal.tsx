@@ -13,6 +13,7 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const [slogan, setSlogan] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [primaryColor, setPrimaryColor] = useState("#000000");
+  const [promotionalCode, setPromotionalCode] = useState("");
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -64,6 +65,7 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
       whatsappNumber: whatsapp.trim() || undefined,
       primaryColor,
       logoUrl,
+      promotionalCode: promotionalCode.trim() || undefined,
     });
   };
 
@@ -173,6 +175,19 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
                 <p className="text-xs text-gray-400">Usada nos botões e destaques da loja</p>
               </div>
             </div>
+          </div>
+
+          {/* Promotional Code */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Código Promocional (opcional)</label>
+            <input
+              type="text"
+              value={promotionalCode}
+              onChange={e => setPromotionalCode(e.target.value)}
+              placeholder="Ex: BEMVINDO10"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+            />
+            <p className="text-xs text-gray-400 mt-1">Código que os clientes podem usar para descontos</p>
           </div>
 
           {/* Actions */}

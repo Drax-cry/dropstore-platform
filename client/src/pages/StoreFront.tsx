@@ -31,6 +31,9 @@ function ProductCard({ product, whatsapp, primaryColor }: {
     price: string;
     imageUrl: string | null;
     sizes: string | null;
+    isPromotion?: number | null;
+    promotionDiscount?: string | null;
+    promotionType?: string | null;
   };
   whatsapp: string | null;
   primaryColor: string | null;
@@ -84,9 +87,30 @@ function ProductCard({ product, whatsapp, primaryColor }: {
       {/* Content */}
       <div className="p-4">
         <h3 className="font-semibold text-gray-900 mb-1 text-sm leading-tight">{product.name}</h3>
-        <p className="text-lg font-bold text-gray-900 mb-3">
-          R$ {Number(product.price).toFixed(2).replace(".", ",")}
-        </p>
+        <div className="flex items-center gap-2 mb-3">
+          {product.isPromotion ? (
+            <>
+              <p className="text-sm font-semibold text-gray-400 line-through">
+                R$ {Number(product.price).toFixed(2).replace(".", ",")}
+              </p>
+              <p className="text-lg font-bold text-red-600">
+                R$ {(
+                  Number(product.price) - 
+                  (product.promotionType === "percentage" 
+                    ? Number(product.price) * (Number(product.promotionDiscount) / 100)
+                    : Number(product.promotionDiscount))
+                ).toFixed(2).replace(".", ",")}
+              </p>
+              <span className="ml-auto bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full">
+                -{product.promotionType === "percentage" ? product.promotionDiscount + "%" : "R$ " + product.promotionDiscount}
+              </span>
+            </>
+          ) : (
+            <p className="text-lg font-bold text-gray-900">
+              R$ {Number(product.price).toFixed(2).replace(".", ",")}
+            </p>
+          )}
+        </div>
 
         {/* Size Selector */}
         {sizes.length > 0 && (

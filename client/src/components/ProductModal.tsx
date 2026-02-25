@@ -28,6 +28,9 @@ export default function ProductModal({ storeId, productId, categories, subcatego
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const [sizeType, setSizeType] = useState<"clothing" | "shoes" | "custom">("clothing");
+  const [isPromotion, setIsPromotion] = useState(false);
+  const [promotionType, setPromotionType] = useState<"percentage" | "fixed">("percentage");
+  const [promotionDiscount, setPromotionDiscount] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadImageMutation = trpc.products.uploadImage.useMutation();
@@ -96,6 +99,9 @@ export default function ProductModal({ storeId, productId, categories, subcatego
       imageUrl,
       sizes: selectedSizes,
       description: description.trim() || undefined,
+      isPromotion: isPromotion ? 1 : 0,
+      promotionType: isPromotion ? promotionType : undefined,
+      promotionDiscount: isPromotion && promotionDiscount ? promotionDiscount : undefined,
     });
   };
 
