@@ -389,26 +389,28 @@ export default function StoreFront() {
         </div>
       )}
 
-      {/* Hero Section */}
-      <section
-        className="py-10 sm:py-16 px-4 text-center relative overflow-hidden"
-        style={{ background: `linear-gradient(135deg, ${primaryColor}08 0%, ${primaryColor}03 100%)` }}
-      >
-        <div className="max-w-2xl mx-auto">
-          {store.logoUrl && (
-            <img src={store.logoUrl} alt={store.name} className="h-14 sm:h-20 w-auto object-contain mx-auto mb-4 sm:mb-6" />
-          )}
-          <h1
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 animate-fade-in"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            {store.slogan || store.name}
-          </h1>
-          {store.slogan && (
-            <p className="text-base sm:text-lg text-gray-500 animate-slide-up">{store.name}</p>
-          )}
-        </div>
-      </section>
+      {/* Hero Section — apenas quando não há banners */}
+      {(!banners || banners.length === 0) && (
+        <section
+          className="py-10 sm:py-16 px-4 text-center relative overflow-hidden"
+          style={{ background: `linear-gradient(135deg, ${primaryColor}08 0%, ${primaryColor}03 100%)` }}
+        >
+          <div className="max-w-2xl mx-auto">
+            {store.logoUrl && (
+              <img src={store.logoUrl} alt={store.name} className="h-14 sm:h-20 w-auto object-contain mx-auto mb-4 sm:mb-6" />
+            )}
+            <h1
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 animate-fade-in"
+              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              {store.slogan || store.name}
+            </h1>
+            {store.slogan && (
+              <p className="text-base sm:text-lg text-gray-500 animate-slide-up">{store.name}</p>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Mobile Category Nav */}
       {categories && categories.length > 0 && (

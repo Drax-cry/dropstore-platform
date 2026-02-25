@@ -94,3 +94,6 @@
 - [x] Tabelas de tamanhos de roupa por país (BR, PT, ES, AR, CO)
 - [x] Tabelas de tamanhos de ténis por país
 - [x] ProductModal usa tamanhos do país da loja automaticamente
+
+## Ocultar Hero quando há Banners
+- [x] Hero Section some quando existem banners na loja
