@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useParams } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Instagram, Facebook, Youtube, Music2 } from "lucide-react";
 
 function useScrollFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -524,12 +524,104 @@ export default function StoreFront() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-8 mt-10">
-        <div className="container text-center">
-          <p className="text-sm text-gray-400">
-            {store.name} · Powered by{" "}
-            <a href="/" className="font-medium text-gray-600 hover:text-gray-900">DropStore</a>
-          </p>
+      <footer className="border-t border-gray-100 mt-10" style={{ backgroundColor: "#fafafa" }}>
+        <div className="container py-10">
+          {/* Contact & Social Grid */}
+          {(store.address || store.phone || store.email || store.instagram || store.facebook || store.tiktok || store.youtube) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
+              {/* Contact Info */}
+              {(store.address || store.phone || store.email) && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-4">Contacto</h3>
+                  <div className="space-y-3">
+                    {store.address && (
+                      <div className="flex items-start gap-2.5 text-sm text-gray-600">
+                        <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <span className="whitespace-pre-line">{store.address}</span>
+                      </div>
+                    )}
+                    {store.phone && (
+                      <div className="flex items-center gap-2.5 text-sm text-gray-600">
+                        <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <a href={`tel:${store.phone.replace(/\s/g, "")}`} className="hover:text-gray-900 transition-colors">
+                          {store.phone}
+                        </a>
+                      </div>
+                    )}
+                    {store.email && (
+                      <div className="flex items-center gap-2.5 text-sm text-gray-600">
+                        <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <a href={`mailto:${store.email}`} className="hover:text-gray-900 transition-colors">
+                          {store.email}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Social Media */}
+              {(store.instagram || store.facebook || store.tiktok || store.youtube) && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-4">Redes Sociais</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {store.instagram && (
+                      <a
+                        href={`https://instagram.com/${store.instagram}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
+                      >
+                        <Instagram className="w-4 h-4" />
+                        <span>@{store.instagram}</span>
+                      </a>
+                    )}
+                    {store.facebook && (
+                      <a
+                        href={`https://facebook.com/${store.facebook}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
+                      >
+                        <Facebook className="w-4 h-4" />
+                        <span>{store.facebook}</span>
+                      </a>
+                    )}
+                    {store.tiktok && (
+                      <a
+                        href={`https://tiktok.com/@${store.tiktok}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
+                      >
+                        <Music2 className="w-4 h-4" />
+                        <span>@{store.tiktok}</span>
+                      </a>
+                    )}
+                    {store.youtube && (
+                      <a
+                        href={`https://youtube.com/${store.youtube}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
+                      >
+                        <Youtube className="w-4 h-4" />
+                        <span>{store.youtube}</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Bottom bar */}
+          <div className="border-t border-gray-200 pt-6 text-center">
+            <p className="text-sm text-gray-400">
+              {store.name} · Powered by{" "}
+              <a href="/" className="font-medium text-gray-600 hover:text-gray-900">DropStore</a>
+            </p>
+          </div>
         </div>
       </footer>
     </div>

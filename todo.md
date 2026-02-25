@@ -97,3 +97,12 @@
 
 ## Ocultar Hero quando há Banners
 - [x] Hero Section some quando existem banners na loja
+
+## Categorias visíveis com banners
+- [ ] Barra de categorias permanece visível mesmo quando há banners
+
+## Contacto e Redes Sociais da Loja
+- [x] Colunas: address, phone, email, instagram, facebook, tiktok, youtube na tabela stores
+- [x] EditStoreModal com campos de endereço, telefone, email e redes sociais
+- [x] Router update store aceita os novos campos
+- [x] Rodapé da vitrine exibe contactos e ícones das redes sociais

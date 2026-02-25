@@ -118,6 +118,13 @@ export const appRouter = router({
         logoUrl: z.string().optional(),
         whatsappNumber: z.string().optional(),
         primaryColor: z.string().optional(),
+        address: z.string().optional().nullable(),
+        phone: z.string().optional().nullable(),
+        email: z.string().optional().nullable(),
+        instagram: z.string().optional().nullable(),
+        facebook: z.string().optional().nullable(),
+        tiktok: z.string().optional().nullable(),
+        youtube: z.string().optional().nullable(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.id);

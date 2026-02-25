@@ -1,0 +1,9 @@
+{
+  "query": "\nALTER TABLE stores\n  ADD COLUMN address TEXT NULL,\n  ADD COLUMN phone VARCHAR(32) NULL,\n  ADD COLUMN email VARCHAR(320) NULL,\n  ADD COLUMN instagram VARCHAR(128) NULL,\n  ADD COLUMN facebook VARCHAR(128) NULL,\n  ADD COLUMN tiktok VARCHAR(128) NULL,\n  ADD COLUMN youtube VARCHAR(255) NULL;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3mZv6GBgcMQKXyT.root --database jdJmiUPhANN27bg8N7Grdt --execute \nALTER TABLE stores\n  ADD COLUMN address TEXT NULL,\n  ADD COLUMN phone VARCHAR(32) NULL,\n  ADD COLUMN email VARCHAR(320) NULL,\n  ADD COLUMN instagram VARCHAR(128) NULL,\n  ADD COLUMN facebook VARCHAR(128) NULL,\n  ADD COLUMN tiktok VARCHAR(128) NULL,\n  ADD COLUMN youtube VARCHAR(255) NULL;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1466
+}
