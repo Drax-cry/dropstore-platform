@@ -129,3 +129,11 @@
 - [x] Graceful shutdown (SIGTERM/SIGINT)
 - [x] Timeout e retry nas queries de base de dados
 - [x] Documentação de arquitetura de deploy para autoscaling
+
+
+## Integração de Pagamento Stripe
+- [x] Tabela de subscrições na BD (email, status, expiresAt)
+- [x] Endpoint de verificação de pagamento no DropStore
+- [ ] Guard de rota para bloquear acesso se não pagou
+- [ ] Página de checkout/upgrade no DropStore
+- [ ] Webhook do Stripe para atualizar status de pagamento
