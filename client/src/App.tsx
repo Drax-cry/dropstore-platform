@@ -9,11 +9,12 @@ import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import StoreFront from "./pages/StoreFront";
 import Presentation from "./pages/Presentation";
+import Katail from "./pages/Katail";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/" component={Katail} />
       <Route path="/auth" component={Auth} />
       <Route path="/admin" component={Admin} />
       <Route path="/loja/:slug" component={StoreFront} />

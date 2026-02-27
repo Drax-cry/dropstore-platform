@@ -118,6 +118,11 @@
 ## URLs Completas de Redes Sociais
 - [x] Permitir URLs completas nos campos de redes sociais (Instagram, Facebook, TikTok, YouTube)
 
+## Landing Page Katail
+- [x] Integrar landing page Katail na rota raiz `/`
+- [x] Botão "Comece gratuitamente" redireciona para `/auth`
+- [x] Design responsivo e funcional
+
 ## Autoscaling / Alta Disponibilidade (10k+ utilizadores)
 - [x] Servidor stateless: JWT puro sem estado em memória
 - [x] Rate limiting por IP nos endpoints de auth e API
