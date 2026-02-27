@@ -92,13 +92,6 @@
       "when": 1772047381438,
       "tag": "0012_abandoned_jean_grey",
       "breakpoints": true
-    },
-    {
-      "idx": 13,
-      "version": "5",
-      "when": 1772189201197,
-      "tag": "0013_early_power_pack",
-      "breakpoints": true
     }
   ]
 }

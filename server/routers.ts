@@ -34,9 +34,6 @@ import {
   createBanner,
   deleteBanner,
   updateBannerOrder,
-  getSubscriptionByEmail,
-  isSubscriptionActive,
-  upsertSubscription,
 } from "./db";
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
@@ -106,46 +103,6 @@ export const appRouter = router({
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
-  }),
-
-  // ---- SUBSCRIPTIONS ----
-  subscriptions: router({
-    checkStatus: publicProcedure
-      .input(z.object({ email: z.string().email() }))
-      .query(async ({ input }) => {
-        const isActive = await isSubscriptionActive(input.email);
-        const sub = await getSubscriptionByEmail(input.email);
-        return {
-          isActive,
-          subscription: sub ? {
-            status: sub.status,
-            expiresAt: sub.expiresAt?.toISOString(),
-          } : null,
-        };
-      }),
-
-    activate: publicProcedure
-      .input(z.object({
-        email: z.string().email(),
-        stripeCustomerId: z.string().optional(),
-        stripeSubscriptionId: z.string().optional(),
-        expiresAt: z.date().optional(),
-      }))
-      .mutation(async ({ input }) => {
-        const user = await getUserByEmail(input.email);
-        if (!user) {
-          throw new TRPCError({ code: 'NOT_FOUND', message: 'Utilizador não encontrado' });
-        }
-        await upsertSubscription({
-          userId: user.id,
-          email: input.email,
-          stripeCustomerId: input.stripeCustomerId,
-          stripeSubscriptionId: input.stripeSubscriptionId,
-          status: 'active',
-          expiresAt: input.expiresAt,
-        });
-        return { success: true };
-      }),
   }),
 
   // ---- STORES ----

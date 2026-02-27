@@ -3,8 +3,8 @@ import { drizzle } from "drizzle-orm/mysql2";
 import { createPool } from "mysql2";
 import {
   InsertUser, users, stores, categories, subcategories,
-  products, storeBanners, subscriptions,
-  InsertStore, InsertCategory, InsertSubcategory, InsertProduct, InsertStoreBanner, InsertSubscription,
+  products, storeBanners,
+  InsertStore, InsertCategory, InsertSubcategory, InsertProduct, InsertStoreBanner,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 import { userCache, storeCache } from "./cache";
@@ -324,42 +324,4 @@ export async function updateBannerOrder(id: number, order: number) {
   const db = await getDb();
   if (!db) throw new Error("DB not available");
   await db.update(storeBanners).set({ order }).where(eq(storeBanners.id, id));
-}
-
-// ---------------------------------------------------------------------------
-// Subscriptions
-// ---------------------------------------------------------------------------
-
-export async function getSubscriptionByEmail(email: string) {
-  const db = await getDb();
-  if (!db) return undefined;
-  const result = await db.select().from(subscriptions).where(eq(subscriptions.email, email)).limit(1);
-  return result.length > 0 ? result[0] : undefined;
-}
-
-export async function getSubscriptionByUserId(userId: number) {
-  const db = await getDb();
-  if (!db) return undefined;
-  const result = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId)).limit(1);
-  return result.length > 0 ? result[0] : undefined;
-}
-
-export async function upsertSubscription(data: InsertSubscription) {
-  const db = await getDb();
-  if (!db) throw new Error("DB not available");
-  await db.insert(subscriptions).values(data).onDuplicateKeyUpdate({ set: data });
-}
-
-export async function updateSubscriptionStatus(email: string, status: string, expiresAt?: Date) {
-  const db = await getDb();
-  if (!db) throw new Error("DB not available");
-  await db.update(subscriptions).set({ status: status as any, expiresAt }).where(eq(subscriptions.email, email));
-}
-
-export async function isSubscriptionActive(email: string): Promise<boolean> {
-  const sub = await getSubscriptionByEmail(email);
-  if (!sub) return false;
-  if (sub.status !== "active") return false;
-  if (sub.expiresAt && new Date(sub.expiresAt) < new Date()) return false;
-  return true;
 }
