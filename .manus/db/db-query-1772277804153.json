@@ -1,0 +1,87 @@
+{
+  "query": "SELECT id, name, subscriptionStatus, trialEndsAt, stripeSubscriptionId FROM stores WHERE id != 300002 LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3mZv6GBgcMQKXyT.root --database jdJmiUPhANN27bg8N7Grdt --execute SELECT id, name, subscriptionStatus, trialEndsAt, stripeSubscriptionId FROM stores WHERE id != 300002 LIMIT 20;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "vasco",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "30001",
+      "name": "Golpm",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "30002",
+      "name": "neser",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "60001",
+      "name": "leleco",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "90001",
+      "name": "neser drops",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "150005",
+      "name": "Vasco",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "180001",
+      "name": "Vasco",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "210001",
+      "name": "Loja de Teste",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "240001",
+      "name": "joses",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "270001",
+      "name": "A1111",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "NULL",
+      "stripeSubscriptionId": "NULL"
+    },
+    {
+      "id": "300001",
+      "name": "Test Store",
+      "subscriptionStatus": "trial",
+      "trialEndsAt": "2026-03-03 11:07:22",
+      "stripeSubscriptionId": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tsubscriptionStatus\ttrialEndsAt\tstripeSubscriptionId\n1\tvasco\ttrial\tNULL\tNULL\n30001\tGolpm\ttrial\tNULL\tNULL\n30002\tneser\ttrial\tNULL\tNULL\n60001\tleleco\ttrial\tNULL\tNULL\n90001\tneser drops\ttrial\tNULL\tNULL\n150005\tVasco\ttrial\tNULL\tNULL\n180001\tVasco\ttrial\tNULL\tNULL\n210001\tLoja de Teste\ttrial\tNULL\tNULL\n240001\tjoses\ttrial\tNULL\tNULL\n270001\tA1111\ttrial\tNULL\tNULL\n300001\tTest Store\ttrial\t2026-03-03 11:07:22\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 66
+}

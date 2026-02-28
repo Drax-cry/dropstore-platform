@@ -199,10 +199,15 @@ export async function deleteStore(id: number) {
 export async function isStoreTrialActive(storeId: number): Promise<boolean> {
   const store = await getStoreById(storeId);
   if (!store) return false;
+  // Lojas com subscrição ativa estão sempre desbloqueadas
   if (store.subscriptionStatus === "active") return true;
-  if (store.subscriptionStatus !== "trial") return false;
-  if (!store.trialEndsAt) return false;
-  return new Date() < store.trialEndsAt;
+  // Lojas sem trialEndsAt (criadas antes do sistema de trial) ficam sempre ativas/gratuitas
+  if (!store.trialEndsAt) return true;
+  // Lojas em trial: verificar se ainda está dentro do prazo
+  if (store.subscriptionStatus === "trial") {
+    return new Date() < store.trialEndsAt;
+  }
+  return false;
 }
 
 export async function getStoreTrialStatus(storeId: number) {
