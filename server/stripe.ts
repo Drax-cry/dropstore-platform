@@ -67,7 +67,7 @@ export async function registerStripeRoutes(app: Express) {
   // Webhook for Stripe events
   app.post("/api/stripe-webhook", async (req: Request, res: Response) => {
     const sig = req.headers["stripe-signature"] as string;
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
+    const webhookSecret = ENV.stripeWebhookSecret;
 
     try {
       const event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
