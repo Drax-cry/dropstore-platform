@@ -3,8 +3,9 @@ import Stripe from "stripe";
 import { getDb } from "./db";
 import { eq } from "drizzle-orm";
 import { stores } from "../drizzle/schema";
+import { ENV } from "./_core/env";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+const stripe = new Stripe(ENV.stripeSecretKey);
 
 export async function registerStripeRoutes(app: Express) {
   // Create checkout session
