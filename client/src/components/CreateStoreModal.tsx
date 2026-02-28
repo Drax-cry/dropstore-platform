@@ -25,6 +25,29 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const [logoFile, setLogoFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!name.trim()) {
+      newErrors.name = "Nome da loja é obrigatório";
+    } else if (name.trim().length < 2) {
+      newErrors.name = "Nome deve ter pelo menos 2 caracteres";
+    } else if (name.trim().length > 50) {
+      newErrors.name = "Nome deve ter no máximo 50 caracteres";
+    }
+    if (slogan.trim().length > 0 && slogan.trim().length < 3) {
+      newErrors.slogan = "Slogan deve ter pelo menos 3 caracteres";
+    }
+    if (whatsapp.trim().length > 0) {
+      const digits = whatsapp.replace(/\D/g, "");
+      if (digits.length < 8) {
+        newErrors.whatsapp = "Número de WhatsApp inválido (mínimo 8 dígitos)";
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const uploadLogoMutation = trpc.stores.uploadLogo.useMutation();
   const createStoreMutation = trpc.stores.create.useMutation({
@@ -59,7 +82,7 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!validate()) return;
 
     let logoUrl: string | undefined;
     if (logoFile) {
@@ -139,11 +162,18 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             <input
               type="text"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={e => { setName(e.target.value); if (errors.name) setErrors(p => ({ ...p, name: "" })); }}
               placeholder="Ex: Minha Drop Store"
-              required
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+              className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all ${
+                errors.name ? "border-red-400 bg-red-50" : "border-gray-200"
+              }`}
             />
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                <span>⚠</span> {errors.name}
+              </p>
+            )}
+            <p className="text-xs text-gray-400 mt-1">{name.trim().length}/50 caracteres (mínimo 2)</p>
           </div>
 
           {/* Slogan */}
@@ -152,10 +182,17 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             <input
               type="text"
               value={slogan}
-              onChange={e => setSlogan(e.target.value)}
+              onChange={e => { setSlogan(e.target.value); if (errors.slogan) setErrors(p => ({ ...p, slogan: "" })); }}
               placeholder="Ex: O Melhor Drop é Aqui"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+              className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all ${
+                errors.slogan ? "border-red-400 bg-red-50" : "border-gray-200"
+              }`}
             />
+            {errors.slogan && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                <span>⚠</span> {errors.slogan}
+              </p>
+            )}
           </div>
 
           {/* Country Selector */}
@@ -194,11 +231,18 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
               <input
                 type="tel"
                 value={whatsapp}
-                onChange={e => setWhatsapp(e.target.value)}
+                onChange={e => { setWhatsapp(e.target.value); if (errors.whatsapp) setErrors(p => ({ ...p, whatsapp: "" })); }}
                 placeholder={selectedCountry.code === "BR" ? "11999999999" : selectedCountry.code === "PT" ? "912345678" : "999999999"}
-                className="flex-1 border border-gray-200 rounded-r-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                className={`flex-1 border rounded-r-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all ${
+                  errors.whatsapp ? "border-red-400 bg-red-50" : "border-gray-200"
+                }`}
               />
             </div>
+            {errors.whatsapp && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                <span>⚠</span> {errors.whatsapp}
+              </p>
+            )}
             <p className="text-xs text-gray-400 mt-1">Número sem código do país (já incluído automaticamente)</p>
           </div>
 
@@ -245,7 +289,7 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             </button>
             <button
               type="submit"
-              disabled={isLoading || !name.trim()}
+              disabled={isLoading}
               className="flex-1 bg-black text-white py-3 rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isLoading ? (
