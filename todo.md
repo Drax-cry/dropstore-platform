@@ -134,3 +134,9 @@
 - [x] Graceful shutdown (SIGTERM/SIGINT)
 - [x] Timeout e retry nas queries de base de dados
 - [x] Documentação de arquitetura de deploy para autoscaling
+
+
+## Secção de Plano na Landing Page
+- [x] Criar secção de plano com preço €5/mês
+- [x] Botão "Experimente grátis" que redireciona para `/auth`
+- [x] Design responsivo e alinhado com o design Katail

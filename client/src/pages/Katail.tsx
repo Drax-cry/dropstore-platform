@@ -215,6 +215,55 @@ export default function Katail() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="bg-midnight py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-cream mb-4">Plano Simples e Transparente</h2>
+          <p className="text-cream/60 text-lg mb-12">Tudo o que precisa para criar e gerir a sua loja online</p>
+          
+          <div className="max-w-md mx-auto bg-noir rounded-2xl border border-ocean/30 p-8 shadow-lg">
+            <div className="mb-6">
+              <p className="text-cream/60 text-sm font-semibold uppercase tracking-widest mb-2">Plano Profissional</p>
+              <div className="flex items-baseline justify-center gap-2">
+                <span className="text-5xl font-bold text-ocean">€5</span>
+                <span className="text-cream/60">/mês</span>
+              </div>
+            </div>
+            
+            <ul className="text-left space-y-4 mb-8">
+              <li className="flex items-center gap-3 text-cream">
+                <i className="fas fa-check text-ocean"></i>
+                <span>Acesso completo à plataforma</span>
+              </li>
+              <li className="flex items-center gap-3 text-cream">
+                <i className="fas fa-check text-ocean"></i>
+                <span>Até 100 produtos</span>
+              </li>
+              <li className="flex items-center gap-3 text-cream">
+                <i className="fas fa-check text-ocean"></i>
+                <span>Gerenciamento de lojas</span>
+              </li>
+              <li className="flex items-center gap-3 text-cream">
+                <i className="fas fa-check text-ocean"></i>
+                <span>Suporte por email</span>
+              </li>
+              <li className="flex items-center gap-3 text-cream">
+                <i className="fas fa-check text-ocean"></i>
+                <span>Relatórios e analytics</span>
+              </li>
+            </ul>
+            
+            <button 
+              onClick={handleCreateAccount}
+              className="w-full bg-ocean hover:bg-ocean/90 text-noir font-bold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105"
+            >
+              Experimente Grátis
+            </button>
+            <p className="text-cream/40 text-xs mt-4">Sem cartão de crédito necessário</p>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-noir border-t border-ocean/10 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
