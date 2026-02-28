@@ -10,6 +10,7 @@ import Admin from "./pages/Admin";
 import StoreFront from "./pages/StoreFront";
 import Presentation from "./pages/Presentation";
 import Katail from "./pages/Katail";
+import Checkout from "./pages/Checkout";
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/" component={Katail} />
       <Route path="/auth" component={Auth} />
       <Route path="/admin" component={Admin} />
+      <Route path="/checkout" component={Checkout} />
       <Route path="/loja/:slug" component={StoreFront} />
       <Route path="/apresentacao" component={Presentation} />
       <Route path="/404" component={NotFound} />

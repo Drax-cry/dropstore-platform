@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE stores ADD COLUMN trialEndsAt TIMESTAMP NULL, ADD COLUMN subscriptionStatus ENUM('trial', 'active', 'expired', 'cancelled') DEFAULT 'trial', ADD COLUMN stripeCustomerId VARCHAR(255), ADD COLUMN stripeSubscriptionId VARCHAR(255);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3mZv6GBgcMQKXyT.root --database jdJmiUPhANN27bg8N7Grdt --execute ALTER TABLE stores ADD COLUMN trialEndsAt TIMESTAMP NULL, ADD COLUMN subscriptionStatus ENUM('trial', 'active', 'expired', 'cancelled') DEFAULT 'trial', ADD COLUMN stripeCustomerId VARCHAR(255), ADD COLUMN stripeSubscriptionId VARCHAR(255);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 680
+}

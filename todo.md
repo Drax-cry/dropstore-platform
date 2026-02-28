@@ -140,3 +140,12 @@
 - [x] Criar secção de plano com preço €5/mês
 - [x] Botão "Experimente grátis" que redireciona para `/auth`
 - [x] Design responsivo e alinhado com o design Katail
+
+
+## Trial de 3 Dias e Pagamento Stripe
+- [ ] Coluna trialEndsAt na tabela stores
+- [ ] Endpoint para verificar se o trial expirou
+- [ ] Página de checkout Stripe no admin
+- [ ] Guard de rota para bloquear acesso após trial
+- [ ] Webhook do Stripe para confirmar pagamento
+- [ ] Coluna subscriptionStatus na tabela stores (active, expired, etc)

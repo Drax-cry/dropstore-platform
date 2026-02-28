@@ -196,6 +196,37 @@ export async function deleteStore(id: number) {
   storeCache.delete(`id:${id}`);
 }
 
+export async function isStoreTrialActive(storeId: number): Promise<boolean> {
+  const store = await getStoreById(storeId);
+  if (!store) return false;
+  if (store.subscriptionStatus === "active") return true;
+  if (store.subscriptionStatus !== "trial") return false;
+  if (!store.trialEndsAt) return false;
+  return new Date() < store.trialEndsAt;
+}
+
+export async function getStoreTrialStatus(storeId: number) {
+  const store = await getStoreById(storeId);
+  if (!store) return null;
+  return {
+    status: store.subscriptionStatus,
+    trialEndsAt: store.trialEndsAt,
+    stripeCustomerId: store.stripeCustomerId,
+    stripeSubscriptionId: store.stripeSubscriptionId,
+  };
+}
+
+export async function updateStoreSubscription(id: number, data: {
+  subscriptionStatus?: "trial" | "active" | "expired" | "cancelled";
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("DB not available");
+  await db.update(stores).set(data as any).where(eq(stores.id, id));
+  storeCache.delete(`id:${id}`);
+}
+
 // ---------------------------------------------------------------------------
 // Categories
 // ---------------------------------------------------------------------------

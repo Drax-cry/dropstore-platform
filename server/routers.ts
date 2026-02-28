@@ -16,6 +16,9 @@ import {
   createStore,
   updateStore,
   deleteStore,
+  isStoreTrialActive,
+  getStoreTrialStatus,
+  updateStoreSubscription,
   getCategoriesByStore,
   createCategory,
   updateCategory,
@@ -490,6 +493,34 @@ export const appRouter = router({
         const key = `banners/${input.storeId}-${nanoid(8)}.${ext}`;
         const { url } = await storagePut(key, buffer, input.mimeType);
         return { url };
+      }),
+  }),
+
+  // ---- TRIAL & SUBSCRIPTION ----
+  trial: router({
+    checkStatus: protectedProcedure
+      .input(z.object({ storeId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        const isActive = await isStoreTrialActive(input.storeId);
+        const status = await getStoreTrialStatus(input.storeId);
+        return { isActive, status };
+      }),
+
+    activateSubscription: protectedProcedure
+      .input(z.object({ storeId: z.number(), stripeSessionId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        await updateStoreSubscription(input.storeId, {
+          subscriptionStatus: "active",
+        });
+        return { success: true };
       }),
   }),
 });

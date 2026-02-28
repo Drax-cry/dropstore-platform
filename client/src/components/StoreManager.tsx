@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import {
@@ -8,6 +8,7 @@ import {
 import ProductModal from "./ProductModal";
 import EditStoreModal from "./EditStoreModal";
 import BannerManager from "./BannerManager";
+import TrialBlockModal from "./TrialBlockModal";
 
 interface Props {
   storeId: number;
@@ -18,6 +19,7 @@ type Tab = "categories" | "products" | "banners";
 
 export default function StoreManager({ storeId, onBack }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("categories");
+  const [showTrialBlock, setShowTrialBlock] = useState(false);
   const [newCatName, setNewCatName] = useState("");
   const [newSubName, setNewSubName] = useState("");
   const [expandedCat, setExpandedCat] = useState<number | null>(null);
@@ -51,6 +53,19 @@ export default function StoreManager({ storeId, onBack }: Props) {
   const { data: categories, isLoading: catsLoading } = trpc.categories.list.useQuery({ storeId });
   const { data: allSubcategories } = trpc.subcategories.listByStore.useQuery({ storeId });
   const { data: products, isLoading: productsLoading } = trpc.products.listByStore.useQuery({ storeId });
+
+  // Check trial status
+  const { data: trialStatus } = trpc.trial.checkStatus.useQuery(
+    { storeId },
+    { enabled: !!storeId }
+  );
+
+  // Show trial block modal if trial expired
+  useEffect(() => {
+    if (trialStatus && !trialStatus.isActive) {
+      setShowTrialBlock(true);
+    }
+  }, [trialStatus]);
 
   const createCatMutation = trpc.categories.create.useMutation({
     onSuccess: () => {
@@ -97,6 +112,26 @@ export default function StoreManager({ storeId, onBack }: Props) {
 
   return (
     <div>
+      {/* Trial Status Banner */}
+      {trialStatus && trialStatus.isActive && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-blue-900">Período de Teste Ativo</p>
+            <p className="text-xs text-blue-700 mt-1">
+              {trialStatus.status?.trialEndsAt 
+                ? `Termina em ${new Date(trialStatus.status.trialEndsAt).toLocaleDateString('pt-PT')}`
+                : "Teste ativo"}
+            </p>
+          </div>
+          <button
+            onClick={() => setShowTrialBlock(true)}
+            className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Desbloquear Agora
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div className="flex items-center gap-3">
@@ -469,6 +504,14 @@ export default function StoreManager({ storeId, onBack }: Props) {
             setShowEditStoreModal(false);
             utils.stores.myStores.invalidate();
           }}
+        />
+      )}
+
+      {showTrialBlock && currentStore && (
+        <TrialBlockModal
+          storeId={storeId}
+          trialEndsAt={currentStore.trialEndsAt ? new Date(currentStore.trialEndsAt) : null}
+          onUnlock={() => setShowTrialBlock(false)}
         />
       )}
     </div>
