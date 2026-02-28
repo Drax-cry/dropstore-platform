@@ -111,13 +111,34 @@ export default function StoreManager({ storeId, onBack }: Props) {
   const getProductsForCategory = (categoryId: number) =>
     products?.filter(p => p.categoryId === categoryId) || [];
 
+  const initiateCheckout = async (id: number) => {
+    try {
+      toast.loading("A redirecionar para o pagamento...");
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ storeId: id }),
+      });
+      if (!response.ok) throw new Error("Erro ao criar sessão");
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("URL de pagamento não recebida");
+      }
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Erro ao iniciar pagamento. Tente novamente.");
+    }
+  };
+
   return (
     <div>
       {/* Trial Status Banner */}
       {trialStatus && trialStatus.isActive && trialStatus.status?.trialEndsAt && (
         <TrialCountdownBanner
           trialEndsAt={new Date(trialStatus.status.trialEndsAt)}
-          onUpgrade={() => setShowTrialBlock(true)}
+          onUpgrade={() => initiateCheckout(storeId)}
         />
       )}
 
@@ -500,7 +521,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
         <TrialBlockModal
           storeId={storeId}
           trialEndsAt={currentStore.trialEndsAt ? new Date(currentStore.trialEndsAt) : null}
-          onUnlock={() => setShowTrialBlock(false)}
+          onUnlock={() => initiateCheckout(storeId)}
         />
       )}
     </div>
