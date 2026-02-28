@@ -151,6 +151,10 @@ export const appRouter = router({
           slug = `${baseSlug}-${attempt}`;
           existing = await getStoreBySlug(slug);
         }
+        // Trial de 3 dias para novas lojas
+        const trialEndsAt = new Date();
+        trialEndsAt.setDate(trialEndsAt.getDate() + 3);
+
         await createStore({
           userId: ctx.user.id,
           name: input.name,
@@ -161,6 +165,8 @@ export const appRouter = router({
           primaryColor: input.primaryColor ?? "#000000",
           country: input.country ?? "BR",
           currency: input.currency ?? "BRL",
+          trialEndsAt,
+          subscriptionStatus: "trial",
         });
         return { slug };
       }),
