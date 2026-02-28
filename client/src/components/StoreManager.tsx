@@ -9,6 +9,7 @@ import ProductModal from "./ProductModal";
 import EditStoreModal from "./EditStoreModal";
 import BannerManager from "./BannerManager";
 import TrialBlockModal from "./TrialBlockModal";
+import TrialCountdownBanner from "./TrialCountdownBanner";
 
 interface Props {
   storeId: number;
@@ -113,23 +114,11 @@ export default function StoreManager({ storeId, onBack }: Props) {
   return (
     <div>
       {/* Trial Status Banner */}
-      {trialStatus && trialStatus.isActive && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-blue-900">Período de Teste Ativo</p>
-            <p className="text-xs text-blue-700 mt-1">
-              {trialStatus.status?.trialEndsAt 
-                ? `Termina em ${new Date(trialStatus.status.trialEndsAt).toLocaleDateString('pt-PT')}`
-                : "Teste ativo"}
-            </p>
-          </div>
-          <button
-            onClick={() => setShowTrialBlock(true)}
-            className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Desbloquear Agora
-          </button>
-        </div>
+      {trialStatus && trialStatus.isActive && trialStatus.status?.trialEndsAt && (
+        <TrialCountdownBanner
+          trialEndsAt={new Date(trialStatus.status.trialEndsAt)}
+          onUpgrade={() => setShowTrialBlock(true)}
+        />
       )}
 
       {/* Header */}
