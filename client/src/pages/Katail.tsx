@@ -1,10 +1,38 @@
 import { useLocation } from "wouter";
+import { useState } from "react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 export default function Katail() {
   const [, navigate] = useLocation();
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const utils = trpc.useUtils();
 
-  const handleCreateAccount = () => {
-    navigate("/auth");
+  const registerMutation = trpc.auth.register.useMutation({
+    onSuccess: async () => {
+      await utils.auth.me.invalidate();
+      toast.success("Conta criada com sucesso!");
+      navigate("/admin");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Erro ao criar conta");
+      setIsLoading(false);
+    },
+  });
+
+  const handleCreateAccount = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!formData.name.trim() || !formData.email.trim() || !formData.password) {
+      toast.error("Preencha todos os campos");
+      return;
+    }
+    if (formData.password.length < 6) {
+      toast.error("A senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+    setIsLoading(true);
+    registerMutation.mutate({ name: formData.name, email: formData.email, password: formData.password });
   };
 
   return (
@@ -89,11 +117,14 @@ export default function Katail() {
 
             {/* Botões */}
             <div className="flex items-center gap-3">
-              <button className="flex items-center border border-midnight text-midnight rounded-lg px-4 py-2 text-sm font-bold hover:bg-midnight hover:text-white transition">
+              <button
+                onClick={() => navigate("/auth")}
+                className="flex items-center border border-midnight text-midnight rounded-lg px-4 py-2 text-sm font-bold hover:bg-midnight hover:text-white transition"
+              >
                 Entrar <i className="fas fa-caret-down ml-2"></i>
               </button>
               <button 
-                onClick={handleCreateAccount}
+                onClick={() => navigate("/auth")}
                 className="bg-midnight text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-ocean transition"
               >
                 Comece gratuitamente
@@ -153,11 +184,29 @@ export default function Katail() {
                   <i className="fab fa-apple text-xl text-noir"></i>
                 </button>
               </div>
-              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleCreateAccount(); }}>
-                <input type="text" placeholder="Nome completo" className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400" />
-                <input type="email" placeholder="E-mail profissional" className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400" />
-                <input type="password" placeholder="Senha" className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400" />
-                <button type="submit" className="w-full bg-midnight text-white font-bold py-4 rounded-xl shadow-lg hover:bg-ocean transition mt-6">
+              <form className="space-y-4" onSubmit={handleCreateAccount}>
+                <input
+                  type="text"
+                  placeholder="Nome completo"
+                  value={formData.name}
+                  onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))}
+                  className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400"
+                />
+                <input
+                  type="email"
+                  placeholder="E-mail profissional"
+                  value={formData.email}
+                  onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))}
+                  className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400"
+                />
+                <input
+                  type="password"
+                  placeholder="Senha (mín. 6 caracteres)"
+                  value={formData.password}
+                  onChange={(e) => setFormData(p => ({ ...p, password: e.target.value }))}
+                  className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400"
+                />
+                <button type="submit" disabled={isLoading} className="w-full bg-midnight text-white font-bold py-4 rounded-xl shadow-lg hover:bg-ocean transition mt-6 disabled:opacity-60 disabled:cursor-not-allowed">
                   Criar minha conta
                 </button>
               </form>
