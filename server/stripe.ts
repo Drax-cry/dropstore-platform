@@ -5,7 +5,17 @@ import { eq } from "drizzle-orm";
 import { stores } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
-const stripe = new Stripe(ENV.stripeSecretKey);
+let stripe: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!stripe) {
+    if (!ENV.stripeSecretKey) {
+      throw new Error("STRIPE_SECRET_KEY not configured");
+    }
+    stripe = new Stripe(ENV.stripeSecretKey);
+  }
+  return stripe;
+}
 
 export async function registerStripeRoutes(app: Express) {
   // Create checkout session
@@ -29,7 +39,7 @@ export async function registerStripeRoutes(app: Express) {
       }
 
       // Create Stripe checkout session
-      const session = await stripe.checkout.sessions.create({
+      const session = await getStripe().checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [
           {
@@ -70,7 +80,7 @@ export async function registerStripeRoutes(app: Express) {
     const webhookSecret = ENV.stripeWebhookSecret;
 
     try {
-      const event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+      const event = getStripe().webhooks.constructEvent(req.body, sig, webhookSecret);
 
       if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session;
