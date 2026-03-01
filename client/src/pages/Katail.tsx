@@ -1,5 +1,5 @@
-import { useLocation } from "wouter";
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
@@ -35,326 +35,416 @@ export default function Katail() {
     registerMutation.mutate({ name: formData.name, email: formData.email, password: formData.password });
   };
 
+  const features = [
+    { icon: "🛍️", title: "Loja Online Completa", desc: "Crie a sua loja em minutos com templates profissionais e personalizáveis." },
+    { icon: "📦", title: "Gestão de Produtos", desc: "Adicione, edite e organize os seus produtos com facilidade e rapidez." },
+    { icon: "💳", title: "Pagamentos Seguros", desc: "Aceite pagamentos de todo o mundo com as melhores taxas do mercado." },
+    { icon: "📊", title: "Analytics em Tempo Real", desc: "Acompanhe as suas vendas e o desempenho da loja em tempo real." },
+    { icon: "🚀", title: "Alta Performance", desc: "Infraestrutura robusta com 99.9% de uptime para nunca perder uma venda." },
+    { icon: "🎯", title: "Marketing Integrado", desc: "Ferramentas de marketing para atrair e converter mais clientes." },
+  ];
+
+  const testimonials = [
+    { name: "Ana Costa", role: "Fundadora, ModaLux", text: "Em 3 meses triplicamos as vendas. A plataforma é intuitiva e o suporte é excelente.", avatar: "AC" },
+    { name: "Pedro Alves", role: "CEO, TechDrop", text: "Migrei da Shopify e não me arrependo. Muito mais simples e com melhores taxas.", avatar: "PA" },
+    { name: "Sofia Mendes", role: "Empreendedora", text: "Comecei do zero e hoje fatura €15k/mês. A melhor decisão que tomei.", avatar: "SM" },
+  ];
+
   return (
-    <div className="selection-ocean">
+    <div className="min-h-screen bg-white font-sans antialiased">
       <style>{`
-        :root {
-          --midnight: #122C4F;
-          --cream-grey: #F2F4F7;
-          --noir: #000000;
-          --ocean: #5B88B2;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
-
-        body {
-          font-family: 'Inter', sans-serif;
-          background-color: var(--noir);
-          color: var(--cream-grey);
+        .hero-bg {
+          background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 70%);
         }
-
-        .bg-midnight { background-color: var(--midnight); }
-        .text-midnight { color: var(--midnight); }
-        .border-midnight { border-color: var(--midnight); }
-
-        .bg-cream { background-color: var(--cream-grey); }
-        .text-cream { color: var(--cream-grey); }
-
-        .bg-ocean { background-color: var(--ocean); }
-        .text-ocean { color: var(--ocean); }
-        .border-ocean { border-color: var(--ocean); }
-
-        .navbar-floating {
-          margin-top: 20px;
-          border-radius: 12px;
-          box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+        .card-hover {
+          transition: all 0.2s ease;
         }
-
-        .hero-gradient {
-          background: linear-gradient(180deg, var(--noir) 0%, var(--midnight) 100%);
+        .card-hover:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
-
-        details summary::-webkit-details-marker {
-          display: none;
+        .badge-pill {
+          background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1));
+          border: 1px solid rgba(99,102,241,0.2);
         }
-        
-        details[open] summary i {
-          transform: rotate(180deg);
+        .btn-primary {
+          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          transition: all 0.2s ease;
         }
-
-        .selection-ocean::selection {
-          background-color: var(--ocean);
-          color: white;
+        .btn-primary:hover {
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          transform: translateY(-1px);
+          box-shadow: 0 8px 25px rgba(99,102,241,0.35);
         }
-
-        .btn-checkout:active {
-          transform: scale(0.98);
+        .input-field {
+          transition: all 0.2s ease;
+        }
+        .input-field:focus {
+          border-color: #6366f1;
+          box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+        }
+        .stat-card {
+          background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+        .noise-bg {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
         }
       `}</style>
 
-      {/* Header Flutuante */}
-      <div className="fixed top-0 left-0 w-full z-50 px-4 sm:px-6 lg:px-8">
-        <header className="max-w-7xl mx-auto navbar-floating bg-cream">
-          <div className="flex justify-between items-center h-16 px-6">
-            {/* Logótipo */}
-            <div className="flex items-center gap-12">
-              <div className="flex items-center text-midnight font-bold text-2xl gap-1">
-                <i className="fas fa-layer-group"></i>
-                <span>katail</span>
+      {/* ── NAVBAR ── */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-10">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg btn-primary flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">K</span>
+                </div>
+                <span className="font-bold text-gray-900 text-lg tracking-tight">katail</span>
               </div>
-              
-              {/* Menu Desktop */}
-              <nav className="hidden lg:flex space-x-6 text-sm font-semibold text-midnight/80">
-                <div className="flex items-center gap-1 cursor-pointer hover:text-midnight transition">
-                  Produto <i className="fas fa-chevron-down text-[10px]"></i>
-                </div>
-                <div className="flex items-center gap-1 cursor-pointer hover:text-midnight transition">
-                  Soluções <i className="fas fa-chevron-down text-[10px]"></i>
-                </div>
-                <a href="#" className="hover:text-midnight transition">Taxa</a>
-                <a href="#" className="hover:text-midnight transition">Comprar curso</a>
-                <a href="#" className="hover:text-midnight transition">Ajuda</a>
-              </nav>
+              <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-500">
+                <a href="#features" className="hover:text-gray-900 transition-colors">Funcionalidades</a>
+                <a href="#pricing" className="hover:text-gray-900 transition-colors">Preços</a>
+                <a href="#testimonials" className="hover:text-gray-900 transition-colors">Depoimentos</a>
+              </div>
             </div>
-
-            {/* Botões */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate("/auth")}
-                className="flex items-center border border-midnight text-midnight rounded-lg px-4 py-2 text-sm font-bold hover:bg-midnight hover:text-white transition"
+                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-4 py-2"
               >
-                Entrar <i className="fas fa-caret-down ml-2"></i>
+                Entrar
               </button>
-              <button 
+              <button
                 onClick={() => navigate("/auth")}
-                className="bg-midnight text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-ocean transition"
+                className="btn-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl"
               >
-                Comece gratuitamente
+                Começar grátis
               </button>
             </div>
           </div>
-        </header>
-      </div>
-
-      {/* Secção Hero */}
-      <main className="relative min-h-screen flex items-center pt-24 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden hero-gradient">
-        {/* Ilustração SVG Notebook Minimalista */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full lg:w-3/4 opacity-10 pointer-events-none transform translate-x-1/4">
-          <svg viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-            <rect x="150" y="100" width="500" height="320" rx="20" stroke="#5B88B2" strokeWidth="2" />
-            <path d="M100 420H700L720 460C720 471.046 711.046 480 700 480H100C88.9543 480 80 471.046 80 460L100 420Z" stroke="#5B88B2" strokeWidth="2" />
-            <rect x="340" y="435" width="120" height="30" rx="5" stroke="#5B88B2" strokeWidth="1" />
-          </svg>
         </div>
+      </nav>
 
-        <div className="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center relative z-10">
-          <div className="text-cream">
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-6">
-              Aqui o seu negócio digital <span className="text-ocean">acontece.</span>
-            </h1>
-            <ul className="space-y-4 mb-10">
-              <li className="flex items-center gap-3">
-                <i className="fas fa-check-circle text-ocean text-xl"></i>
-                <p className="text-lg font-medium">Crie, gira e venda para o mundo</p>
-              </li>
-              <li className="flex items-center gap-3">
-                <i className="fas fa-check-circle text-ocean text-xl"></i>
-                <p className="text-lg font-medium">Ecossistema mais completo do mercado</p>
-              </li>
-            </ul>
-            <div className="inline-block bg-white/5 backdrop-blur-xl border border-white/10 p-5 rounded-2xl">
-              <p className="text-sm font-semibold mb-2 text-ocean uppercase tracking-widest">Seguro e confiável</p>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="flex text-ocean">
-                  <i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i>
+      {/* ── HERO ── */}
+      <section className="hero-bg noise-bg pt-20 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left */}
+            <div>
+              <div className="badge-pill inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium text-indigo-600 mb-8">
+                <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+                3 dias grátis · Sem cartão de crédito
+              </div>
+              <h1 className="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-[1.1] tracking-tight mb-6">
+                A plataforma que<br />
+                <span className="gradient-text">transforma ideias</span><br />
+                em lojas lucrativas
+              </h1>
+              <p className="text-xl text-gray-500 leading-relaxed mb-10 max-w-lg">
+                Crie, gira e escale o seu negócio digital com as melhores ferramentas do mercado. Simples, rápido e poderoso.
+              </p>
+              <div className="flex flex-wrap items-center gap-4 mb-12">
+                <button
+                  onClick={() => navigate("/auth")}
+                  className="btn-primary text-white font-semibold px-8 py-4 rounded-xl text-base"
+                >
+                  Criar loja grátis →
+                </button>
+                <button
+                  onClick={() => navigate("/auth")}
+                  className="flex items-center gap-2 text-gray-600 font-medium text-base hover:text-gray-900 transition-colors"
+                >
+                  <span className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">▶</span>
+                  Ver demo
+                </button>
+              </div>
+              {/* Social proof */}
+              <div className="flex items-center gap-6">
+                <div className="flex -space-x-2">
+                  {["#6366f1","#8b5cf6","#a855f7","#ec4899","#f43f5e"].map((c, i) => (
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: c }}>
+                      {["A","B","C","D","E"][i]}
+                    </div>
+                  ))}
                 </div>
-                <span className="font-bold text-xl">4.8</span>
+                <div>
+                  <div className="flex items-center gap-1 text-amber-400 text-sm">
+                    {"★★★★★"}
+                    <span className="text-gray-700 font-semibold ml-1">4.9</span>
+                  </div>
+                  <p className="text-xs text-gray-400">+12.000 lojas ativas</p>
+                </div>
               </div>
-              <p className="text-xs opacity-60">Baseado em +200.000 avaliações</p>
             </div>
-          </div>
 
-          <div className="flex justify-center md:justify-end">
-            <div className="bg-cream p-8 rounded-3xl shadow-2xl w-full max-w-md text-midnight">
-              <h2 className="text-2xl font-bold text-center mb-1">Crie sua conta agora.</h2>
-              <p className="text-center text-midnight/60 font-medium mb-8">É gratuito e rápido</p>
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <button className="flex items-center justify-center gap-2 border border-midnight/20 py-3 rounded-xl hover:bg-midnight/5 transition">
-                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
-                </button>
-                <button className="flex items-center justify-center gap-2 border border-midnight/20 py-3 rounded-xl hover:bg-midnight/5 transition">
-                  <i className="fab fa-apple text-xl text-noir"></i>
-                </button>
+            {/* Right — Form Card */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl shadow-indigo-100/50 border border-gray-100 p-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">Crie a sua conta</h2>
+                <p className="text-gray-400 text-sm mb-7">Grátis por 3 dias, depois €5/mês</p>
+
+                <form className="space-y-4" onSubmit={handleCreateAccount}>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Nome completo</label>
+                    <input
+                      type="text"
+                      placeholder="João Silva"
+                      value={formData.name}
+                      onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))}
+                      className="input-field w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">E-mail</label>
+                    <input
+                      type="email"
+                      placeholder="joao@empresa.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))}
+                      className="input-field w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Senha</label>
+                    <input
+                      type="password"
+                      placeholder="Mínimo 6 caracteres"
+                      value={formData.password}
+                      onChange={(e) => setFormData(p => ({ ...p, password: e.target.value }))}
+                      className="input-field w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 outline-none"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="btn-primary w-full text-white font-semibold py-3.5 rounded-xl text-sm mt-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                  >
+                    {isLoading ? "A criar conta..." : "Criar conta grátis →"}
+                  </button>
+                </form>
+
+                <p className="text-center text-xs text-gray-400 mt-5">
+                  Já tem conta?{" "}
+                  <button onClick={() => navigate("/auth")} className="text-indigo-600 font-semibold hover:underline">
+                    Entrar
+                  </button>
+                </p>
+
+                <div className="flex items-center gap-3 mt-6 pt-6 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                    <span className="text-green-500">🔒</span> SSL Seguro
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                    <span>✓</span> Sem cartão
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                    <span>✓</span> Cancele quando quiser
+                  </div>
+                </div>
               </div>
-              <form className="space-y-4" onSubmit={handleCreateAccount}>
-                <input
-                  type="text"
-                  placeholder="Nome completo"
-                  value={formData.name}
-                  onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))}
-                  className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400"
-                />
-                <input
-                  type="email"
-                  placeholder="E-mail profissional"
-                  value={formData.email}
-                  onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))}
-                  className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400"
-                />
-                <input
-                  type="password"
-                  placeholder="Senha (mín. 6 caracteres)"
-                  value={formData.password}
-                  onChange={(e) => setFormData(p => ({ ...p, password: e.target.value }))}
-                  className="w-full px-4 py-4 bg-white border border-midnight/10 rounded-xl outline-none focus:border-ocean transition placeholder:text-gray-400"
-                />
-                <button type="submit" disabled={isLoading} className="w-full bg-midnight text-white font-bold py-4 rounded-xl shadow-lg hover:bg-ocean transition mt-6 disabled:opacity-60 disabled:cursor-not-allowed">
-                  Criar minha conta
-                </button>
-              </form>
             </div>
           </div>
         </div>
-      </main>
+      </section>
 
-      {/* Acesso Antecipado */}
-      <section className="bg-cream py-24 px-4 sm:px-6 lg:px-8 text-midnight">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
-          <div className="w-full md:w-1/2 flex justify-center">
-            <div className="relative w-80 h-80 bg-midnight/5 rounded-full flex items-center justify-center">
-              <i className="fas fa-rocket text-8xl text-midnight opacity-20"></i>
-              <div className="absolute inset-0 border-2 border-dashed border-midnight/10 rounded-full animate-[spin_20s_linear_infinite]"></div>
-            </div>
+      {/* ── LOGOS / TRUST ── */}
+      <section className="border-y border-gray-100 py-10 px-4">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-8">Integrado com as melhores plataformas</p>
+          <div className="flex flex-wrap justify-center items-center gap-10 opacity-40 grayscale">
+            {["Stripe", "PayPal", "Shopify", "WooCommerce", "Mercado Pago"].map((name) => (
+              <span key={name} className="text-gray-600 font-bold text-lg">{name}</span>
+            ))}
           </div>
-          <div className="w-full md:w-1/2 text-left">
-            <span className="inline-block bg-midnight text-white rounded-full px-4 py-1.5 text-xs font-bold mb-6 uppercase tracking-widest">
-              Acesso Antecipado
-            </span>
-            <h2 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
-              Os mesmos benefícios de quem já <span className="text-ocean">fatura alto.</span>
+        </div>
+      </section>
+
+      {/* ── STATS ── */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { value: "+50M€", label: "Em vendas processadas" },
+              { value: "12k+", label: "Lojas ativas" },
+              { value: "180+", label: "Países suportados" },
+              { value: "99.9%", label: "Uptime garantido" },
+            ].map((s) => (
+              <div key={s.label} className="stat-card rounded-2xl p-6 text-center">
+                <p className="text-3xl lg:text-4xl font-extrabold gradient-text mb-2">{s.value}</p>
+                <p className="text-sm text-gray-500 font-medium">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURES ── */}
+      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="badge-pill inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium text-indigo-600 mb-4">
+              Funcionalidades
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+              Tudo o que precisa para<br />
+              <span className="gradient-text">vender mais</span>
             </h2>
-            <p className="text-midnight/70 text-lg mb-8 leading-relaxed">
-              Desbloqueie ferramentas exclusivas: suporte prioritário, gerente de contas e as melhores taxas do mercado europeu.
+            <p className="text-gray-500 text-lg max-w-xl mx-auto">
+              Uma plataforma completa com todas as ferramentas para criar e gerir o seu negócio digital.
             </p>
-            <button className="bg-midnight text-white font-bold px-8 py-4 rounded-xl shadow-md hover:bg-ocean transition">
-              Ver todos os benefícios
-            </button>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((f) => (
+              <div key={f.title} className="card-hover bg-white rounded-2xl p-7 border border-gray-100">
+                <div className="text-3xl mb-4">{f.icon}</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{f.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Estatísticas */}
-      <section className="bg-noir text-cream py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* ── TESTIMONIALS ── */}
+      <section id="testimonials" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl lg:text-6xl font-bold mb-20 text-center lg:text-left max-w-3xl">
-            Lidamos com a <span className="text-ocean">complexidade</span> para que você foque no lucro.
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+              O que dizem os nossos <span className="gradient-text">clientes</span>
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t) => (
+              <div key={t.name} className="card-hover bg-gray-50 rounded-2xl p-7 border border-gray-100">
+                <div className="flex items-center gap-1 text-amber-400 text-sm mb-4">{"★★★★★"}</div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-6">"{t.text}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full btn-primary flex items-center justify-center text-white text-xs font-bold">{t.avatar}</div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{t.name}</p>
+                    <p className="text-xs text-gray-400">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING ── */}
+      <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+              Preço simples e <span className="gradient-text">transparente</span>
+            </h2>
+            <p className="text-gray-500 text-lg">Sem surpresas. Sem taxas escondidas.</p>
+          </div>
+          <div className="max-w-md mx-auto">
+            <div className="bg-white rounded-3xl border-2 border-indigo-100 shadow-xl shadow-indigo-50 p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-indigo-50 to-transparent rounded-bl-full"></div>
+              <div className="relative">
+                <div className="badge-pill inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-indigo-600 mb-6">
+                  🎉 3 dias grátis para testar
+                </div>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-6xl font-extrabold text-gray-900">€5</span>
+                  <span className="text-gray-400 font-medium">/mês</span>
+                </div>
+                <p className="text-gray-400 text-sm mb-8">Faturado mensalmente · Cancele quando quiser</p>
+                <ul className="space-y-3 mb-8">
+                  {[
+                    "Loja online completa",
+                    "Produtos ilimitados",
+                    "Pagamentos integrados",
+                    "Analytics em tempo real",
+                    "Suporte prioritário",
+                    "Domínio personalizado",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-3 text-sm text-gray-700">
+                      <span className="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => navigate("/auth")}
+                  className="btn-primary w-full text-white font-semibold py-4 rounded-xl text-base"
+                >
+                  Começar 3 dias grátis →
+                </button>
+                <p className="text-center text-xs text-gray-400 mt-4">Sem cartão de crédito necessário</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA FINAL ── */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">
+            Pronto para começar a<br />
+            <span className="gradient-text">vender online?</span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-            <div className="border-l border-ocean/30 pl-8">
-              <p className="text-5xl font-bold mb-4 text-ocean">+ 50M</p>
-              <p className="opacity-60 text-sm font-semibold uppercase tracking-widest">Em vendas processadas</p>
-            </div>
-            <div className="border-l border-ocean/30 pl-8">
-              <p className="text-5xl font-bold mb-4 text-ocean">180+</p>
-              <p className="opacity-60 text-sm font-semibold uppercase tracking-widest">Países suportados</p>
-            </div>
-            <div className="border-l border-ocean/30 pl-8">
-              <p className="text-5xl font-bold mb-4 text-ocean">99.9%</p>
-              <p className="opacity-60 text-sm font-semibold uppercase tracking-widest">Uptime garantido</p>
-            </div>
-          </div>
+          <p className="text-gray-500 text-lg mb-10 max-w-xl mx-auto">
+            Junte-se a mais de 12.000 empreendedores que já usam o Katail para gerir os seus negócios.
+          </p>
+          <button
+            onClick={() => navigate("/auth")}
+            className="btn-primary text-white font-semibold px-10 py-4 rounded-xl text-lg"
+          >
+            Criar loja grátis agora →
+          </button>
+          <p className="text-sm text-gray-400 mt-4">3 dias grátis · Sem cartão · Cancele quando quiser</p>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="bg-midnight py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-cream mb-4">Plano Simples e Transparente</h2>
-          <p className="text-cream/60 text-lg mb-12">Tudo o que precisa para criar e gerir a sua loja online</p>
-          
-          <div className="max-w-md mx-auto bg-noir rounded-2xl border border-ocean/30 p-8 shadow-lg">
-            <div className="mb-6">
-              <p className="text-cream/60 text-sm font-semibold uppercase tracking-widest mb-2">Plano Profissional</p>
-              <div className="flex items-baseline justify-center gap-2">
-                <span className="text-5xl font-bold text-ocean">€5</span>
-                <span className="text-cream/60">/mês</span>
-              </div>
-            </div>
-            
-            <ul className="text-left space-y-4 mb-8">
-              <li className="flex items-center gap-3 text-cream">
-                <i className="fas fa-check text-ocean"></i>
-                <span>Acesso completo à plataforma</span>
-              </li>
-              <li className="flex items-center gap-3 text-cream">
-                <i className="fas fa-check text-ocean"></i>
-                <span>Até 100 produtos</span>
-              </li>
-              <li className="flex items-center gap-3 text-cream">
-                <i className="fas fa-check text-ocean"></i>
-                <span>Gerenciamento de lojas</span>
-              </li>
-              <li className="flex items-center gap-3 text-cream">
-                <i className="fas fa-check text-ocean"></i>
-                <span>Suporte por email</span>
-              </li>
-              <li className="flex items-center gap-3 text-cream">
-                <i className="fas fa-check text-ocean"></i>
-                <span>Relatórios e analytics</span>
-              </li>
-            </ul>
-            
-            <button 
-              onClick={handleCreateAccount}
-              className="w-full bg-ocean hover:bg-ocean/90 text-noir font-bold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105"
-            >
-              Experimente Grátis
-            </button>
-            <p className="text-cream/40 text-xs mt-4">Sem cartão de crédito necessário</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-noir border-t border-ocean/10 py-12 px-4 sm:px-6 lg:px-8">
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-gray-100 py-12 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center text-cream font-bold text-xl gap-1 mb-4">
-                <i className="fas fa-layer-group"></i>
-                <span>katail</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-7 h-7 rounded-lg btn-primary flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">K</span>
+                </div>
+                <span className="font-bold text-gray-900">katail</span>
               </div>
-              <p className="text-cream/60 text-sm">Soluções digitais para o seu negócio crescer.</p>
+              <p className="text-gray-400 text-sm leading-relaxed">Soluções digitais para o seu negócio crescer.</p>
             </div>
-            <div>
-              <h4 className="text-cream font-bold mb-4">Produto</h4>
-              <ul className="space-y-2 text-cream/60 text-sm">
-                <li><a href="#" className="hover:text-cream transition">Funcionalidades</a></li>
-                <li><a href="#" className="hover:text-cream transition">Preços</a></li>
-                <li><a href="#" className="hover:text-cream transition">Segurança</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-cream font-bold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-cream/60 text-sm">
-                <li><a href="#" className="hover:text-cream transition">Sobre</a></li>
-                <li><a href="#" className="hover:text-cream transition">Blog</a></li>
-                <li><a href="#" className="hover:text-cream transition">Contacto</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-cream font-bold mb-4">Legal</h4>
-              <ul className="space-y-2 text-cream/60 text-sm">
-                <li><a href="#" className="hover:text-cream transition">Privacidade</a></li>
-                <li><a href="#" className="hover:text-cream transition">Termos</a></li>
-                <li><a href="#" className="hover:text-cream transition">Cookies</a></li>
-              </ul>
-            </div>
+            {[
+              { title: "Produto", links: ["Funcionalidades", "Preços", "Segurança", "Integrações"] },
+              { title: "Empresa", links: ["Sobre", "Blog", "Carreiras", "Contacto"] },
+              { title: "Legal", links: ["Privacidade", "Termos", "Cookies"] },
+            ].map((col) => (
+              <div key={col.title}>
+                <h4 className="text-gray-900 font-semibold text-sm mb-4">{col.title}</h4>
+                <ul className="space-y-2.5">
+                  {col.links.map((link) => (
+                    <li key={link}>
+                      <a href="#" className="text-gray-400 text-sm hover:text-gray-700 transition-colors">{link}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div className="border-t border-ocean/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-cream/60 text-sm">© 2025 Katail. Todos os direitos reservados.</p>
+          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-gray-400 text-sm">© 2025 Katail. Todos os direitos reservados.</p>
             <div className="flex items-center gap-4">
-              <a href="#" className="text-cream/60 hover:text-cream transition"><i className="fab fa-twitter"></i></a>
-              <a href="#" className="text-cream/60 hover:text-cream transition"><i className="fab fa-linkedin"></i></a>
-              <a href="#" className="text-cream/60 hover:text-cream transition"><i className="fab fa-github"></i></a>
+              <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors text-sm">Twitter</a>
+              <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors text-sm">LinkedIn</a>
+              <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors text-sm">Instagram</a>
             </div>
           </div>
         </div>
