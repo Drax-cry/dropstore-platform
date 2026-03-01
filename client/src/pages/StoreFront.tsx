@@ -70,9 +70,8 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       ? `${formatPrice(finalPrice, currency)} (${discountPct}% OFF)`
       : formatPrice(originalPrice, currency);
 
-    // Usa mensagem personalizada ou a padrão
-    const DEFAULT_MSG = `Olá! Tenho interesse no seguinte produto:\n\n\ud83d\udecd\ufe0f *{{produto}}*\n\ud83d\udcb0 Preço: {{preco}}\n\ud83d\udccf Tamanho: {{tamanho}}\n\nPoderia me dar mais informações?`;
-    const template = whatsappMessage || DEFAULT_MSG;
+    // Usa mensagem personalizada do lojista ou a mensagem padrão no idioma do browser do cliente
+    const template = whatsappMessage || t("storefront.whatsappDefault");
     const finalMsg = template
       .replace(/\{\{produto\}\}/g, `${product.name}${product.brand ? ` - ${product.brand}` : ""}`)
       .replace(/\{\{preco\}\}/g, priceText)

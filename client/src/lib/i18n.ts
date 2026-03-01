@@ -205,6 +205,7 @@ const resources = {
         sortAsc: "Mais Barato",
         sortDesc: "Mais Caro",
         contact: "Contacto",
+        whatsappDefault: "Olá! Tenho interesse no seguinte produto:\n\n🛍️ *{{produto}}*\n💰 Preço: {{preco}}\n📏 Tamanho: {{tamanho}}\n\nPoderia me dar mais informações?",
       },
       // Common
       common: {
@@ -412,6 +413,7 @@ const resources = {
         sortAsc: "Cheapest",
         sortDesc: "Most Expensive",
         contact: "Contact",
+        whatsappDefault: "Hello! I'm interested in the following product:\n\n🛍️ *{{produto}}*\n💰 Price: {{preco}}\n📏 Size: {{tamanho}}\n\nCould you give me more information?",
       },
       common: {
         loading: "Loading...",
@@ -618,6 +620,7 @@ const resources = {
         sortAsc: "Moins Cher",
         sortDesc: "Plus Cher",
         contact: "Contact",
+        whatsappDefault: "Bonjour! Je suis intéressé(e) par le produit suivant:\n\n🛍️ *{{produto}}*\n💰 Prix: {{preco}}\n📏 Taille: {{tamanho}}\n\nPourriez-vous me donner plus d'informations?",
       },
       common: {
         loading: "Chargement...",
@@ -824,6 +827,7 @@ const resources = {
         sortAsc: "Más Barato",
         sortDesc: "Más Caro",
         contact: "Contacto",
+        whatsappDefault: "¡Hola! Estoy interesado/a en el siguiente producto:\n\n🛍️ *{{produto}}*\n💰 Precio: {{preco}}\n📏 Talla: {{tamanho}}\n\n¿Podría darme más información?",
       },
       common: {
         loading: "Cargando...",
