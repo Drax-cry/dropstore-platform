@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   ArrowLeft, Plus, Trash2, Edit2, ExternalLink, Tag, Layers, Package,
   X, Check, Loader2, Upload, ChevronDown, ChevronRight
@@ -10,6 +11,7 @@ import EditStoreModal from "./EditStoreModal";
 import BannerManager from "./BannerManager";
 import TrialBlockModal from "./TrialBlockModal";
 import TrialCountdownBanner from "./TrialCountdownBanner";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 interface Props {
   storeId: number;
@@ -42,6 +44,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
   } | null>(null);
 
   const utils = trpc.useUtils();
+  const { t } = useTranslation();
 
   const { data: store } = trpc.stores.getBySlug.useQuery(
     { slug: "" },
@@ -167,12 +170,13 @@ export default function StoreManager({ storeId, onBack }: Props) {
           </div>
         </div>
         <div className="flex items-center gap-2 self-start sm:self-auto">
+          <LanguageSwitcher variant="light" />
           <button
             onClick={() => setShowEditStoreModal(true)}
             className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
           >
             <Edit2 className="w-4 h-4" />
-            Editar loja
+            {t("admin.editStore") || "Editar loja"}
           </button>
           <a
             href={`/loja/${currentStore?.slug}`}
@@ -181,7 +185,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
             className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
           >
             <ExternalLink className="w-4 h-4" />
-            Ver vitrine
+            {t("admin.viewStorefront") || "Ver vitrine"}
           </a>
         </div>
       </div>

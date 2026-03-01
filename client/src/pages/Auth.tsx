@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 type AuthMode = "login" | "register";
 
@@ -24,26 +26,27 @@ export default function Auth() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const utils = trpc.useUtils();
+  const { t } = useTranslation();
 
   const loginMutation = trpc.auth.login.useMutation({
     onSuccess: async () => {
       await utils.auth.me.invalidate();
-      toast.success("Bem-vindo de volta!");
+      toast.success(t("auth.loginTitle"));
       navigate("/admin");
     },
     onError: (err) => {
-      toast.error(err.message || "Erro ao entrar");
+      toast.error(err.message || t("common.error"));
     },
   });
 
   const registerMutation = trpc.auth.register.useMutation({
     onSuccess: async () => {
       await utils.auth.me.invalidate();
-      toast.success("Conta criada com sucesso!");
+      toast.success(t("auth.registerBtn"));
       navigate("/admin");
     },
     onError: (err) => {
-      toast.error(err.message || "Erro ao criar conta");
+      toast.error(err.message || t("common.error"));
     },
   });
 
@@ -103,6 +106,10 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex">
+      {/* Language switcher top-right */}
+      <div className="absolute top-4 right-4 z-50">
+        <LanguageSwitcher variant="light" />
+      </div>
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-black relative overflow-hidden items-center justify-center">
         <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-gray-800 opacity-90" />
@@ -126,10 +133,10 @@ export default function Auth() {
             <ShoppingBag className="w-12 h-12 text-black" />
           </motion.div>
           <h1 className="text-4xl font-bold text-white mb-4">
-            Bem-vindo ao DropStore
+            {t("auth.loginTitle")}
           </h1>
           <p className="text-white/70 text-lg max-w-md mx-auto leading-relaxed">
-            Crie o seu catálogo online profissional e receba pedidos pelo WhatsApp em minutos
+            {t("auth.loginSubtitle")}
           </p>
 
           <div className="mt-12 grid grid-cols-3 gap-6 text-center">
@@ -172,7 +179,7 @@ export default function Auth() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Entrar
+              {t("auth.loginBtn")}
             </button>
             <button
               onClick={() => switchMode("register")}
@@ -182,7 +189,7 @@ export default function Auth() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Criar conta
+              {t("auth.registerBtn")}
             </button>
           </div>
 
@@ -197,12 +204,10 @@ export default function Auth() {
               className="mb-8"
             >
               <h2 className="text-2xl font-bold text-foreground mb-2">
-                {mode === "login" ? "Acesse sua conta" : "Crie sua conta"}
+                {mode === "login" ? t("auth.loginTitle") : t("auth.registerTitle")}
               </h2>
               <p className="text-muted-foreground">
-                {mode === "login"
-                  ? "Entre com suas credenciais para continuar"
-                  : "Preencha os dados abaixo para começar"}
+                {mode === "login" ? t("auth.loginSubtitle") : t("auth.registerSubtitle")}
               </p>
             </motion.div>
           </AnimatePresence>
@@ -219,7 +224,7 @@ export default function Auth() {
                   transition={{ duration: 0.2 }}
                 >
                   <Label htmlFor="name" className="text-foreground font-medium">
-                    Nome completo
+                    {t("auth.name")}
                   </Label>
                   <div className="relative mt-2">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -242,7 +247,7 @@ export default function Auth() {
 
             <div>
               <Label htmlFor="email" className="text-foreground font-medium">
-                Email
+                {t("auth.email")}
               </Label>
               <div className="relative mt-2">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -263,7 +268,7 @@ export default function Auth() {
 
             <div>
               <Label htmlFor="password" className="text-foreground font-medium">
-                Senha
+                {t("auth.password")}
               </Label>
               <div className="relative mt-2">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -299,7 +304,7 @@ export default function Auth() {
                   transition={{ duration: 0.2 }}
                 >
                   <Label htmlFor="confirmPassword" className="text-foreground font-medium">
-                    Confirmar senha
+                    {t("auth.confirmPassword") || t("auth.password")}
                   </Label>
                   <div className="relative mt-2">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -333,7 +338,7 @@ export default function Auth() {
                 />
               ) : (
                 <>
-                  {mode === "login" ? "Entrar" : "Criar conta"}
+                  {mode === "login" ? t("auth.loginBtn") : t("auth.registerBtn")}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -343,24 +348,24 @@ export default function Auth() {
           <p className="text-center text-sm text-muted-foreground mt-8">
             {mode === "login" ? (
               <>
-                Não tem conta?{" "}
+                {t("auth.noAccount")}{" "}
                 <button
                   type="button"
                   onClick={() => switchMode("register")}
                   className="text-foreground font-medium hover:underline"
                 >
-                  Criar agora
+                  {t("auth.registerLink")}
                 </button>
               </>
             ) : (
               <>
-                Já tem conta?{" "}
+                {t("auth.hasAccount")}{" "}
                 <button
                   type="button"
                   onClick={() => switchMode("login")}
                   className="text-foreground font-medium hover:underline"
                 >
-                  Entrar
+                  {t("auth.loginLink")}
                 </button>
               </>
             )}

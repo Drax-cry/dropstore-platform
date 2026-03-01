@@ -2,6 +2,8 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useParams } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Instagram, Facebook, Youtube, Music2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 function useScrollFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -53,6 +55,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [imageError, setImageError] = useState(false);
   const ref = useScrollFadeIn();
+  const { t } = useTranslation();
   const sizes: string[] = product.sizes ? JSON.parse(product.sizes) : [];
   const color = primaryColor || "#000000";
 
@@ -163,11 +166,11 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
             style={{ backgroundColor: color }}
           >
             <MessageCircle className="w-4 h-4" />
-            Pedir pelo WhatsApp
+            {t("storefront.order")}
           </button>
         ) : (
           <div className="w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-gray-100 text-gray-400">
-            Sem contacto configurado
+            {t("storefront.noProducts")}
           </div>
         )}
       </div>
@@ -178,6 +181,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
 export default function StoreFront() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
+  const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
@@ -265,7 +269,7 @@ export default function StoreFront() {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: `${primaryColor} transparent transparent transparent` }} />
-          <p className="text-gray-400 text-sm">A carregar loja...</p>
+          <p className="text-gray-400 text-sm">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -278,8 +282,8 @@ export default function StoreFront() {
           <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <ShoppingBag className="w-10 h-10 text-gray-300" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Loja não encontrada</h1>
-          <p className="text-gray-400">Esta loja não existe ou foi removida.</p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">{t("storefront.noProducts")}</h1>
+          <p className="text-gray-400">{t("storefront.noProductsSearch")}</p>
         </div>
       </div>
     );
@@ -312,7 +316,7 @@ export default function StoreFront() {
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Pesquisar produtos..."
+                placeholder={t("storefront.search")}
                 className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:bg-white transition-all"
                 style={{ "--tw-ring-color": primaryColor } as React.CSSProperties}
               />
@@ -338,6 +342,10 @@ export default function StoreFront() {
                 </button>
               ))}
             </nav>
+            {/* Language Switcher */}
+            <div className="flex-shrink-0">
+              <LanguageSwitcher variant="light" />
+            </div>
           </div>
         </div>
       </header>
@@ -451,7 +459,7 @@ export default function StoreFront() {
                 }`}
                 style={activeSubId === null ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
               >
-                Todos
+                {t("storefront.all")}
               </button>
               {subsForActiveCategory.map(sub => (
                 <button
@@ -480,25 +488,25 @@ export default function StoreFront() {
             {searchQuery && (
               <>
                 <p className="text-sm text-gray-500">
-                  {filteredProducts.length} resultado{filteredProducts.length !== 1 ? "s" : ""} para "{searchQuery}"
+                  {filteredProducts.length} {t("storefront.results")} "{searchQuery}"
                 </p>
                 <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline">
-                  Limpar
+                  {t("common.back")}
                 </button>
               </>
             )}
           </div>
           
           <div className="flex items-center gap-2">
-            <label className="text-xs text-gray-600 font-medium">Ordenar:</label>
+            <label className="text-xs text-gray-600 font-medium">{t("storefront.sort")}:</label>
             <select
               value={sortPrice}
               onChange={(e) => setSortPrice(e.target.value as "none" | "asc" | "desc")}
               className="text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-white cursor-pointer"
             >
-              <option value="none">Padrão</option>
-              <option value="asc">Mais Barato</option>
-              <option value="desc">Mais Caro</option>
+              <option value="none">{t("storefront.sortDefault")}</option>
+              <option value="asc">{t("storefront.sortAsc")}</option>
+              <option value="desc">{t("storefront.sortDesc")}</option>
             </select>
           </div>
         </div>
@@ -521,9 +529,9 @@ export default function StoreFront() {
             <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <ShoppingBag className="w-8 h-8 text-gray-300" />
             </div>
-            <p className="text-gray-500 font-medium">Nenhum produto encontrado</p>
+            <p className="text-gray-500 font-medium">{t("storefront.noProducts")}</p>
             {searchQuery && (
-              <p className="text-gray-400 text-sm mt-1">Tente pesquisar por outro termo</p>
+              <p className="text-gray-400 text-sm mt-1">{t("storefront.noProductsSearch")}</p>
             )}
           </div>
         )}
@@ -538,7 +546,7 @@ export default function StoreFront() {
               {/* Contact Info */}
               {(store.address || store.phone || store.email) && (
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-800 mb-4">Contacto</h3>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-4">{t("storefront.contact")}</h3>
                   <div className="space-y-3">
                     {store.address && (
                       <div className="flex items-start gap-2.5 text-sm text-gray-600">

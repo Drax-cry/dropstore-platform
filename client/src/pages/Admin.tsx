@@ -7,8 +7,10 @@ import {
   LogOut, Package, Tag, Menu, X
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import CreateStoreModal from "@/components/CreateStoreModal";
 import StoreManager from "@/components/StoreManager";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Admin() {
   const { user, loading, isAuthenticated, logout } = useAuth();
@@ -16,6 +18,7 @@ export default function Admin() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { t } = useTranslation();
 
   const { data: stores, isLoading: storesLoading, refetch } = trpc.stores.myStores.useQuery(
     undefined,
@@ -79,7 +82,7 @@ export default function Admin() {
       </div>
 
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-3">As minhas lojas</p>
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-3">{t("admin.myStores")}</p>
         {storesLoading ? (
           <div className="space-y-2">
             {[1, 2].map(i => (
@@ -102,7 +105,7 @@ export default function Admin() {
             </button>
           ))
         ) : (
-          <p className="text-xs text-gray-400 px-3 py-2">Nenhuma loja criada</p>
+          <p className="text-xs text-gray-400 px-3 py-2">{t("admin.noStores")}</p>
         )}
 
         <button
@@ -116,7 +119,7 @@ export default function Admin() {
           title={stores && stores.length > 0 ? "Limite de uma loja por conta" : ""}
         >
           <Plus className="w-4 h-4" />
-          <span>{stores && stores.length > 0 ? "Limite atingido" : "Nova loja"}</span>
+          <span>{stores && stores.length > 0 ? t("admin.manage") : t("admin.createStore")}</span>
         </button>
       </nav>
 
@@ -130,12 +133,15 @@ export default function Admin() {
             <p className="text-xs text-gray-400 truncate">{user?.email || ""}</p>
           </div>
         </div>
+        <div className="px-3 py-1 mb-1">
+          <LanguageSwitcher variant="light" />
+        </div>
         <button
           onClick={() => { logout(); navigate("/"); }}
           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-100 transition-colors"
         >
           <LogOut className="w-4 h-4" />
-          Sair
+          {t("common.back") === "Voltar" ? "Sair" : "Logout"}
         </button>
       </div>
     </>
@@ -186,8 +192,8 @@ export default function Admin() {
           {!selectedStoreId ? (
             <div>
               <div className="mb-6 sm:mb-8">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Bem-vindo, {user?.name?.split(" ")[0] || "utilizador"}!</h1>
-                <p className="text-gray-500 mt-1 text-sm sm:text-base">Gerencie as suas lojas e catálogos de produtos.</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{t("admin.myStores")}</h1>
+                <p className="text-gray-500 mt-1 text-sm sm:text-base">{t("admin.noStoresDesc")}</p>
               </div>
 
               {storesLoading ? (
@@ -243,7 +249,7 @@ export default function Admin() {
                           className="flex-1 flex items-center justify-center gap-1.5 bg-black text-white text-xs font-medium py-2 rounded-lg hover:bg-gray-800 transition-colors"
                         >
                           <Settings className="w-3.5 h-3.5" />
-                          Gerir loja
+                          {t("admin.manage")}
                         </button>
                         <a
                           href={`/loja/${store.slug}`}
