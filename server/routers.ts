@@ -29,6 +29,7 @@ import {
   updateSubcategory,
   deleteSubcategory,
   getProductsByStore,
+  getAllProductsByStore,
   getProductsByCategory,
   createProduct,
   updateProduct,
@@ -334,6 +335,16 @@ export const appRouter = router({
         return getProductsByStore(input.storeId);
       }),
 
+    listAllByStore: protectedProcedure
+      .input(z.object({ storeId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        return getAllProductsByStore(input.storeId);
+      }),
+
     listByCategory: publicProcedure
       .input(z.object({ storeId: z.number(), categoryId: z.number() }))
       .query(async ({ input }) => {
@@ -396,6 +407,17 @@ export const appRouter = router({
         const updateData: Record<string, unknown> = { ...rest };
         if (sizes !== undefined) updateData.sizes = JSON.stringify(sizes);
         await updateProduct(id, updateData as Parameters<typeof updateProduct>[1]);
+        return { success: true };
+      }),
+
+    toggleBlock: protectedProcedure
+      .input(z.object({ id: z.number(), storeId: z.number(), isActive: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        await updateProduct(input.id, { isActive: input.isActive });
         return { success: true };
       }),
 

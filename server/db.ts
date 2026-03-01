@@ -306,6 +306,13 @@ export async function getProductsByStore(storeId: number) {
   );
 }
 
+// Admin version: returns ALL products including blocked ones
+export async function getAllProductsByStore(storeId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(products).where(eq(products.storeId, storeId));
+}
+
 export async function getProductsByCategory(storeId: number, categoryId: number) {
   const db = await getDb();
   if (!db) return [];

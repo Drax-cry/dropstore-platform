@@ -56,7 +56,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
 
   const { data: categories, isLoading: catsLoading } = trpc.categories.list.useQuery({ storeId });
   const { data: allSubcategories } = trpc.subcategories.listByStore.useQuery({ storeId });
-  const { data: products, isLoading: productsLoading } = trpc.products.listByStore.useQuery({ storeId });
+  const { data: products, isLoading: productsLoading } = trpc.products.listAllByStore.useQuery({ storeId });
 
   // Check trial status
   const { data: trialStatus } = trpc.trial.checkStatus.useQuery(
@@ -106,6 +106,14 @@ export default function StoreManager({ storeId, onBack }: Props) {
       utils.products.listByStore.invalidate({ storeId });
       toast.success("Produto removido");
     },
+  });
+
+  const toggleBlockMutation = trpc.products.toggleBlock.useMutation({
+    onSuccess: (_, vars) => {
+      utils.products.listByStore.invalidate({ storeId });
+      toast.success(vars.isActive === 0 ? "Produto bloqueado" : "Produto desbloqueado");
+    },
+    onError: () => toast.error("Erro ao alterar estado do produto"),
   });
 
   const getSubsForCategory = (categoryId: number) =>
@@ -399,13 +407,19 @@ export default function StoreManager({ storeId, onBack }: Props) {
                 const sub = allSubcategories?.find(s => s.id === product.subcategoryId);
                 const sizes = product.sizes ? JSON.parse(product.sizes) : [];
                 return (
-                  <div key={product.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-gray-200 hover:shadow-md transition-all group">
+                  <div key={product.id} className={`bg-white rounded-xl border overflow-hidden hover:shadow-md transition-all group ${product.isActive === 0 ? "border-red-200 opacity-70" : "border-gray-100 hover:border-gray-200"}`}>
                     <div className="aspect-square bg-gray-100 relative overflow-hidden">
                       {product.imageUrl ? (
                         <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <Package className="w-10 h-10 text-gray-300" />
+                        </div>
+                      )}
+                      {/* Blocked overlay */}
+                      {product.isActive === 0 && (
+                        <div className="absolute inset-0 bg-red-500/10 flex items-center justify-center">
+                          <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">BLOQUEADO</span>
                         </div>
                       )}
                       <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -427,8 +441,16 @@ export default function StoreManager({ storeId, onBack }: Props) {
                             setShowProductModal(true);
                           }}
                           className="p-1.5 bg-white rounded-lg shadow text-gray-500 hover:text-gray-800"
+                          title="Editar produto"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => toggleBlockMutation.mutate({ id: product.id, storeId, isActive: product.isActive === 0 ? 1 : 0 })}
+                          className={`p-1.5 bg-white rounded-lg shadow ${product.isActive === 0 ? "text-green-500 hover:text-green-700" : "text-amber-500 hover:text-amber-700"}`}
+                          title={product.isActive === 0 ? "Desbloquear produto" : "Bloquear produto"}
+                        >
+                          {product.isActive === 0 ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
                         </button>
                         <button
                           onClick={() => {
@@ -437,6 +459,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
                             }
                           }}
                           className="p-1.5 bg-white rounded-lg shadow text-gray-500 hover:text-red-500"
+                          title="Remover produto"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -444,7 +467,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
                     </div>
                     <div className="p-3">
                       <div className="flex items-start justify-between gap-2 mb-1">
-                        <p className="font-medium text-gray-800 text-sm leading-tight">{product.name}</p>
+                        <p className={`font-medium text-sm leading-tight ${product.isActive === 0 ? "text-gray-400 line-through" : "text-gray-800"}`}>{product.name}</p>
                         <span className="text-sm font-bold text-gray-900 whitespace-nowrap">
                           R$ {Number(product.price).toFixed(2)}
                         </span>
