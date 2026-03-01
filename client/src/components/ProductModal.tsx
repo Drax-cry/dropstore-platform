@@ -28,24 +28,13 @@ interface Props {
   onSuccess: () => void;
 }
 
-// Tamanhos de roupa por país (completos)
+// Tamanhos de roupa por país (apenas letras)
 const CLOTHING_SIZES_BY_COUNTRY: Record<string, string[]> = {
-  // Brasil: sistema PP-XGG + numeração 36-56 (feminino/masculino)
-  BR: ["PP", "P", "M", "G", "GG", "XGG",
-       "34", "36", "38", "40", "42", "44", "46", "48", "50", "52", "54", "56"],
-  // Portugal: sistema XS-XXXL + numeração europeia 32-60
-  PT: ["XS", "S", "M", "L", "XL", "XXL", "XXXL",
-       "32", "34", "36", "38", "40", "42", "44", "46", "48", "50", "52", "54", "56", "58", "60"],
-  // Espanha: sistema XS-XXXL + numeração europeia 32-60
-  ES: ["XS", "S", "M", "L", "XL", "XXL", "XXXL",
-       "32", "34", "36", "38", "40", "42", "44", "46", "48", "50", "52", "54", "56", "58", "60"],
-  // Argentina: sistema XS-XXXL + numeração 38-56
-  AR: ["XS", "S", "M", "L", "XL", "XXL", "XXXL",
-       "38", "40", "42", "44", "46", "48", "50", "52", "54", "56"],
-  // Colômbia: sistema XS-XXXL + numeração 6-18 (EUA) e 36-56
-  CO: ["XS", "S", "M", "L", "XL", "XXL", "XXXL",
-       "6", "8", "10", "12", "14", "16", "18",
-       "36", "38", "40", "42", "44", "46", "48", "50"],
+  BR: ["PP", "P", "M", "G", "GG", "XGG"],
+  PT: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
+  ES: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
+  AR: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
+  CO: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
 };
 
 // Tamanhos de ténis/calçado por país (completos)
@@ -77,39 +66,11 @@ const SHOE_SIZES_BY_COUNTRY: Record<string, string[]> = {
 
 // Labels descritivos dos tamanhos de roupa por país
 const CLOTHING_SIZE_LABELS: Record<string, Record<string, string>> = {
-  BR: {
-    PP: "PP (Extra Pequeno)", P: "P (Pequeno)", M: "M (Médio)",
-    G: "G (Grande)", GG: "GG (Extra Grande)", XGG: "XGG (Super Extra Grande)",
-    "34": "34", "36": "36", "38": "38", "40": "40", "42": "42",
-    "44": "44", "46": "46", "48": "48", "50": "50", "52": "52",
-    "54": "54", "56": "56",
-  },
-  PT: {
-    XS: "XS (32-34)", S: "S (36-38)", M: "M (40-42)",
-    L: "L (44-46)", XL: "XL (48-50)", XXL: "XXL (52-54)", XXXL: "XXXL (56-58)",
-    "32": "32", "34": "34", "36": "36", "38": "38", "40": "40",
-    "42": "42", "44": "44", "46": "46", "48": "48", "50": "50",
-    "52": "52", "54": "54", "56": "56", "58": "58", "60": "60",
-  },
-  ES: {
-    XS: "XS (32-34)", S: "S (36-38)", M: "M (40-42)",
-    L: "L (44-46)", XL: "XL (48-50)", XXL: "XXL (52-54)", XXXL: "XXXL (56-58)",
-    "32": "32", "34": "34", "36": "36", "38": "38", "40": "40",
-    "42": "42", "44": "44", "46": "46", "48": "48", "50": "50",
-    "52": "52", "54": "54", "56": "56", "58": "58", "60": "60",
-  },
-  AR: {
-    XS: "XS", S: "S", M: "M", L: "L", XL: "XL", XXL: "XXL", XXXL: "XXXL",
-    "38": "38", "40": "40", "42": "42", "44": "44",
-    "46": "46", "48": "48", "50": "50", "52": "52", "54": "54", "56": "56",
-  },
-  CO: {
-    XS: "XS", S: "S", M: "M", L: "L", XL: "XL", XXL: "XXL", XXXL: "XXXL",
-    "6": "6 (XS)", "8": "8 (S)", "10": "10 (M)", "12": "12 (M/L)",
-    "14": "14 (L)", "16": "16 (XL)", "18": "18 (XXL)",
-    "36": "36", "38": "38", "40": "40", "42": "42",
-    "44": "44", "46": "46", "48": "48", "50": "50",
-  },
+  BR: { PP: "PP", P: "P", M: "M", G: "G", GG: "GG", XGG: "XGG" },
+  PT: { XS: "XS", S: "S", M: "M", L: "L", XL: "XL", XXL: "XXL", XXXL: "XXXL" },
+  ES: { XS: "XS", S: "S", M: "M", L: "L", XL: "XL", XXL: "XXL", XXXL: "XXXL" },
+  AR: { XS: "XS", S: "S", M: "M", L: "L", XL: "XL", XXL: "XXL", XXXL: "XXXL" },
+  CO: { XS: "XS", S: "S", M: "M", L: "L", XL: "XL", XXL: "XXL", XXXL: "XXXL" },
 };
 
 // Fallbacks
@@ -117,31 +78,35 @@ const CLOTHING_SIZES = ["PP", "P", "M", "G", "GG", "XGG"];
 const SHOE_SIZES = ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"];
 
 // Ordem canónica de todos os tamanhos conhecidos
+// Calçado com meios números intercalados (33, 33.5, 34, 34.5, ...)
+const SHOE_SIZE_ORDER: string[] = Array.from({ length: 35 }, (_, i) => {
+  const base = 33 + i * 0.5;
+  return String(base);
+});
+
 const SIZE_ORDER: string[] = [
   // Roupa Brasil
   "PP", "P", "M", "G", "GG", "XGG",
   // Roupa internacional (do menor para o maior)
   "XS", "S", "L", "XL", "XXL", "XXXL",
-  // Números inteiros 1-60 (roupa e calçado)
-  ...Array.from({ length: 60 }, (_, i) => String(i + 1)),
-  // Meios números 33.5-50 (calçado)
-  ...Array.from({ length: 35 }, (_, i) => String(33 + i * 0.5)).filter(n => n.endsWith(".5")),
+  // Calçado com meios números intercalados
+  ...SHOE_SIZE_ORDER,
 ];
 
 function sortSizes(sizes: string[]): string[] {
   return [...sizes].sort((a, b) => {
     const ia = SIZE_ORDER.indexOf(a);
     const ib = SIZE_ORDER.indexOf(b);
-    // Ambos conhecidos: usa a ordem canónica
+    // Ambos na ordem canónica
     if (ia !== -1 && ib !== -1) return ia - ib;
-    // Ambos desconhecidos: tenta ordenação numérica, depois alfabética
+    // Ambos desconhecidos: tenta numérico, depois alfabético
     if (ia === -1 && ib === -1) {
       const na = parseFloat(a);
       const nb = parseFloat(b);
       if (!isNaN(na) && !isNaN(nb)) return na - nb;
       return a.localeCompare(b);
     }
-    // Conhecido antes de desconhecido
+    // Desconhecido vai para o fim
     return ia === -1 ? 1 : -1;
   });
 }
