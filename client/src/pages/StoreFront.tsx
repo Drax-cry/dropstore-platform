@@ -186,6 +186,7 @@ export default function StoreFront() {
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [activeSubId, setActiveSubId] = useState<number | null>(null);
   const [sortPrice, setSortPrice] = useState<"none" | "asc" | "desc">("none");
+  const [selectedSizeFilter, setSelectedSizeFilter] = useState<string | null>(null);
 
   const { data: store, isLoading: storeLoading, error: storeError } = trpc.stores.getBySlug.useQuery(
     { slug: slug || "" },
@@ -234,6 +235,33 @@ export default function StoreFront() {
     [allSubcategories, activeCategoryId]
   );
 
+  // Compute all unique sizes across visible products (before size filter)
+  const availableSizes = useMemo(() => {
+    if (!allProducts) return [];
+    const sizeSet = new Set<string>();
+    allProducts.forEach(p => {
+      if (p.sizes) {
+        try {
+          const arr: string[] = JSON.parse(p.sizes);
+          arr.forEach(s => sizeSet.add(s));
+        } catch {}
+      }
+    });
+    // Sort sizes: numeric first (ascending), then alpha
+    return Array.from(sizeSet).sort((a, b) => {
+      const na = parseFloat(a), nb = parseFloat(b);
+      if (!isNaN(na) && !isNaN(nb)) return na - nb;
+      if (!isNaN(na)) return -1;
+      if (!isNaN(nb)) return 1;
+      const sizeOrder = ["PP","P","M","G","GG","XGG","XS","S","L","XL","XXL","XXXL"];
+      const ia = sizeOrder.indexOf(a), ib = sizeOrder.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [allProducts]);
+
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
     let products = allProducts;
@@ -251,7 +279,15 @@ export default function StoreFront() {
         (p.brand && p.brand.toLowerCase().includes(q))
       );
     }
-    
+    if (selectedSizeFilter) {
+      products = products.filter(p => {
+        if (!p.sizes) return false;
+        try {
+          const arr: string[] = JSON.parse(p.sizes);
+          return arr.includes(selectedSizeFilter);
+        } catch { return false; }
+      });
+    }
     if (sortPrice === "asc") {
       products = [...products].sort((a, b) => Number(a.price) - Number(b.price));
     } else if (sortPrice === "desc") {
@@ -259,7 +295,7 @@ export default function StoreFront() {
     }
     
     return products;
-  }, [allProducts, activeCategoryId, activeSubId, searchQuery, sortPrice]);
+  }, [allProducts, activeCategoryId, activeSubId, searchQuery, sortPrice, selectedSizeFilter]);
 
   const primaryColor = store?.primaryColor || "#000000";
 
@@ -481,6 +517,41 @@ export default function StoreFront() {
 
       {/* Products Grid */}
       <main className="container py-6 sm:py-10">
+
+        {/* Size Filter Bar */}
+        {availableSizes.length > 0 && (
+          <div className="mb-5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-medium text-gray-500 shrink-0">Tamanho:</span>
+              <button
+                onClick={() => setSelectedSizeFilter(null)}
+                className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+                  selectedSizeFilter === null
+                    ? "text-white border-transparent"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                }`}
+                style={selectedSizeFilter === null ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+              >
+                {t("storefront.all")}
+              </button>
+              {availableSizes.map(size => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSizeFilter(selectedSizeFilter === size ? null : size)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+                    selectedSizeFilter === size
+                      ? "text-white border-transparent"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                  }`}
+                  style={selectedSizeFilter === size ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Search results info and Price Filter */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-2">
