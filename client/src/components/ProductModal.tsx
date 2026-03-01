@@ -59,6 +59,36 @@ const CLOTHING_SIZE_LABELS: Record<string, Record<string, string>> = {
 const CLOTHING_SIZES = ["PP", "P", "M", "G", "GG", "XGG"];
 const SHOE_SIZES = ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"];
 
+// Ordem canónica de todos os tamanhos conhecidos
+const SIZE_ORDER: string[] = [
+  // Roupa Brasil
+  "PP", "P", "M", "G", "GG", "XGG",
+  // Roupa internacional
+  "XS", "S", "L", "XL", "XXL", "XXXL",
+  // Números (calçado/outros)
+  ...Array.from({ length: 60 }, (_, i) => String(i + 1)),
+  // Fracionados
+  ...Array.from({ length: 20 }, (_, i) => String(20 + i * 0.5)),
+];
+
+function sortSizes(sizes: string[]): string[] {
+  return [...sizes].sort((a, b) => {
+    const ia = SIZE_ORDER.indexOf(a);
+    const ib = SIZE_ORDER.indexOf(b);
+    // Ambos conhecidos: usa a ordem canónica
+    if (ia !== -1 && ib !== -1) return ia - ib;
+    // Ambos desconhecidos: tenta ordenação numérica, depois alfabética
+    if (ia === -1 && ib === -1) {
+      const na = parseFloat(a);
+      const nb = parseFloat(b);
+      if (!isNaN(na) && !isNaN(nb)) return na - nb;
+      return a.localeCompare(b);
+    }
+    // Conhecido antes de desconhecido
+    return ia === -1 ? 1 : -1;
+  });
+}
+
 export default function ProductModal({ storeId, productId, editProduct, categories, subcategories, storeCountry = "BR", onClose, onSuccess }: Props) {
   const isEditing = !!editProduct;
 
@@ -74,7 +104,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
   const [categoryId, setCategoryId] = useState<number | "">(editProduct?.categoryId ?? categories[0]?.id ?? "");
   const [subcategoryId, setSubcategoryId] = useState<number | "">(editProduct?.subcategoryId ?? "");
   const [selectedSizes, setSelectedSizes] = useState<string[]>(
-    editProduct?.sizes ? JSON.parse(editProduct.sizes) : []
+    editProduct?.sizes ? sortSizes(JSON.parse(editProduct.sizes)) : []
   );
   const [customSize, setCustomSize] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(editProduct?.imageUrl ?? null);
@@ -95,7 +125,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
       setDescription(editProduct.description ?? "");
       setCategoryId(editProduct.categoryId);
       setSubcategoryId(editProduct.subcategoryId ?? "");
-      setSelectedSizes(editProduct.sizes ? JSON.parse(editProduct.sizes) : []);
+      setSelectedSizes(editProduct.sizes ? sortSizes(JSON.parse(editProduct.sizes)) : []);
       setImagePreview(editProduct.imageUrl ?? null);
       setDiscountPercent(editProduct.discountPercent ?? "");
       setImageFile(null);
@@ -174,14 +204,15 @@ export default function ProductModal({ storeId, productId, editProduct, categori
   };
 
   const toggleSize = (size: string) => {
-    setSelectedSizes(prev =>
-      prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
-    );
+    setSelectedSizes(prev => {
+      const next = prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size];
+      return sortSizes(next);
+    });
   };
 
   const addCustomSize = () => {
     if (customSize.trim() && !selectedSizes.includes(customSize.trim())) {
-      setSelectedSizes(prev => [...prev, customSize.trim()]);
+      setSelectedSizes(prev => sortSizes([...prev, customSize.trim()]));
       setCustomSize("");
     }
   };
