@@ -3,7 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import {
   X, Upload, Store, Loader2, Check, MapPin, Phone, Mail,
-  Instagram, Facebook, Youtube, Music2
+  Instagram, Facebook, Youtube, Music2, MessageCircle, RotateCcw
 } from "lucide-react";
 
 const COUNTRIES = [
@@ -30,6 +30,7 @@ interface StoreData {
   facebook?: string | null;
   tiktok?: string | null;
   youtube?: string | null;
+  whatsappMessage?: string | null;
 }
 
 interface Props {
@@ -38,7 +39,15 @@ interface Props {
   onSuccess: () => void;
 }
 
-type TabKey = "info" | "contact" | "social";
+type TabKey = "info" | "contact" | "social" | "whatsapp";
+
+const DEFAULT_WHATSAPP_MESSAGE = `Olá! Tenho interesse no seguinte produto:
+
+🛍️ *{{produto}}*
+💰 Preço: {{preco}}
+📏 Tamanho: {{tamanho}}
+
+Poderia me dar mais informações?`;
 
 export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
   const [activeTab, setActiveTab] = useState<TabKey>("info");
@@ -78,6 +87,11 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
   const [facebook, setFacebook] = useState(store.facebook ?? "");
   const [tiktok, setTiktok] = useState(store.tiktok ?? "");
   const [youtube, setYoutube] = useState(store.youtube ?? "");
+
+  // WhatsApp message tab
+  const [whatsappMessage, setWhatsappMessage] = useState(
+    store.whatsappMessage ?? DEFAULT_WHATSAPP_MESSAGE
+  );
 
   const utils = trpc.useUtils();
 
@@ -143,6 +157,7 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
       facebook: facebook.trim() || null,
       tiktok: tiktok.trim() || null,
       youtube: youtube.trim() || null,
+      whatsappMessage: whatsappMessage.trim() || null,
     });
   };
 
@@ -152,6 +167,7 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
     { key: "info", label: "Informações" },
     { key: "contact", label: "Contacto" },
     { key: "social", label: "Redes Sociais" },
+    { key: "whatsapp", label: "Mensagem ZAP" },
   ];
 
   return (
@@ -360,6 +376,70 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                   className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
                 />
               </div>
+            </>
+          )}
+
+          {/* ---- TAB: MENSAGEM WHATSAPP ---- */}
+          {activeTab === "whatsapp" && (
+            <>
+              <div className="flex items-center gap-2 -mt-1 mb-1">
+                <MessageCircle className="w-4 h-4 text-green-600" />
+                <p className="text-sm font-medium text-gray-700">Mensagem personalizada do WhatsApp</p>
+              </div>
+              <p className="text-xs text-gray-400 mb-3">
+                Esta mensagem é enviada quando o cliente clica em "Encomendar via WhatsApp". Use as variáveis abaixo para personalizar:
+              </p>
+
+              {/* Variáveis disponíveis */}
+              <div className="bg-gray-50 rounded-xl p-3 mb-3">
+                <p className="text-xs font-medium text-gray-600 mb-2">Variáveis disponíveis:</p>
+                <div className="flex flex-wrap gap-2">
+                  {["{{produto}}", "{{preco}}", "{{tamanho}}"].map(v => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => setWhatsappMessage(prev => prev + v)}
+                      className="text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded-lg hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-colors font-mono"
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Editor de mensagem */}
+              <div>
+                <textarea
+                  value={whatsappMessage}
+                  onChange={e => setWhatsappMessage(e.target.value)}
+                  rows={8}
+                  placeholder={DEFAULT_WHATSAPP_MESSAGE}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none font-mono"
+                />
+              </div>
+
+              {/* Preview */}
+              {whatsappMessage && (
+                <div className="bg-green-50 border border-green-100 rounded-xl p-3">
+                  <p className="text-xs font-medium text-green-700 mb-2">Pré-visualização (exemplo):</p>
+                  <p className="text-xs text-gray-700 whitespace-pre-wrap">
+                    {whatsappMessage
+                      .replace("{{produto}}", "Camiseta Branca M")
+                      .replace("{{preco}}", "R$ 89,90")
+                      .replace("{{tamanho}}", "M")}
+                  </p>
+                </div>
+              )}
+
+              {/* Botão de reset */}
+              <button
+                type="button"
+                onClick={() => setWhatsappMessage(DEFAULT_WHATSAPP_MESSAGE)}
+                className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <RotateCcw className="w-3 h-3" />
+                Restaurar mensagem padrão
+              </button>
             </>
           )}
 

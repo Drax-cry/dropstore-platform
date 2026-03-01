@@ -35,7 +35,7 @@ function formatPrice(value: number, currency: string | null): string {
   return `${symbol} ${value.toFixed(2).replace(".", ",")}`;
 }
 
-function ProductCard({ product, whatsapp, primaryColor, currency }: {
+function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessage }: {
   product: {
     id: number;
     name: string;
@@ -48,6 +48,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency }: {
   whatsapp: string | null;
   primaryColor: string | null;
   currency: string | null;
+  whatsappMessage?: string | null;
 }) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [imageError, setImageError] = useState(false);
@@ -61,16 +62,20 @@ function ProductCard({ product, whatsapp, primaryColor, currency }: {
 
   const handleWhatsApp = () => {
     if (!whatsapp) return;
-    // O número já está armazenado com o código do país (sem +)
     const number = whatsapp.replace(/\D/g, "");
-    const sizeText = selectedSize ? ` | Tamanho: ${selectedSize}` : "";
     const priceText = discountPct > 0
       ? `${formatPrice(finalPrice, currency)} (${discountPct}% OFF)`
       : formatPrice(originalPrice, currency);
-    const msg = encodeURIComponent(
-      `Olá! Tenho interesse no produto:\n\n*${product.name}*${product.brand ? ` - ${product.brand}` : ""}\nPreço: ${priceText}${sizeText}\n\nPoderia me dar mais informações?`
-    );
-    window.open(`https://wa.me/${number}?text=${msg}`, "_blank");
+
+    // Usa mensagem personalizada ou a padrão
+    const DEFAULT_MSG = `Olá! Tenho interesse no seguinte produto:\n\n\ud83d\udecd\ufe0f *{{produto}}*\n\ud83d\udcb0 Preço: {{preco}}\n\ud83d\udccf Tamanho: {{tamanho}}\n\nPoderia me dar mais informações?`;
+    const template = whatsappMessage || DEFAULT_MSG;
+    const finalMsg = template
+      .replace(/\{\{produto\}\}/g, `${product.name}${product.brand ? ` - ${product.brand}` : ""}`)
+      .replace(/\{\{preco\}\}/g, priceText)
+      .replace(/\{\{tamanho\}\}/g, selectedSize || "N/A");
+
+    window.open(`https://wa.me/${number}?text=${encodeURIComponent(finalMsg)}`, "_blank");
   };
 
   return (
@@ -507,6 +512,7 @@ export default function StoreFront() {
                 whatsapp={store.whatsappNumber}
                 primaryColor={primaryColor}
                 currency={store.currency ?? "BRL"}
+                whatsappMessage={store.whatsappMessage}
               />
             ))}
           </div>

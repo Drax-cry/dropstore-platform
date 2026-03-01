@@ -186,6 +186,7 @@ export const appRouter = router({
         facebook: z.string().optional().nullable(),
         tiktok: z.string().optional().nullable(),
         youtube: z.string().optional().nullable(),
+        whatsappMessage: z.string().optional().nullable(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.id);
