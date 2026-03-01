@@ -27,6 +27,52 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Formata o número de WhatsApp de acordo com o país selecionado
+  const formatWhatsApp = (value: string, countryCode: string): string => {
+    const digits = value.replace(/\D/g, "");
+    switch (countryCode) {
+      case "BR": {
+        // Brasil: (11) 99999-9999 ou (11) 9999-9999
+        if (digits.length <= 2) return digits;
+        if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+        if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+        return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+      }
+      case "PT": {
+        // Portugal: 912 345 678
+        if (digits.length <= 3) return digits;
+        if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
+        return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
+      }
+      case "ES": {
+        // Espanha: 612 345 678
+        if (digits.length <= 3) return digits;
+        if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
+        return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
+      }
+      case "AR": {
+        // Argentina: 11 1234-5678
+        if (digits.length <= 2) return digits;
+        if (digits.length <= 6) return `${digits.slice(0, 2)} ${digits.slice(2)}`;
+        return `${digits.slice(0, 2)} ${digits.slice(2, 6)}-${digits.slice(6, 10)}`;
+      }
+      case "CO": {
+        // Colômbia: 312 345 6789
+        if (digits.length <= 3) return digits;
+        if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
+        return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 10)}`;
+      }
+      default:
+        return digits;
+    }
+  };
+
+  const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatWhatsApp(e.target.value, selectedCountry.code);
+    setWhatsapp(formatted);
+    if (errors.whatsapp) setErrors(p => ({ ...p, whatsapp: "" }));
+  };
+
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!name.trim()) {
@@ -60,7 +106,14 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
 
   const handleCountryChange = (code: string) => {
     const country = COUNTRIES.find(c => c.code === code);
-    if (country) setSelectedCountry(country);
+    if (country) {
+      setSelectedCountry(country);
+      // Reformatar o número ao mudar de país
+      if (whatsapp) {
+        setWhatsapp(formatWhatsApp(whatsapp, code));
+      }
+      setErrors(p => ({ ...p, whatsapp: "" }));
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,8 +284,15 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
               <input
                 type="tel"
                 value={whatsapp}
-                onChange={e => { setWhatsapp(e.target.value); if (errors.whatsapp) setErrors(p => ({ ...p, whatsapp: "" })); }}
-                placeholder={selectedCountry.code === "BR" ? "11999999999" : selectedCountry.code === "PT" ? "912345678" : "999999999"}
+                onChange={handleWhatsAppChange}
+                placeholder={
+                  selectedCountry.code === "BR" ? "(11) 99999-9999" :
+                  selectedCountry.code === "PT" ? "912 345 678" :
+                  selectedCountry.code === "ES" ? "612 345 678" :
+                  selectedCountry.code === "AR" ? "11 1234-5678" :
+                  "312 345 6789"
+                }
+                maxLength={selectedCountry.code === "BR" ? 15 : 12}
                 className={`flex-1 border rounded-r-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all ${
                   errors.whatsapp ? "border-red-400 bg-red-50" : "border-gray-200"
                 }`}
