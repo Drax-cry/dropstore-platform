@@ -46,11 +46,24 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
   // Info tab
   const [name, setName] = useState(store.name);
   const [slogan, setSlogan] = useState(store.slogan ?? "");
-  const [whatsapp, setWhatsapp] = useState(store.whatsappNumber ?? "");
+
+  // Remove o prefixo do número ao inicializar para evitar duplicação ao salvar
+  const stripPrefix = (number: string, prefix: string) => {
+    const digits = number.replace(/\D/g, "");
+    const prefixDigits = prefix.replace(/\D/g, "");
+    if (digits.startsWith(prefixDigits)) {
+      return digits.slice(prefixDigits.length);
+    }
+    return digits;
+  };
+
+  const initialCountry = COUNTRIES.find(c => c.code === store.country) ?? COUNTRIES[0];
+  const [whatsapp, setWhatsapp] = useState(() => {
+    if (!store.whatsappNumber) return "";
+    return stripPrefix(store.whatsappNumber, initialCountry.prefix);
+  });
   const [primaryColor, setPrimaryColor] = useState(store.primaryColor ?? "#000000");
-  const [selectedCountry, setSelectedCountry] = useState(
-    COUNTRIES.find(c => c.code === store.country) ?? COUNTRIES[0]
-  );
+  const [selectedCountry, setSelectedCountry] = useState(initialCountry);
   const [logoPreview, setLogoPreview] = useState<string | null>(store.logoUrl ?? null);
   const [logoFile, setLogoFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
