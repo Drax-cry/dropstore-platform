@@ -1,9 +1,11 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useParams } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Instagram, Facebook, Youtube, Music2 } from "lucide-react";
+import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Instagram, Facebook, Youtube, Music2, ShoppingCart } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useCart } from "@/hooks/useCart";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { CartDrawer } from "@/components/CartDrawer";
 
 function useScrollFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,7 +39,7 @@ function formatPrice(value: number, currency: string | null): string {
   return `${symbol} ${value.toFixed(2).replace(".", ",")}`;
 }
 
-function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessage }: {
+function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessage, storeName, storeSlug }: {
   product: {
     id: number;
     name: string;
@@ -51,11 +53,15 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
   primaryColor: string | null;
   currency: string | null;
   whatsappMessage?: string | null;
+  storeName: string;
+  storeSlug: string;
 }) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [imageError, setImageError] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
   const ref = useScrollFadeIn();
   const { t } = useTranslation();
+  const { addToCart } = useCart();
   const sizes: string[] = product.sizes ? JSON.parse(product.sizes) : [];
   const color = primaryColor || "#000000";
 
@@ -78,6 +84,30 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       .replace(/\{\{tamanho\}\}/g, selectedSize || "N/A");
 
     window.open(`https://wa.me/${number}?text=${encodeURIComponent(finalMsg)}`, "_blank");
+  };
+
+  const handleAddToCart = () => {
+    if (sizes.length > 0 && !selectedSize) {
+      alert(t("storefront.selectSize") || "Por favor, selecione um tamanho");
+      return;
+    }
+
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      brand: product.brand,
+      price: product.price,
+      discountPercent: product.discountPercent,
+      selectedSize: selectedSize || "Único",
+      quantity: 1,
+      imageUrl: product.imageUrl,
+      storeSlug,
+      storeName,
+      currency,
+    });
+
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
   };
 
   return (
@@ -159,21 +189,36 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
           </div>
         )}
 
-        {/* WhatsApp Button */}
-        {whatsapp ? (
-          <button
-            onClick={handleWhatsApp}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
-            style={{ backgroundColor: color }}
-          >
-            <MessageCircle className="w-4 h-4" />
-            {t("storefront.order")}
-          </button>
-        ) : (
-          <div className="w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-gray-100 text-gray-400">
-            {t("storefront.noProducts")}
-          </div>
-        )}
+        {/* Buttons */}
+        <div className="space-y-2">
+          {whatsapp ? (
+            <>
+              <button
+                onClick={handleAddToCart}
+                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] ${
+                  addedToCart
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                }`}
+              >
+                <ShoppingCart className="w-4 h-4" />
+                {addedToCart ? t("storefront.addedToCart") || "Adicionado!" : t("storefront.addToCart") || "Adicionar ao Carrinho"}
+              </button>
+              <button
+                onClick={handleWhatsApp}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
+                style={{ backgroundColor: color }}
+              >
+                <MessageCircle className="w-4 h-4" />
+                {t("storefront.order")}
+              </button>
+            </>
+          ) : (
+            <div className="w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-gray-100 text-gray-400">
+              {t("storefront.noProducts")}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -395,8 +440,9 @@ export default function StoreFront() {
                 </button>
               ))}
             </nav>
-            {/* Language Switcher */}
-            <div className="flex-shrink-0">
+            {/* Cart + Language Switcher */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <CartDrawer />
               <LanguageSwitcher variant="light" />
             </div>
           </div>
@@ -628,6 +674,8 @@ export default function StoreFront() {
                 primaryColor={primaryColor}
                 currency={store.currency ?? "BRL"}
                 whatsappMessage={store.whatsappMessage}
+                storeName={store.name}
+                storeSlug={store.slug}
               />
             ))}
           </div>

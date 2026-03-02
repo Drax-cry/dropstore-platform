@@ -181,3 +181,15 @@
 - [x] Métricas de cache (hit rate, tamanho) para monitorização
 - [x] Teste com 200 VUs: 0% erros HTTP, P95 857ms, 164 RPS
 - [x] Teste com 500 VUs: 5% erros (rate limit), P95 1.7s, 189 RPS
+
+## Carrinho de Compras
+- [x] Hook useCart com localStorage para persistência
+- [x] Botão "Adicionar ao carrinho" nos cards de produto
+- [x] Drawer/Modal do carrinho com lista de produtos (SheetContent)
+- [x] Aumentar/diminuir quantidade no carrinho
+- [x] Remover produto do carrinho
+- [x] Cálculo de total do carrinho
+- [x] Botão "Finalizar compra" que envia todos os produtos via WhatsApp
+- [x] Mensagem de WhatsApp com formatação de lista de produtos
+- [x] Badge no ícone do carrinho mostrando número de itens
+- [x] Agrupamento de itens por loja na mensagem de WhatsApp
