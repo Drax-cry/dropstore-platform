@@ -201,3 +201,6 @@
 - [x] Sidebar colapsável em mobile (hamburger menu)
 - [x] Animações suaves ao expandir/colapsar
 - [x] Ajustar layout principal para acomodar sidebar
+
+## Bugs Reportados
+- [x] Ligação para WhatsApp não está funcionando (carrinho e compra direta) — CORRIGIDO: adicionado whatsappNumber ao CartItem e atualizado CartDrawer

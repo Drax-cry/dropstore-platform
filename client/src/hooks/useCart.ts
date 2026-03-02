@@ -12,6 +12,7 @@ export interface CartItem {
   storeSlug: string;
   storeName: string;
   currency: string | null;
+  whatsappNumber: string | null;
 }
 
 const CART_STORAGE_KEY = 'katail_cart';

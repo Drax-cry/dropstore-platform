@@ -65,14 +65,19 @@ export function CartDrawer() {
     message += `*Itens: ${totalItems}*\n\n`;
     message += '📱 Clique no link abaixo para confirmar seu pedido:';
 
-    // Get WhatsApp number from first item (all items in same store)
+    // Get WhatsApp number from first item
     const firstStore = Object.values(itemsByStore)[0][0];
-    const whatsappNumber = firstStore.storeSlug; // This will be replaced with actual number from store
+    const whatsappNumber = firstStore.whatsappNumber;
 
-    // For now, we'll open WhatsApp with the message
-    // In production, you'd get the actual WhatsApp number from the store
+    if (!whatsappNumber) {
+      alert('Numero de WhatsApp nao configurado para esta loja');
+      return;
+    }
+
+    // Remove non-numeric characters from WhatsApp number
+    const cleanNumber = whatsappNumber.replace(/\D/g, '');
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+    window.open(`https://wa.me/${cleanNumber}?text=${encodedMessage}`, '_blank');
 
     // Clear cart after checkout
     clearCart();

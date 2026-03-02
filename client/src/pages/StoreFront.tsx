@@ -105,6 +105,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       storeSlug,
       storeName,
       currency,
+      whatsappNumber: whatsapp,
     });
 
     setAddedToCart(true);
