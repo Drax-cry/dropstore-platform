@@ -4,19 +4,36 @@ import { getDb } from "./db";
 import { eq } from "drizzle-orm";
 import { stores } from "../drizzle/schema";
 
+// ─── Chaves Stripe (conta de produção GOPM Agency) ────────────────────────────
+// Estas chaves pertencem à conta live gopmagency@gmail.com (acct_1T5NS9Fscc6ayoXL)
+// e têm prioridade sobre as variáveis de ambiente do sistema.
+const STRIPE_LIVE_SECRET_KEY = "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";
+const STRIPE_LIVE_PUBLISHABLE_KEY = "pk_live_51T5NS9Fscc6ayoXL2SCDruuBMP1bOtDUrDcbxLkXoQ4seKlU97IEw0dxcNhompZj9BDdSI5gpeeNGOIaOHtcYyT5001YnjYz6o";
+
 // Lazy-initialize Stripe to avoid startup crash when key is not yet set
 let _stripe: Stripe | null = null;
 
 function getStripe(): Stripe {
   if (!_stripe) {
-    const key = process.env.STRIPE_SECRET_KEY;
+    // Use live key directly (overrides any env variable from the platform)
+    const key = STRIPE_LIVE_SECRET_KEY || process.env.STRIPE_SECRET_KEY;
     if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
     _stripe = new Stripe(key);
+    console.log(`[Stripe] Initialized in ${key.startsWith("sk_live_") ? "LIVE" : "TEST"} mode`);
   }
   return _stripe;
 }
 
+export function getStripePublishableKey(): string {
+  return STRIPE_LIVE_PUBLISHABLE_KEY || process.env.VITE_STRIPE_PUBLISHABLE_KEY || "";
+}
+
 export async function registerStripeRoutes(app: Express) {
+  // Expose publishable key to frontend
+  app.get("/api/stripe/config", (_req: Request, res: Response) => {
+    res.json({ publishableKey: getStripePublishableKey() });
+  });
+
   // Create checkout session — called by frontend when user clicks "Subscribe"
   app.post("/api/create-checkout-session", async (req: Request, res: Response) => {
     try {
