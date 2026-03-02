@@ -204,3 +204,6 @@
 
 ## Bugs Reportados
 - [x] Ligação para WhatsApp não está funcionando (carrinho e compra direta) — CORRIGIDO: adicionado whatsappNumber ao CartItem e atualizado CartDrawer
+
+## Otimizações de Performance
+- [x] Carrinho instantâneo sem delay ao clicar (useSyncExternalStore + CartStore singleton)
