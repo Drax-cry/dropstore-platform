@@ -163,3 +163,8 @@
 - [ ] Notificação por email 24h antes do trial expirar
 - [ ] Histórico de pagamentos na tab de subscrição
 - [ ] Opção de cancelar subscrição
+
+## Atualização das Chaves Stripe
+- [x] Atualizar STRIPE_SECRET_KEY com a chave correta
+- [x] Atualizar VITE_STRIPE_PUBLISHABLE_KEY com a chave correta
+- [x] Validar integração de pagamento com as novas chaves
