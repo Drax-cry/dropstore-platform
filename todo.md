@@ -168,3 +168,16 @@
 - [x] Atualizar STRIPE_SECRET_KEY com a chave correta
 - [x] Atualizar VITE_STRIPE_PUBLISHABLE_KEY com a chave correta
 - [x] Validar integração de pagamento com as novas chaves
+
+## Otimização para 10.000 clientes/dia
+- [x] Cache LRU em memória para produtos, categorias, subcategorias e banners
+- [x] Índices de base de dados em storeId, categoryId, isActive (compostos)
+- [x] Endpoint aggregate storefront (1 pedido em vez de 5 para a vitrine)
+- [x] Lazy loading de imagens (loading="lazy" + decoding="async")
+- [x] Code splitting com React.lazy() para páginas secundárias
+- [x] Connection pooling otimizado (queueLimit: 200)
+- [x] Compressão gzip/brotli já ativa via helmet + compression
+- [x] Invalidação inteligente de cache em operações de escrita
+- [x] Métricas de cache (hit rate, tamanho) para monitorização
+- [x] Teste com 200 VUs: 0% erros HTTP, P95 857ms, 164 RPS
+- [x] Teste com 500 VUs: 5% erros (rate limit), P95 1.7s, 189 RPS

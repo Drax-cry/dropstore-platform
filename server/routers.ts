@@ -38,6 +38,7 @@ import {
   createBanner,
   deleteBanner,
   updateBannerOrder,
+  getStorefrontData,
 } from "./db";
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
@@ -121,6 +122,16 @@ export const appRouter = router({
         const store = await getStoreBySlug(input.slug);
         if (!store) throw new TRPCError({ code: "NOT_FOUND", message: "Loja não encontrada" });
         return store;
+      }),
+
+    // Aggregate endpoint: returns store + categories + subcategories + products + banners
+    // in a single request. Reduces N+1 queries on the storefront page.
+    storefront: publicProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(async ({ input }) => {
+        const data = await getStorefrontData(input.slug);
+        if (!data) throw new TRPCError({ code: "NOT_FOUND", message: "Loja não encontrada" });
+        return data;
       }),
 
     create: protectedProcedure

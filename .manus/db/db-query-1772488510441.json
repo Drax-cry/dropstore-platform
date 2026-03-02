@@ -1,0 +1,9 @@
+{
+  "query": "\nCREATE INDEX idx_stores_userId ON stores(userId);\nCREATE INDEX idx_categories_storeId ON categories(storeId);\nCREATE INDEX idx_subcategories_storeId ON subcategories(storeId);\nCREATE INDEX idx_subcategories_categoryId ON subcategories(categoryId);\nCREATE INDEX idx_products_storeId_isActive ON products(storeId, isActive);\nCREATE INDEX idx_products_storeId_categoryId_isActive ON products(storeId, categoryId, isActive);\nCREATE INDEX idx_store_banners_storeId ON store_banners(storeId);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3mZv6GBgcMQKXyT.root --database jdJmiUPhANN27bg8N7Grdt --execute \nCREATE INDEX idx_stores_userId ON stores(userId);\nCREATE INDEX idx_categories_storeId ON categories(storeId);\nCREATE INDEX idx_subcategories_storeId ON subcategories(storeId);\nCREATE INDEX idx_subcategories_categoryId ON subcategories(categoryId);\nCREATE INDEX idx_products_storeId_isActive ON products(storeId, isActive);\nCREATE INDEX idx_products_storeId_categoryId_isActive ON products(storeId, categoryId, isActive);\nCREATE INDEX idx_store_banners_storeId ON store_banners(storeId);\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 2343
+}

@@ -92,6 +92,8 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
           <img
             src={product.imageUrl}
             alt={product.name}
+            loading="lazy"
+            decoding="async"
             onError={() => setImageError(true)}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
@@ -413,6 +415,8 @@ export default function StoreFront() {
                 <img
                   src={banner.imageUrl}
                   alt={banner.title ?? `Banner ${i + 1}`}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full object-cover"
                   style={{ maxHeight: 320, minHeight: 160 }}
                 />
