@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useCart } from "@/hooks/useCart";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { CartDrawer } from "@/components/CartDrawer";
+import { CategorySidebar } from "@/components/CategorySidebar";
 
 function useScrollFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -581,10 +582,33 @@ export default function StoreFront() {
         </div>
       )}
 
-      {/* Products Grid */}
+      {/* Products Grid with Sidebar */}
       <main className="container py-6 sm:py-10">
+        <div className="flex gap-6">
+          {/* Sidebar */}
+          {categories && categories.length > 0 && (
+            <CategorySidebar
+              categories={categories.map(cat => ({
+                id: cat.id,
+                name: cat.name,
+                subcategories: (allSubcategories || []).filter(sub => sub.categoryId === cat.id),
+              }))}
+              activeCategoryId={activeCategoryId}
+              activeSubcategoryId={activeSubId}
+              onCategorySelect={handleCategoryChange}
+              onSubcategorySelect={(subId, catId) => {
+                if (activeCategoryId !== catId) {
+                  handleCategoryChange(catId);
+                }
+                setActiveSubId(activeSubId === subId ? null : subId);
+              }}
+              primaryColor={primaryColor}
+            />
+          )}
 
-        {/* Size Filter Bar */}
+          {/* Main Content */}
+          <div className="flex-1">
+            {/* Size Filter Bar */}
         {availableSizes.length > 0 && (
           <div className="mb-5">
             <div className="flex items-center gap-2 flex-wrap">
@@ -690,6 +714,8 @@ export default function StoreFront() {
             )}
           </div>
         )}
+          </div>
+        </div>
       </main>
 
       {/* Footer */}

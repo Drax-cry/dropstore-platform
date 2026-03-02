@@ -193,3 +193,11 @@
 - [x] Mensagem de WhatsApp com formatação de lista de produtos
 - [x] Badge no ícone do carrinho mostrando número de itens
 - [x] Agrupamento de itens por loja na mensagem de WhatsApp
+
+## Reorganização de Categorias na Vitrine
+- [x] Sidebar vertical com categorias e subcategorias aninhadas
+- [x] Expandir/colapsar categorias para mostrar subcategorias
+- [x] Indicador visual de categoria ativa
+- [x] Sidebar colapsável em mobile (hamburger menu)
+- [x] Animações suaves ao expandir/colapsar
+- [x] Ajustar layout principal para acomodar sidebar
