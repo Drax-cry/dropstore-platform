@@ -4,6 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Instagram, Facebook, Youtube, Music2, ShoppingCart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCart } from "@/hooks/useCart";
+import { useCartContext } from "@/components/CartContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { CartDrawer } from "@/components/CartDrawer";
 import { CategorySidebar } from "@/components/CategorySidebar";
@@ -87,6 +88,8 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
     window.open(`https://wa.me/${number}?text=${encodeURIComponent(finalMsg)}`, "_blank");
   };
 
+  const { openCart } = useCartContext();
+
   const handleAddToCart = () => {
     if (sizes.length > 0 && !selectedSize) {
       alert(t("storefront.selectSize") || "Por favor, selecione um tamanho");
@@ -107,6 +110,9 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       currency,
       whatsappNumber: whatsapp,
     });
+
+    // Abrir o carrinho automaticamente
+    openCart();
 
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);

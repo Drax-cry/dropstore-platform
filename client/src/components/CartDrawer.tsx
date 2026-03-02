@@ -1,8 +1,8 @@
 import { useCart } from '@/hooks/useCart';
+import { useCartContext } from '@/components/CartContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
-import { useState } from 'react';
 
 function formatPrice(price: number, currency: string | null): string {
   const currencySymbols: { [key: string]: string } = {
@@ -17,7 +17,7 @@ function formatPrice(price: number, currency: string | null): string {
 
 export function CartDrawer() {
   const { cart, removeFromCart, updateQuantity, getTotalItems, getTotalPrice, getItemsByStore, clearCart } = useCart();
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, openCart, closeCart, toggleCart } = useCartContext();
 
   const totalItems = getTotalItems();
   const totalPrice = getTotalPrice();
@@ -81,11 +81,11 @@ export function CartDrawer() {
 
     // Clear cart after checkout
     clearCart();
-    setIsOpen(false);
+    closeCart();
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet open={isOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="relative">
           <ShoppingCart className="w-5 h-5" />

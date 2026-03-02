@@ -207,3 +207,6 @@
 
 ## Otimizações de Performance
 - [x] Carrinho instantâneo sem delay ao clicar (useSyncExternalStore + CartStore singleton)
+
+## Melhorias de UX
+- [x] CartDrawer abre automaticamente ao adicionar produto ao carrinho
