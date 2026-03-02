@@ -61,7 +61,7 @@ export async function registerStripeRoutes(app: Express) {
             price_data: {
               currency: "eur",
               product_data: {
-                name: `DropStore — ${store[0].name}`,
+                name: `katail — ${store[0].name}`,
                 description: "Subscrição mensal para gerir a sua loja online",
               },
               unit_amount: 500, // €5.00 in cents

@@ -49,7 +49,7 @@ export default function Home() {
               <ShoppingBag className="w-4 h-4 text-white" />
             </div>
             <span className="font-bold text-lg tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              DropStore
+              katail
             </span>
           </div>
           <a
@@ -186,9 +186,9 @@ export default function Home() {
             <div className="w-6 h-6 bg-black rounded-md flex items-center justify-center">
               <ShoppingBag className="w-3 h-3 text-white" />
             </div>
-            <span className="font-semibold text-sm">DropStore</span>
+            <span className="font-semibold text-sm">katail</span>
           </div>
-          <p className="text-xs text-gray-400">© 2025 DropStore. Todos os direitos reservados.</p>
+          <p className="text-xs text-gray-400">© 2025 katail. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>

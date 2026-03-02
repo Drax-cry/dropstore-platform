@@ -86,7 +86,7 @@ export default function Presentation() {
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium px-4 py-2 rounded-full mb-8">
             <Star className="w-3.5 h-3.5" />
-            Plataforma DropStore — Apresentação Interativa
+            Plataforma katail — Apresentação Interativa
           </div>
 
           <h1 className="text-5xl sm:text-6xl font-bold mb-6 leading-tight">
@@ -241,7 +241,7 @@ export default function Presentation() {
       {/* Benefits highlight */}
       <section className="py-16 px-4 bg-gradient-to-b from-gray-900 to-gray-950 border-t border-gray-800/50">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">Por que escolher o DropStore?</h2>
+          <h2 className="text-3xl font-bold text-white mb-6">Por que escolher o katail?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {[
               {
@@ -287,7 +287,7 @@ export default function Presentation() {
             <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center">
               <ShoppingBag className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-white">DropStore</span>
+            <span className="font-bold text-white">katail</span>
           </div>
           <p className="text-xs text-gray-500">Plataforma de catálogos online para drops e revendas</p>
         </div>

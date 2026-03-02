@@ -736,7 +736,7 @@ export default function StoreFront() {
           <div className="border-t border-gray-200 pt-6 text-center">
             <p className="text-sm text-gray-400">
               {store.name} · Powered by{" "}
-              <a href="/" className="font-medium text-gray-600 hover:text-gray-900">DropStore</a>
+              <a href="/" className="font-medium text-gray-600 hover:text-gray-900">katail</a>
             </p>
           </div>
         </div>

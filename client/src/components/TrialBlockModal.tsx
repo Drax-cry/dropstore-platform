@@ -48,7 +48,7 @@ export default function TrialBlockModal({ storeId, trialEndsAt, onUnlock }: Prop
 
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
           <p className="text-sm text-blue-900">
-            <strong>Plano DropStore:</strong> €5/mês
+            <strong>Plano katail:</strong> €5/mês
           </p>
           <p className="text-xs text-blue-700 mt-1">
             Acesso completo a todas as funcionalidades

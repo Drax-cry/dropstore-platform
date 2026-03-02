@@ -69,7 +69,7 @@ export default function Admin() {
             <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
               <ShoppingBag className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-base" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>DropStore</span>
+            <span className="font-bold text-base" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>katail</span>
           </div>
           {/* Close button only on mobile */}
           <button
@@ -181,7 +181,7 @@ export default function Admin() {
             <div className="w-7 h-7 bg-black rounded-lg flex items-center justify-center">
               <ShoppingBag className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>DropStore</span>
+            <span className="font-bold text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>katail</span>
           </div>
           {selectedStore && (
             <span className="text-sm text-gray-500 truncate ml-auto">{selectedStore.name}</span>

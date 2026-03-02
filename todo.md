@@ -1,4 +1,4 @@
-# DropStore Platform - TODO
+# katail - TODO
 
 ## Backend / Base de Dados
 - [x] Schema: tabela stores (loja do utilizador)
