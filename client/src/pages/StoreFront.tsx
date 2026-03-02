@@ -186,7 +186,7 @@ export default function StoreFront() {
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [activeSubId, setActiveSubId] = useState<number | null>(null);
   const [sortPrice, setSortPrice] = useState<"none" | "asc" | "desc">("none");
-  const [selectedSizeFilter, setSelectedSizeFilter] = useState<string | null>(null);
+  const [selectedSizeFilters, setSelectedSizeFilters] = useState<string[]>([]);
 
   const { data: store, isLoading: storeLoading, error: storeError } = trpc.stores.getBySlug.useQuery(
     { slug: slug || "" },
@@ -279,12 +279,12 @@ export default function StoreFront() {
         (p.brand && p.brand.toLowerCase().includes(q))
       );
     }
-    if (selectedSizeFilter) {
+    if (selectedSizeFilters.length > 0) {
       products = products.filter(p => {
         if (!p.sizes) return false;
         try {
-          const arr: string[] = JSON.parse(p.sizes);
-          return arr.includes(selectedSizeFilter);
+          const arr: string[] = typeof p.sizes === "string" ? JSON.parse(p.sizes) : p.sizes;
+          return selectedSizeFilters.some(s => arr.includes(s));
         } catch { return false; }
       });
     }
@@ -295,7 +295,7 @@ export default function StoreFront() {
     }
     
     return products;
-  }, [allProducts, activeCategoryId, activeSubId, searchQuery, sortPrice, selectedSizeFilter]);
+  }, [allProducts, activeCategoryId, activeSubId, searchQuery, sortPrice, selectedSizeFilters]);
 
   const primaryColor = store?.primaryColor || "#000000";
 
@@ -524,30 +524,45 @@ export default function StoreFront() {
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-medium text-gray-500 shrink-0">Tamanho:</span>
               <button
-                onClick={() => setSelectedSizeFilter(null)}
+                onClick={() => setSelectedSizeFilters([])}
                 className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
-                  selectedSizeFilter === null
+                  selectedSizeFilters.length === 0
                     ? "text-white border-transparent"
                     : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
                 }`}
-                style={selectedSizeFilter === null ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+                style={selectedSizeFilters.length === 0 ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
               >
                 {t("storefront.all")}
               </button>
-              {availableSizes.map(size => (
+              {availableSizes.map(size => {
+                const isActive = selectedSizeFilters.includes(size);
+                return (
+                  <button
+                    key={size}
+                    onClick={() => {
+                      setSelectedSizeFilters(prev =>
+                        isActive ? prev.filter(s => s !== size) : [...prev, size]
+                      );
+                    }}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+                      isActive
+                        ? "text-white border-transparent"
+                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                    }`}
+                    style={isActive ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
+              {selectedSizeFilters.length > 0 && (
                 <button
-                  key={size}
-                  onClick={() => setSelectedSizeFilter(selectedSizeFilter === size ? null : size)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
-                    selectedSizeFilter === size
-                      ? "text-white border-transparent"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
-                  }`}
-                  style={selectedSizeFilter === size ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+                  onClick={() => setSelectedSizeFilters([])}
+                  className="text-xs text-gray-400 hover:text-gray-600 underline ml-1"
                 >
-                  {size}
+                  Limpar
                 </button>
-              ))}
+              )}
             </div>
           </div>
         )}
