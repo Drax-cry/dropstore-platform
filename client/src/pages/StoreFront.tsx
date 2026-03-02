@@ -230,37 +230,53 @@ export default function StoreFront() {
     }
   }, [categories, activeCategoryId]);
 
+  // Handler para mudar de categoria — limpa filtros de tamanho e subcategoria
+  const handleCategoryChange = (catId: number) => {
+    setActiveCategoryId(catId);
+    setActiveSubId(null);
+    setSelectedSizeFilters([]);
+  };
+
   const subsForActiveCategory = useMemo(() =>
     allSubcategories?.filter(s => s.categoryId === activeCategoryId) || [],
     [allSubcategories, activeCategoryId]
   );
 
-  // Compute all unique sizes across visible products (before size filter)
-  const availableSizes = useMemo(() => {
-    if (!allProducts) return [];
-    const sizeSet = new Set<string>();
-    allProducts.forEach(p => {
+  // Compute unique sizes from products of the ACTIVE category (before size filter)
+  // Also compute count per size for display (ex: "M (12)")
+  const { availableSizes, sizeCount } = useMemo(() => {
+    if (!allProducts) return { availableSizes: [], sizeCount: {} as Record<string, number> };
+    // Filter by active category (and sub) but NOT by size filter
+    let baseProducts = allProducts;
+    if (activeCategoryId !== null) {
+      baseProducts = baseProducts.filter(p => p.categoryId === activeCategoryId);
+    }
+    if (activeSubId !== null) {
+      baseProducts = baseProducts.filter(p => p.subcategoryId === activeSubId);
+    }
+    const countMap: Record<string, number> = {};
+    baseProducts.forEach(p => {
       if (p.sizes) {
         try {
           const arr: string[] = JSON.parse(p.sizes);
-          arr.forEach(s => sizeSet.add(s));
+          arr.forEach(s => { countMap[s] = (countMap[s] || 0) + 1; });
         } catch {}
       }
     });
-    // Sort sizes: numeric first (ascending), then alpha
-    return Array.from(sizeSet).sort((a, b) => {
+    const sizeOrder = ["PP","P","M","G","GG","XGG","XS","S","L","XL","XXL","XXXL"];
+    const sorted = Object.keys(countMap).sort((a, b) => {
       const na = parseFloat(a), nb = parseFloat(b);
       if (!isNaN(na) && !isNaN(nb)) return na - nb;
       if (!isNaN(na)) return -1;
       if (!isNaN(nb)) return 1;
-      const sizeOrder = ["PP","P","M","G","GG","XGG","XS","S","L","XL","XXL","XXXL"];
       const ia = sizeOrder.indexOf(a), ib = sizeOrder.indexOf(b);
       if (ia !== -1 && ib !== -1) return ia - ib;
       if (ia !== -1) return -1;
       if (ib !== -1) return 1;
       return a.localeCompare(b);
     });
-  }, [allProducts]);
+    return { availableSizes: sorted, sizeCount: countMap };
+  }, [allProducts, activeCategoryId, activeSubId]);
 
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
@@ -367,7 +383,7 @@ export default function StoreFront() {
               {categories?.map(cat => (
                 <button
                   key={cat.id}
-                  onClick={() => { setActiveCategoryId(cat.id); setActiveSubId(null); }}
+                  onClick={() => handleCategoryChange(cat.id)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                     activeCategoryId === cat.id ? "text-white" : "text-gray-600 hover:bg-gray-100"
                   }`}
@@ -467,7 +483,7 @@ export default function StoreFront() {
             {categories.map(cat => (
               <button
                 key={cat.id}
-                onClick={() => { setActiveCategoryId(cat.id); setActiveSubId(null); }}
+                onClick={() => handleCategoryChange(cat.id)}
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   activeCategoryId === cat.id ? "text-white" : "bg-gray-100 text-gray-600"
                 }`}
@@ -536,6 +552,7 @@ export default function StoreFront() {
               </button>
               {availableSizes.map(size => {
                 const isActive = selectedSizeFilters.includes(size);
+                const count = sizeCount[size] || 0;
                 return (
                   <button
                     key={size}
@@ -550,8 +567,9 @@ export default function StoreFront() {
                         : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
                     }`}
                     style={isActive ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+                    title={`${count} produto${count !== 1 ? 's' : ''} com tamanho ${size}`}
                   >
-                    {size}
+                    {size} <span className={`opacity-60 ${isActive ? '' : 'text-gray-400'}`}>({count})</span>
                   </button>
                 );
               })}

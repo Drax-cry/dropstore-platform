@@ -99,7 +99,7 @@
 - [x] Hero Section some quando existem banners na loja
 
 ## Categorias visíveis com banners
-- [ ] Barra de categorias permanece visível mesmo quando há banners
+- [x] Barra de categorias permanece visível mesmo quando há banners
 
 ## Contacto e Redes Sociais da Loja
 - [x] Colunas: address, phone, email, instagram, facebook, tiktok, youtube na tabela stores
@@ -149,3 +149,17 @@
 - [ ] Guard de rota para bloquear acesso após trial
 - [ ] Webhook do Stripe para confirmar pagamento
 - [ ] Coluna subscriptionStatus na tabela stores (active, expired, etc)
+
+## Análise de Capacidade (Teste de Carga)
+- [x] Script de teste de carga k6 criado
+- [x] Rate limiter ajustado para produção (2000 req/min por IP)
+- [x] Teste com 100 utilizadores simultâneos: 0% erros HTTP, P95 < 250ms
+- [x] Identificado: erros anteriores eram do rate limiter (mesmo IP no sandbox)
+
+## Funcionalidades Pendentes (Próximas)
+- [x] Contador de produtos por tamanho no filtro (ex: "M (12)")
+- [ ] Indicador de esgotado por tamanho nos cards de produto
+- [x] Limpar filtros ao mudar de categoria
+- [ ] Notificação por email 24h antes do trial expirar
+- [ ] Histórico de pagamentos na tab de subscrição
+- [ ] Opção de cancelar subscrição
