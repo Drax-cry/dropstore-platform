@@ -141,8 +141,66 @@ export async function registerStripeRoutes(app: Express) {
     res.json({ received: true });
   });
 
-  // Legacy webhook path (keep for backwards compatibility)
+  // Legacy webhook path — Stripe dashboard may use this URL.
+  // Process directly (do NOT redirect — Stripe does not follow 307 redirects).
   app.post("/api/stripe-webhook", async (req: Request, res: Response) => {
-    res.redirect(307, "/api/stripe/webhook");
+    const sig = req.headers["stripe-signature"] as string;
+    const webhookSecret = STRIPE_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET || "";
+
+    let event: Stripe.Event;
+    try {
+      event = getStripe().webhooks.constructEvent(req.body, sig, webhookSecret);
+    } catch (error) {
+      console.error("[Webhook-legacy] Signature error:", error);
+      return res.status(400).json({ error: "Webhook signature verification failed" });
+    }
+
+    // Handle test events
+    if (event.id.startsWith("evt_test_")) {
+      return res.json({ verified: true });
+    }
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const storeId = parseInt(session.metadata?.storeId || "0");
+      console.log(`[Webhook-legacy] checkout.session.completed — storeId=${storeId}`);
+      if (storeId) {
+        const db = await getDb();
+        if (db) {
+          await db.update(stores).set({
+            subscriptionStatus: "active",
+            stripeCustomerId: session.customer as string,
+            stripeSubscriptionId: session.subscription as string,
+          }).where(eq(stores.id, storeId));
+          console.log(`[Webhook-legacy] Store ${storeId} subscription ACTIVATED`);
+        }
+      }
+    }
+
+    if (event.type === "payment_intent.succeeded") {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      console.log(`[Webhook-legacy] payment_intent.succeeded — id=${paymentIntent.id}`);
+      // Try to find store by stripeCustomerId
+      if (paymentIntent.customer) {
+        const db = await getDb();
+        if (db) {
+          const storeList = await db.select().from(stores).where(eq(stores.stripeCustomerId, paymentIntent.customer as string));
+          if (storeList.length > 0) {
+            await db.update(stores).set({ subscriptionStatus: "active" }).where(eq(stores.stripeCustomerId, paymentIntent.customer as string));
+            console.log(`[Webhook-legacy] Store activated via payment_intent for customer ${paymentIntent.customer}`);
+          }
+        }
+      }
+    }
+
+    if (event.type === "customer.subscription.deleted") {
+      const subscription = event.data.object as Stripe.Subscription;
+      const db = await getDb();
+      if (db) {
+        await db.update(stores).set({ subscriptionStatus: "cancelled" }).where(eq(stores.stripeSubscriptionId, subscription.id));
+      }
+    }
+
+    res.json({ received: true });
   });
 }

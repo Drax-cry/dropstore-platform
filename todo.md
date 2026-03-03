@@ -230,3 +230,6 @@
 - [x] Logs detalhados no webhook para diagnóstico
 - [x] Corrigir erros TypeScript no StoreFront.tsx (tipos implícitos 'any')
 - [x] Corrigir erro setIsOpen no CartDrawer.tsx
+
+## Bug: Webhook Stripe 307 Redirect
+- [x] Stripe envia para /api/stripe-webhook mas servidor tem /api/stripe/webhook — CORRIGIDO: endpoint /api/stripe-webhook agora processa diretamente (sem redirect) + express.raw() adicionado
