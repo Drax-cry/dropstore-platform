@@ -3,6 +3,7 @@ import { useCartContext } from '@/components/CartContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
+import { useMemo } from 'react';
 
 function formatPrice(price: number, currency: string | null): string {
   const currencySymbols: { [key: string]: string } = {
@@ -16,12 +17,22 @@ function formatPrice(price: number, currency: string | null): string {
 }
 
 export function CartDrawer() {
-  const { cart, removeFromCart, updateQuantity, getTotalItems, getTotalPrice, getItemsByStore, clearCart } = useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const { isOpen, openCart, closeCart, toggleCart } = useCartContext();
 
-  const totalItems = getTotalItems();
-  const totalPrice = getTotalPrice();
-  const itemsByStore = getItemsByStore();
+  // Calcular diretamente do array reativo `cart` para garantir re-render imediato
+  const totalItems = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
+  const totalPrice = useMemo(() => cart.reduce((sum, item) => {
+    const price = parseFloat(item.price);
+    const discount = item.discountPercent ? parseFloat(item.discountPercent) : 0;
+    const finalPrice = discount > 0 ? price * (1 - discount / 100) : price;
+    return sum + finalPrice * item.quantity;
+  }, 0), [cart]);
+  const itemsByStore = useMemo(() => cart.reduce((grouped: { [key: string]: typeof cart }, item) => {
+    if (!grouped[item.storeSlug]) grouped[item.storeSlug] = [];
+    grouped[item.storeSlug].push(item);
+    return grouped;
+  }, {}), [cart]);
 
   const handleCheckout = () => {
     if (cart.length === 0) return;

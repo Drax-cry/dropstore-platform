@@ -1,4 +1,4 @@
-import { useState, useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 export interface CartItem {
   productId: number;
@@ -66,14 +66,19 @@ class CartStore {
     );
 
     if (existingIndex >= 0) {
-      this.cart[existingIndex].quantity += item.quantity;
+      // Criar novo array com novo objeto para o item atualizado
+      this.cart = this.cart.map((c, i) =>
+        i === existingIndex ? { ...c, quantity: c.quantity + item.quantity } : c
+      );
     } else {
-      this.cart.push(item);
+      // Criar novo array com o novo item
+      this.cart = [...this.cart, item];
     }
     this.saveCart();
   }
 
   removeFromCart(productId: number, size: string, storeSlug: string) {
+    // Criar novo array sem o item removido
     this.cart = this.cart.filter(
       item =>
         !(item.productId === productId && item.selectedSize === size && item.storeSlug === storeSlug)
@@ -85,13 +90,13 @@ class CartStore {
     if (quantity <= 0) {
       this.removeFromCart(productId, size, storeSlug);
     } else {
-      const item = this.cart.find(
-        c => c.productId === productId && c.selectedSize === size && c.storeSlug === storeSlug
+      // Criar novo array com novo objeto para o item atualizado — ESSENCIAL para useSyncExternalStore detetar a mudança
+      this.cart = this.cart.map(item =>
+        item.productId === productId && item.selectedSize === size && item.storeSlug === storeSlug
+          ? { ...item, quantity }
+          : item
       );
-      if (item) {
-        item.quantity = quantity;
-        this.saveCart();
-      }
+      this.saveCart();
     }
   }
 
@@ -129,7 +134,7 @@ class CartStore {
 const cartStore = new CartStore();
 
 export function useCart() {
-  // Use useSyncExternalStore for instant updates without useEffect delays
+  // useSyncExternalStore requer que getSnapshot retorne uma referência diferente quando o estado muda
   const cart = useSyncExternalStore(
     callback => cartStore.subscribe(callback),
     () => cartStore.getSnapshot()
