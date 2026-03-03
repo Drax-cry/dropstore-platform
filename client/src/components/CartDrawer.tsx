@@ -205,7 +205,7 @@ export function CartDrawer() {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => setIsOpen(false)}
+                onClick={() => closeCart()}
                 className="w-full"
               >
                 Continuar Comprando

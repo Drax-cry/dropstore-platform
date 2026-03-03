@@ -8,6 +8,7 @@ import { useCartContext } from "@/components/CartContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { CartDrawer } from "@/components/CartDrawer";
 import { CategorySidebar } from "@/components/CategorySidebar";
+import type { Category, Subcategory, Product, StoreBanner } from "../../../drizzle/schema";
 
 function useScrollFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -283,7 +284,7 @@ export default function StoreFront() {
   };
 
   const subsForActiveCategory = useMemo(() =>
-    allSubcategories?.filter(s => s.categoryId === activeCategoryId) || [],
+    allSubcategories?.filter((s: Subcategory) => s.categoryId === activeCategoryId) || [],
     [allSubcategories, activeCategoryId]
   );
 
@@ -294,13 +295,13 @@ export default function StoreFront() {
     // Filter by active category (and sub) but NOT by size filter
     let baseProducts = allProducts;
     if (activeCategoryId !== null) {
-      baseProducts = baseProducts.filter(p => p.categoryId === activeCategoryId);
+      baseProducts = baseProducts.filter((p: Product) => p.categoryId === activeCategoryId);
     }
     if (activeSubId !== null) {
-      baseProducts = baseProducts.filter(p => p.subcategoryId === activeSubId);
+      baseProducts = baseProducts.filter((p: Product) => p.subcategoryId === activeSubId);
     }
     const countMap: Record<string, number> = {};
-    baseProducts.forEach(p => {
+    baseProducts.forEach((p: Product) => {
       if (p.sizes) {
         try {
           const arr: string[] = JSON.parse(p.sizes);
@@ -328,20 +329,20 @@ export default function StoreFront() {
     let products = allProducts;
 
     if (activeCategoryId !== null) {
-      products = products.filter(p => p.categoryId === activeCategoryId);
+      products = products.filter((p: Product) => p.categoryId === activeCategoryId);
     }
     if (activeSubId !== null) {
-      products = products.filter(p => p.subcategoryId === activeSubId);
+      products = products.filter((p: Product) => p.subcategoryId === activeSubId);
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      products = products.filter(p =>
+      products = products.filter((p: Product) =>
         p.name.toLowerCase().includes(q) ||
         (p.brand && p.brand.toLowerCase().includes(q))
       );
     }
     if (selectedSizeFilters.length > 0) {
-      products = products.filter(p => {
+      products = products.filter((p: Product) => {
         if (!p.sizes) return false;
         try {
           const arr: string[] = typeof p.sizes === "string" ? JSON.parse(p.sizes) : p.sizes;
@@ -435,7 +436,7 @@ export default function StoreFront() {
 
             {/* Category nav (desktop) */}
             <nav className="hidden lg:flex items-center gap-1">
-              {categories?.map(cat => (
+              {categories?.map((cat: Category) => (
                 <button
                   key={cat.id}
                   onClick={() => handleCategoryChange(cat.id)}
@@ -464,7 +465,7 @@ export default function StoreFront() {
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${bannerIndex * 100}%)` }}
           >
-            {banners.map((banner, i) => (
+            {banners.map((banner: StoreBanner, i: number) => (
               <div key={banner.id} className="w-full flex-shrink-0 relative">
                 <img
                   src={banner.imageUrl}
@@ -497,7 +498,7 @@ export default function StoreFront() {
                 <ChevronRight className="w-5 h-5 text-gray-700" />
               </button>
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                {banners.map((_, i) => (
+                {banners.map((_: StoreBanner, i: number) => (
                   <button
                     key={i}
                     onClick={() => setBannerIndex(i)}
@@ -538,7 +539,7 @@ export default function StoreFront() {
       {categories && categories.length > 0 && (
         <div className="lg:hidden sticky top-16 z-40 bg-white border-b border-gray-100 py-3">
           <div className="flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide">
-            {categories.map(cat => (
+            {categories.map((cat: Category) => (
               <button
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
@@ -570,7 +571,7 @@ export default function StoreFront() {
               >
                 {t("storefront.all")}
               </button>
-              {subsForActiveCategory.map(sub => (
+              {subsForActiveCategory.map((sub: Subcategory) => (
                 <button
                   key={sub.id}
                   onClick={() => setActiveSubId(activeSubId === sub.id ? null : sub.id)}
@@ -595,10 +596,10 @@ export default function StoreFront() {
           {/* Sidebar */}
           {categories && categories.length > 0 && (
             <CategorySidebar
-              categories={categories.map(cat => ({
+              categories={categories.map((cat: Category) => ({
                 id: cat.id,
                 name: cat.name,
-                subcategories: (allSubcategories || []).filter(sub => sub.categoryId === cat.id),
+                subcategories: (allSubcategories || []).filter((sub: Subcategory) => sub.categoryId === cat.id),
               }))}
               activeCategoryId={activeCategoryId}
               activeSubcategoryId={activeSubId}
@@ -697,7 +698,7 @@ export default function StoreFront() {
 
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {filteredProducts.map(product => (
+            {filteredProducts.map((product: Product) => (
               <ProductCard
                 key={product.id}
                 product={product}

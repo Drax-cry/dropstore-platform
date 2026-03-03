@@ -222,3 +222,11 @@
 ## Funcionalidades de Subscrição
 - [x] Botão de cancelar assinatura no painel admin
 - [x] Endpoint para cancelar subscrição no Stripe
+
+## Auditoria e Correções de Código Stripe
+- [x] Webhook: express.raw() adicionado antes do express.json() para verificação correta de assinatura
+- [x] Webhook secret atualizado: whsec_PwwDEju97dFOMNDQ6truW8oe3W6vIfmi
+- [x] Adicionado handler para customer.subscription.deleted
+- [x] Logs detalhados no webhook para diagnóstico
+- [x] Corrigir erros TypeScript no StoreFront.tsx (tipos implícitos 'any')
+- [x] Corrigir erro setIsOpen no CartDrawer.tsx

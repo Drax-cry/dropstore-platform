@@ -9,7 +9,7 @@ import { stores } from "../drizzle/schema";
 // e têm prioridade sobre as variáveis de ambiente do sistema.
 const STRIPE_LIVE_SECRET_KEY = "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";
 const STRIPE_LIVE_PUBLISHABLE_KEY = "pk_live_51T5NS9Fscc6ayoXL2SCDruuBMP1bOtDUrDcbxLkXoQ4seKlU97IEw0dxcNhompZj9BDdSI5gpeeNGOIaOHtcYyT5001YnjYz6o";
-const STRIPE_WEBHOOK_SECRET = "whsec_bTW4nfHp5ueJ8TbmZXkU0pY1n3U1fO1I";
+const STRIPE_WEBHOOK_SECRET = "whsec_PwwDEju97dFOMNDQ6truW8oe3W6vIfmi";
 
 // Lazy-initialize Stripe to avoid startup crash when key is not yet set
 let _stripe: Stripe | null = null;
@@ -109,6 +109,7 @@ export async function registerStripeRoutes(app: Express) {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       const storeId = parseInt(session.metadata?.storeId || "0");
+      console.log(`[Webhook] checkout.session.completed — storeId=${storeId}, customer=${session.customer}, sub=${session.subscription}`);
 
       if (storeId) {
         const db = await getDb();
@@ -118,8 +119,22 @@ export async function registerStripeRoutes(app: Express) {
             stripeCustomerId: session.customer as string,
             stripeSubscriptionId: session.subscription as string,
           }).where(eq(stores.id, storeId));
-          console.log(`[Webhook] Store ${storeId} subscription activated`);
+          console.log(`[Webhook] Store ${storeId} subscription ACTIVATED`);
         }
+      } else {
+        console.error("[Webhook] storeId missing from metadata!", session.metadata);
+      }
+    }
+
+    // Handle subscription cancellation from Stripe dashboard
+    if (event.type === "customer.subscription.deleted") {
+      const subscription = event.data.object as Stripe.Subscription;
+      const db = await getDb();
+      if (db) {
+        await db.update(stores).set({
+          subscriptionStatus: "cancelled",
+        }).where(eq(stores.stripeSubscriptionId, subscription.id));
+        console.log(`[Webhook] Subscription ${subscription.id} cancelled`);
       }
     }
 
