@@ -446,50 +446,64 @@ export default function StoreFront() {
 
       {/* Banner Carousel */}
       {banners && banners.length > 0 && (
-        <div className="relative w-full overflow-hidden bg-gray-100" style={{ maxHeight: 320 }}>
+        <div className="relative w-full overflow-hidden bg-gray-100">
+          {/* Track */}
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${bannerIndex * 100}%)` }}
           >
             {banners.map((banner: StoreBanner, i: number) => (
               <div key={banner.id} className="w-full flex-shrink-0 relative">
-                <img
-                  src={banner.imageUrl}
-                  alt={banner.title ?? `Banner ${i + 1}`}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full object-cover"
-                  style={{ maxHeight: 320, minHeight: 160 }}
-                />
+                {/* Aspect-ratio container: 2:1 mobile → 3:1 tablet → 4:1 desktop */}
+                <div className="w-full aspect-[2/1] sm:aspect-[3/1] lg:aspect-[4/1] bg-gray-200">
+                  <img
+                    src={banner.imageUrl}
+                    alt={banner.title ?? `Banner ${i + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 {banner.title && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-6 py-4">
-                    <p className="text-white font-bold text-lg sm:text-xl drop-shadow">{banner.title}</p>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-4 sm:px-6 py-3 sm:py-4">
+                    <p className="text-white font-bold text-sm sm:text-lg md:text-xl drop-shadow line-clamp-2">{banner.title}</p>
                   </div>
                 )}
               </div>
             ))}
           </div>
+
+          {/* Navigation arrows */}
           {banners.length > 1 && (
             <>
               <button
                 onClick={() => setBannerIndex(prev => (prev - 1 + banners.length) % banners.length)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow transition-all"
+                className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-9 sm:h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow transition-all"
+                aria-label="Banner anterior"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-700" />
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
               </button>
               <button
                 onClick={() => setBannerIndex(prev => (prev + 1) % banners.length)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow transition-all"
+                className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-9 sm:h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow transition-all"
+                aria-label="Próximo banner"
               >
-                <ChevronRight className="w-5 h-5 text-gray-700" />
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
               </button>
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+
+              {/* Dots */}
+              <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                 {banners.map((_: StoreBanner, i: number) => (
                   <button
                     key={i}
                     onClick={() => setBannerIndex(i)}
-                    className="w-2 h-2 rounded-full transition-all"
-                    style={{ backgroundColor: i === bannerIndex ? primaryColor : "rgba(255,255,255,0.6)" }}
+                    className="rounded-full transition-all"
+                    style={{
+                      width: i === bannerIndex ? 20 : 8,
+                      height: 8,
+                      backgroundColor: i === bannerIndex ? primaryColor : "rgba(255,255,255,0.6)",
+                    }}
+                    aria-label={`Ir para banner ${i + 1}`}
                   />
                 ))}
               </div>
