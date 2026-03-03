@@ -218,3 +218,7 @@
 
 ## Correções de Pagamento
 - [x] Webhook secret do Stripe atualizado para a conta live
+
+## Funcionalidades de Subscrição
+- [x] Botão de cancelar assinatura no painel admin
+- [x] Endpoint para cancelar subscrição no Stripe

@@ -143,6 +143,20 @@ export default function StoreManager({ storeId, onBack }: Props) {
     }
   };
 
+  const cancelSubscriptionMutation = trpc.stores.cancelSubscription.useMutation({
+    onSuccess: () => {
+      toast.success("Assinatura cancelada com sucesso");
+      utils.trial.checkStatus.invalidate({ storeId });
+    },
+    onError: () => toast.error("Erro ao cancelar assinatura"),
+  });
+
+  const handleCancelSubscription = (id: number) => {
+    if (confirm("Tem a certeza que deseja cancelar a assinatura?")) {
+      cancelSubscriptionMutation.mutate({ storeId: id });
+    }
+  };
+
   return (
     <div>
       {/* Trial Status Banner */}
@@ -632,9 +646,18 @@ export default function StoreManager({ storeId, onBack }: Props) {
               </button>
             )}
             {isPaid && (
-              <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-xl p-4">
-                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                <span>Subscrição ativa. Será cobrado €5/mês automaticamente via Stripe.</span>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-xl p-4">
+                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span>Subscricao ativa. Sera cobrado 5/mes automaticamente via Stripe.</span>
+                </div>
+                <button
+                  onClick={() => handleCancelSubscription(storeId)}
+                  className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-3 px-6 rounded-xl transition-colors border border-red-200"
+                >
+                  <X className="w-5 h-5" />
+                  Cancelar Subscricao
+                </button>
               </div>
             )}
           </div>

@@ -14,7 +14,7 @@ const STRIPE_WEBHOOK_SECRET = "whsec_bTW4nfHp5ueJ8TbmZXkU0pY1n3U1fO1I";
 // Lazy-initialize Stripe to avoid startup crash when key is not yet set
 let _stripe: Stripe | null = null;
 
-function getStripe(): Stripe {
+export function getStripe(): Stripe {
   if (!_stripe) {
     // Use live key directly (overrides any env variable from the platform)
     const key = STRIPE_LIVE_SECRET_KEY || process.env.STRIPE_SECRET_KEY;

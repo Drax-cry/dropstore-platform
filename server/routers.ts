@@ -569,6 +569,34 @@ export const appRouter = router({
         });
         return { success: true };
       }),
+
+    // Cancelar assinatura
+    cancelSubscription: protectedProcedure
+      .input(z.object({ storeId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const store = await getStoreById(input.storeId);
+        if (!store || store.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+
+        // Se tem ID de subscricao no Stripe, cancelar la
+        if (store.stripeSubscriptionId) {
+          try {
+            const { getStripe } = await import("./stripe");
+            await getStripe().subscriptions.cancel(store.stripeSubscriptionId);
+          } catch (error) {
+            console.error("Erro ao cancelar subscricao no Stripe:", error);
+            throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao cancelar subscricao" });
+          }
+        }
+
+        // Atualizar status no banco de dados
+        await updateStoreSubscription(input.storeId, {
+          subscriptionStatus: "cancelled",
+        });
+
+        return { success: true, message: "Assinatura cancelada com sucesso" };
+      }),
   }),
 });
 
