@@ -521,26 +521,6 @@ export default function StoreFront() {
         </section>
       )}
 
-      {/* Mobile Category Nav */}
-      {categories && categories.length > 0 && (
-        <div className="lg:hidden sticky top-14 sm:top-16 z-40 bg-white border-b border-gray-100 py-3">
-          <div className="flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide">
-            {categories.map((cat: Category) => (
-              <button
-                key={cat.id}
-                onClick={() => handleCategoryChange(cat.id)}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeCategoryId === cat.id ? "text-white" : "bg-gray-100 text-gray-600"
-                }`}
-                style={activeCategoryId === cat.id ? { backgroundColor: primaryColor } : {}}
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Subcategory Filter */}
       {subsForActiveCategory.length > 0 && (
         <div className="bg-gray-50 border-b border-gray-100 py-3">
