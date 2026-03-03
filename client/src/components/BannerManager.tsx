@@ -167,7 +167,7 @@ export default function BannerManager({ storeId }: Props) {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-1 pr-3 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-1 pr-3 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => handleMoveUp(index)}
                   disabled={index === 0}

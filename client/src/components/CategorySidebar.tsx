@@ -148,7 +148,7 @@ export function CategorySidebar({
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-64 bg-white rounded-xl border border-gray-100 p-4 h-fit sticky top-24">
+      <aside className="hidden lg:block w-56 xl:w-64 bg-white rounded-xl border border-gray-100 p-4 h-fit sticky top-24 flex-shrink-0">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Categorias</h3>
         {sidebarContent}
       </aside>

@@ -158,33 +158,33 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        <h3 className="font-semibold text-gray-900 mb-1 text-sm leading-tight">{product.name}</h3>
+      <div className="p-3 sm:p-4">
+        <h3 className="font-semibold text-gray-900 mb-1 text-xs sm:text-sm leading-tight line-clamp-2">{product.name}</h3>
         {discountPct > 0 ? (
-          <div className="mb-3">
+          <div className="mb-2 sm:mb-3">
             <p className="text-xs text-gray-400 line-through">
               {formatPrice(originalPrice, currency)}
             </p>
-            <p className="text-lg font-bold text-red-600">
+            <p className="text-base sm:text-lg font-bold text-red-600">
               {formatPrice(finalPrice, currency)}
             </p>
           </div>
         ) : (
-          <p className="text-lg font-bold text-gray-900 mb-3">
+          <p className="text-base sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">
             {formatPrice(originalPrice, currency)}
           </p>
         )}
 
         {/* Size Selector */}
         {sizes.length > 0 && (
-          <div className="mb-3">
-            <p className="text-xs text-gray-400 mb-1.5">Tamanho:</p>
-            <div className="flex flex-wrap gap-1.5">
+          <div className="mb-2 sm:mb-3">
+            <p className="text-xs text-gray-400 mb-1">Tamanho:</p>
+            <div className="flex flex-wrap gap-1">
               {sizes.map(size => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(selectedSize === size ? "" : size)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all ${
+                  className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-xs font-medium border transition-all ${
                     selectedSize === size
                       ? "text-white border-transparent"
                       : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
@@ -199,31 +199,32 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
         )}
 
         {/* Buttons */}
-        <div className="space-y-2">
+        <div className="space-y-1.5 sm:space-y-2">
           {whatsapp ? (
             <>
               <button
                 onClick={handleAddToCart}
-                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] ${
+                className={`w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98] ${
                   addedToCart
                     ? 'bg-green-500 text-white'
                     : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                 }`}
               >
-                <ShoppingCart className="w-4 h-4" />
-                {addedToCart ? t("storefront.addedToCart") || "Adicionado!" : t("storefront.addToCart") || "Adicionar ao Carrinho"}
+                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">{addedToCart ? t("storefront.addedToCart") || "Adicionado!" : t("storefront.addToCart") || "Adicionar ao Carrinho"}</span>
+                <span className="sm:hidden">{addedToCart ? "Adicionado!" : "Carrinho"}</span>
               </button>
               <button
                 onClick={handleWhatsApp}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
                 style={{ backgroundColor: color }}
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 {t("storefront.order")}
               </button>
             </>
           ) : (
-            <div className="w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-gray-100 text-gray-400">
+            <div className="w-full py-2 rounded-xl text-xs font-semibold text-center bg-gray-100 text-gray-400">
               {t("storefront.noProducts")}
             </div>
           )}
@@ -401,23 +402,23 @@ export default function StoreFront() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container">
-          <div className="flex items-center justify-between h-16 gap-4">
+          <div className="flex items-center h-14 sm:h-16 gap-2 sm:gap-4">
             {/* Logo */}
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               {store.logoUrl ? (
-                <img src={store.logoUrl} alt={store.name} className="h-9 w-auto object-contain" />
+                <img src={store.logoUrl} alt={store.name} className="h-8 sm:h-9 w-auto object-contain max-w-[80px] sm:max-w-none" />
               ) : (
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: primaryColor }}>
-                  <ShoppingBag className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: primaryColor }}>
+                  <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
               )}
-              <span className="font-bold text-base text-gray-900 hidden sm:block" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <span className="font-bold text-sm sm:text-base text-gray-900 hidden sm:block truncate max-w-[120px] md:max-w-none" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 {store.name}
               </span>
             </div>
 
             {/* Search */}
-            <div className="flex-1 max-w-md relative">
+            <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
@@ -434,13 +435,13 @@ export default function StoreFront() {
               )}
             </div>
 
-            {/* Category nav (desktop) */}
-            <nav className="hidden lg:flex items-center gap-1">
+            {/* Category nav (desktop only) */}
+            <nav className="hidden lg:flex items-center gap-1 flex-shrink-0">
               {categories?.map((cat: Category) => (
                 <button
                   key={cat.id}
                   onClick={() => handleCategoryChange(cat.id)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                     activeCategoryId === cat.id ? "text-white" : "text-gray-600 hover:bg-gray-100"
                   }`}
                   style={activeCategoryId === cat.id ? { backgroundColor: primaryColor } : {}}
@@ -450,7 +451,7 @@ export default function StoreFront() {
               ))}
             </nav>
             {/* Cart + Language Switcher */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               <CartDrawer />
               <LanguageSwitcher variant="light" />
             </div>
@@ -537,7 +538,7 @@ export default function StoreFront() {
 
       {/* Mobile Category Nav */}
       {categories && categories.length > 0 && (
-        <div className="lg:hidden sticky top-16 z-40 bg-white border-b border-gray-100 py-3">
+        <div className="lg:hidden sticky top-14 sm:top-16 z-40 bg-white border-b border-gray-100 py-3">
           <div className="flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide">
             {categories.map((cat: Category) => (
               <button
@@ -591,8 +592,8 @@ export default function StoreFront() {
       )}
 
       {/* Products Grid with Sidebar */}
-      <main className="container py-6 sm:py-10">
-        <div className="flex gap-6">
+      <main className="container py-4 sm:py-6 md:py-10">
+        <div className="flex gap-4 lg:gap-6">
           {/* Sidebar */}
           {categories && categories.length > 0 && (
             <CategorySidebar
@@ -668,26 +669,26 @@ export default function StoreFront() {
         )}
 
         {/* Search results info and Price Filter */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-2">
+        <div className="mb-4 sm:mb-6 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             {searchQuery && (
               <>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500 truncate">
                   {filteredProducts.length} {t("storefront.results")} "{searchQuery}"
                 </p>
-                <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline">
+                <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline flex-shrink-0">
                   {t("common.back")}
                 </button>
               </>
             )}
           </div>
           
-          <div className="flex items-center gap-2">
-            <label className="text-xs text-gray-600 font-medium">{t("storefront.sort")}:</label>
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <label className="text-xs text-gray-600 font-medium hidden sm:block">{t("storefront.sort")}:</label>
             <select
               value={sortPrice}
               onChange={(e) => setSortPrice(e.target.value as "none" | "asc" | "desc")}
-              className="text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-white cursor-pointer"
+              className="text-xs border border-gray-200 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 focus:outline-none focus:ring-2 focus:ring-black bg-white cursor-pointer"
             >
               <option value="none">{t("storefront.sortDefault")}</option>
               <option value="asc">{t("storefront.sortAsc")}</option>
@@ -697,7 +698,7 @@ export default function StoreFront() {
         </div>
 
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
             {filteredProducts.map((product: Product) => (
               <ProductCard
                 key={product.id}

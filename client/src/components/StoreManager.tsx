@@ -168,8 +168,8 @@ export default function StoreManager({ storeId, onBack }: Props) {
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={onBack}
             className="p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors flex-shrink-0"
@@ -178,59 +178,62 @@ export default function StoreManager({ storeId, onBack }: Props) {
           </button>
           <div className="min-w-0">
             <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{currentStore?.name || "Loja"}</h1>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-xs sm:text-sm text-gray-400 truncate">dropstore.manus.space/loja/{currentStore?.slug}</span>
+            <div className="flex items-center gap-1.5 mt-0.5 min-w-0">
+              <span className="text-xs text-gray-400 truncate max-w-[180px] sm:max-w-none">/loja/{currentStore?.slug}</span>
               <a
                 href={`/loja/${currentStore?.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-gray-600 flex-shrink-0"
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        <div className="flex items-center gap-2 flex-wrap">
           <LanguageSwitcher variant="light" />
           <button
             onClick={() => setShowEditStoreModal(true)}
-            className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1.5 border border-gray-200 text-gray-600 px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
           >
             <Edit2 className="w-4 h-4" />
-            {t("admin.editStore") || "Editar loja"}
+            <span className="hidden sm:inline">{t("admin.editStore") || "Editar loja"}</span>
+            <span className="sm:hidden">Editar</span>
           </button>
           <a
             href={`/loja/${currentStore?.slug}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1.5 border border-gray-200 text-gray-600 px-3 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
           >
             <ExternalLink className="w-4 h-4" />
-            {t("admin.viewStorefront") || "Ver vitrine"}
+            <span className="hidden sm:inline">{t("admin.viewStorefront") || "Ver vitrine"}</span>
+            <span className="sm:hidden">Ver</span>
           </a>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-full sm:w-fit mb-6 sm:mb-8">
+      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-full mb-6 sm:mb-8 overflow-x-auto">
         {([
-          { key: "categories", label: "Categorias", icon: Tag },
-          { key: "products", label: "Produtos", icon: Package },
-          { key: "banners", label: "Banners", icon: Layers },
-          { key: "subscription", label: "Subscrição", icon: CreditCard },
+          { key: "categories", label: "Categorias", labelMobile: "Categ.", icon: Tag },
+          { key: "products", label: "Produtos", labelMobile: "Produtos", icon: Package },
+          { key: "banners", label: "Banners", labelMobile: "Banners", icon: Layers },
+          { key: "subscription", label: "Subscrição", labelMobile: "Plano", icon: CreditCard },
         ] as const).map(tab => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
               activeTab === tab.key
                 ? "bg-white text-gray-900 shadow-sm"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            <tab.icon className="w-4 h-4" />
-            {tab.label}
+            <tab.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+            <span className="hidden sm:inline">{tab.label}</span>
+            <span className="sm:hidden">{tab.labelMobile}</span>
           </button>
         ))}
       </div>
@@ -250,8 +253,8 @@ export default function StoreManager({ storeId, onBack }: Props) {
                 type="text"
                 value={newCatName}
                 onChange={e => setNewCatName(e.target.value)}
-                placeholder="Nome da categoria (ex: Roupas, Tênis...)"
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                placeholder="Nome da categoria..."
+                className="flex-1 min-w-0 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
                 onKeyDown={e => {
                   if (e.key === "Enter" && newCatName.trim()) {
                     createCatMutation.mutate({ storeId, name: newCatName.trim() });
@@ -265,10 +268,10 @@ export default function StoreManager({ storeId, onBack }: Props) {
                   }
                 }}
                 disabled={createCatMutation.isPending || !newCatName.trim()}
-                className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                className="bg-black text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center gap-1.5 flex-shrink-0"
               >
                 {createCatMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                Adicionar
+                <span className="hidden sm:inline">Adicionar</span>
               </button>
             </div>
           </div>
@@ -405,17 +408,17 @@ export default function StoreManager({ storeId, onBack }: Props) {
           )}
 
           {productsLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 sm:gap-4">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 animate-pulse">
-                  <div className="h-32 bg-gray-200 rounded-lg mb-3" />
+                <div key={i} className="bg-white rounded-xl border border-gray-100 p-3 sm:p-4 animate-pulse">
+                  <div className="h-28 sm:h-32 bg-gray-200 rounded-lg mb-3" />
                   <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
                   <div className="h-3 bg-gray-200 rounded w-1/2" />
                 </div>
               ))}
             </div>
           ) : products && products.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 sm:gap-4">
               {products.map(product => {
                 const category = categories?.find(c => c.id === product.categoryId);
                 const sub = allSubcategories?.find(s => s.id === product.subcategoryId);

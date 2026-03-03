@@ -188,13 +188,13 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-100 px-6">
+        <div className="flex border-b border-gray-100 px-2 sm:px-6 overflow-x-auto">
           {tabs.map(tab => (
             <button
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key)}
-              className={`py-3 px-4 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              className={`py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap flex-shrink-0 ${
                 activeTab === tab.key
                   ? "border-black text-gray-900"
                   : "border-transparent text-gray-400 hover:text-gray-600"
@@ -267,7 +267,7 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
               {/* País */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">País</label>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                   {COUNTRIES.map(country => (
                     <button
                       key={country.code}

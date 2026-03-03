@@ -233,3 +233,13 @@
 
 ## Bug: Webhook Stripe 307 Redirect
 - [x] Stripe envia para /api/stripe-webhook mas servidor tem /api/stripe/webhook — CORRIGIDO: endpoint /api/stripe-webhook agora processa diretamente (sem redirect) + express.raw() adicionado
+
+## Responsividade Completa (Todas as Telas)
+- [ ] Home.tsx (landing page) responsiva para mobile/tablet/desktop
+- [ ] Auth.tsx (login/registo) responsiva para mobile/tablet/desktop
+- [ ] Admin.tsx responsivo com layout adaptado para mobile
+- [ ] StoreManager.tsx responsivo (tabs, formulários, tabelas)
+- [ ] StoreFront.tsx responsivo (sidebar, grid de produtos, header)
+- [ ] CartDrawer.tsx responsivo para mobile
+- [ ] CategorySidebar.tsx responsivo (drawer em mobile)
+- [ ] Modais responsivos (CreateStoreModal, ProductModal, EditStoreModal)

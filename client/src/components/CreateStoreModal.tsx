@@ -251,7 +251,7 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
           {/* Country Selector */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">País</label>
-            <div className="grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {COUNTRIES.map(country => (
                 <button
                   key={country.code}

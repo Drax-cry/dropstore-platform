@@ -63,24 +63,24 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="pt-12 sm:pt-20 pb-16 sm:pb-24 px-4">
+      <section className="pt-10 sm:pt-20 pb-14 sm:pb-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-full mb-8">
+          <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-full mb-6 sm:mb-8">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
             Plataforma de catálogos online
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-black mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-black mb-4 sm:mb-6 leading-tight">
             O Melhor Drop
             <br />
             <span className="text-gray-400">é Aqui.</span>
           </h1>
-          <p className="text-lg text-gray-500 max-w-xl mx-auto mb-10 leading-relaxed">
+          <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
             Crie o seu catálogo online profissional em minutos. Partilhe com os seus clientes e receba pedidos pelo WhatsApp.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a
               href="/auth"
-              className="inline-flex items-center gap-2 bg-black text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-gray-800 transition-all hover:scale-105 shadow-lg shadow-black/10"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-black text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-gray-800 transition-all hover:scale-105 shadow-lg shadow-black/10"
             >
               Criar a minha loja
               <ArrowRight className="w-5 h-5" />
@@ -91,15 +91,15 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-14 sm:py-20 bg-gray-50">
         <div className="container">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-black mb-3">Tudo o que precisa</h2>
-            <p className="text-gray-500">Uma plataforma completa para o seu negócio de drops</p>
+          <div className="text-center mb-10 sm:mb-14">
+            <h2 className="text-2xl sm:text-3xl font-bold text-black mb-3">Tudo o que precisa</h2>
+            <p className="text-gray-500 text-sm sm:text-base">Uma plataforma completa para o seu negócio de drops</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {features.map((f, i) => (
-              <div key={i} className="bg-white rounded-2xl p-8 border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all group">
+              <div key={i} className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all group">
                 <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                   <f.icon className="w-6 h-6 text-white" />
                 </div>
@@ -112,11 +112,11 @@ export default function Home() {
       </section>
 
       {/* Benefits */}
-      <section className="py-20">
+      <section className="py-14 sm:py-20">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-16 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-black mb-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-black mb-4">
                 Tudo incluído, sem complicações
               </h2>
               <p className="text-gray-500 mb-8 leading-relaxed">
@@ -161,17 +161,17 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-black">
-        <div className="container text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+      <section className="py-14 sm:py-20 bg-black">
+        <div className="container text-center px-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Pronto para começar?
           </h2>
-          <p className="text-gray-400 mb-8">
+          <p className="text-gray-400 mb-8 text-sm sm:text-base">
             Crie a sua loja em minutos e comece a receber pedidos hoje.
           </p>
           <a
             href="/auth"
-            className="inline-flex items-center gap-2 bg-white text-black px-8 py-3.5 rounded-full text-base font-semibold hover:bg-gray-100 transition-all hover:scale-105"
+            className="inline-flex items-center gap-2 bg-white text-black px-6 sm:px-8 py-3.5 rounded-full text-base font-semibold hover:bg-gray-100 transition-all hover:scale-105"
           >
             Começar agora — é grátis
             <ArrowRight className="w-5 h-5" />

@@ -315,8 +315,8 @@ export default function ProductModal({ storeId, productId, editProduct, categori
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
             {/* Left column */}
             <div className="space-y-4">
               {/* Image Upload */}
@@ -546,20 +546,20 @@ export default function ProductModal({ storeId, productId, editProduct, categori
           {/* Sizes */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Tamanhos disponíveis</label>
-            <div className="flex gap-2 mb-3">
+            <div className="flex gap-1.5 sm:gap-2 mb-3 flex-wrap">
               {(["clothing", "shoes", "custom"] as const).map(type => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => setSizeType(type)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     sizeType === type ? "bg-black text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
                   {type === "clothing"
-                    ? `Roupas (${clothingSizes.slice(0,3).join("/")})`
+                    ? <><span className="hidden sm:inline">Roupas ({clothingSizes.slice(0,3).join("/")})</span><span className="sm:hidden">Roupas</span></>
                     : type === "shoes"
-                    ? `Tênis (${shoeSizes[0]}-${shoeSizes[shoeSizes.length-1]})`
+                    ? <><span className="hidden sm:inline">Tênis ({shoeSizes[0]}-{shoeSizes[shoeSizes.length-1]})</span><span className="sm:hidden">Tênis</span></>
                     : "Personalizado"}
                 </button>
               ))}

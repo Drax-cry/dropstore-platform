@@ -63,24 +63,24 @@ export default function TrialCountdownBanner({ trialEndsAt, onUpgrade }: Props) 
         </div>
 
         {/* Center: Countdown */}
-        <div className="flex items-center gap-2 justify-center sm:justify-start flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 justify-center sm:justify-start flex-shrink-0">
           {timeLeft.days > 0 && (
-            <div className="bg-white/20 rounded-lg px-3 py-2 text-center min-w-[52px]">
-              <p className="text-xl font-bold leading-none">{timeLeft.days}</p>
-              <p className="text-[10px] text-white/70 mt-0.5">dias</p>
+            <div className="bg-white/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[40px] sm:min-w-[52px]">
+              <p className="text-base sm:text-xl font-bold leading-none">{timeLeft.days}</p>
+              <p className="text-[9px] sm:text-[10px] text-white/70 mt-0.5">dias</p>
             </div>
           )}
-          <div className="bg-white/20 rounded-lg px-3 py-2 text-center min-w-[52px]">
-            <p className="text-xl font-bold leading-none">{String(timeLeft.hours).padStart(2, "0")}</p>
-            <p className="text-[10px] text-white/70 mt-0.5">horas</p>
+          <div className="bg-white/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[40px] sm:min-w-[52px]">
+            <p className="text-base sm:text-xl font-bold leading-none">{String(timeLeft.hours).padStart(2, "0")}</p>
+            <p className="text-[9px] sm:text-[10px] text-white/70 mt-0.5">horas</p>
           </div>
-          <div className="bg-white/20 rounded-lg px-3 py-2 text-center min-w-[52px]">
-            <p className="text-xl font-bold leading-none">{String(timeLeft.minutes).padStart(2, "0")}</p>
-            <p className="text-[10px] text-white/70 mt-0.5">min</p>
+          <div className="bg-white/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[40px] sm:min-w-[52px]">
+            <p className="text-base sm:text-xl font-bold leading-none">{String(timeLeft.minutes).padStart(2, "0")}</p>
+            <p className="text-[9px] sm:text-[10px] text-white/70 mt-0.5">min</p>
           </div>
-          <div className="bg-white/20 rounded-lg px-3 py-2 text-center min-w-[52px]">
-            <p className="text-xl font-bold leading-none">{String(timeLeft.seconds).padStart(2, "0")}</p>
-            <p className="text-[10px] text-white/70 mt-0.5">seg</p>
+          <div className="bg-white/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[40px] sm:min-w-[52px]">
+            <p className="text-base sm:text-xl font-bold leading-none">{String(timeLeft.seconds).padStart(2, "0")}</p>
+            <p className="text-[9px] sm:text-[10px] text-white/70 mt-0.5">seg</p>
           </div>
         </div>
 
