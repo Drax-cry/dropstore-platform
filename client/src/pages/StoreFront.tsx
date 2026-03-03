@@ -243,30 +243,20 @@ export default function StoreFront() {
   const [sortPrice, setSortPrice] = useState<"none" | "asc" | "desc">("none");
   const [selectedSizeFilters, setSelectedSizeFilters] = useState<string[]>([]);
 
-  const { data: store, isLoading: storeLoading, error: storeError } = trpc.stores.getBySlug.useQuery(
+  // Use storefront endpoint que tem verificacao de trial
+  const { data: storefrontData, isLoading: storeLoading, error: storeError } = trpc.stores.storefront.useQuery(
     { slug: slug || "" },
     { enabled: !!slug }
   );
+  
+  // Extrair dados do storefront
+  const store = storefrontData?.store;
+  const categories = storefrontData?.categories || [];
+  const allSubcategories = storefrontData?.subcategories || [];
+  const allProducts = storefrontData?.products || [];
+  const banners = storefrontData?.banners || [];
 
-  const { data: categories } = trpc.categories.list.useQuery(
-    { storeId: store?.id || 0 },
-    { enabled: !!store?.id }
-  );
 
-  const { data: allSubcategories } = trpc.subcategories.listByStore.useQuery(
-    { storeId: store?.id || 0 },
-    { enabled: !!store?.id }
-  );
-
-  const { data: allProducts } = trpc.products.listByStore.useQuery(
-    { storeId: store?.id || 0 },
-    { enabled: !!store?.id }
-  );
-
-  const { data: banners } = trpc.banners.list.useQuery(
-    { storeId: store?.id || 0 },
-    { enabled: !!store?.id }
-  );
 
   const [bannerIndex, setBannerIndex] = useState(0);
 

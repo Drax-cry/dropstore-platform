@@ -213,3 +213,5 @@
 
 ## Bugs Críticos
 - [x] Trial expirado bloqueia admin mas não a vitrine pública — CORRIGIDO: adicionada verificação de trial no endpoint storefront
+
+- [x] Bloqueio de trial não está a funcionar completamente - CORRIGIDO: StoreFront agora usa endpoint storefront com verificação de trial
