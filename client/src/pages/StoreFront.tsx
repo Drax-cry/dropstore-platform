@@ -435,21 +435,6 @@ export default function StoreFront() {
               )}
             </div>
 
-            {/* Category nav (desktop only) */}
-            <nav className="hidden lg:flex items-center gap-1 flex-shrink-0">
-              {categories?.map((cat: Category) => (
-                <button
-                  key={cat.id}
-                  onClick={() => handleCategoryChange(cat.id)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
-                    activeCategoryId === cat.id ? "text-white" : "text-gray-600 hover:bg-gray-100"
-                  }`}
-                  style={activeCategoryId === cat.id ? { backgroundColor: primaryColor } : {}}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </nav>
             {/* Cart + Language Switcher */}
             <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               <CartDrawer />
