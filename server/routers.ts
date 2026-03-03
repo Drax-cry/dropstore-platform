@@ -131,6 +131,13 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const data = await getStorefrontData(input.slug);
         if (!data) throw new TRPCError({ code: "NOT_FOUND", message: "Loja não encontrada" });
+        
+        // Verificar se o trial expirou
+        const isTrialActive = await isStoreTrialActive(data.store.id);
+        if (!isTrialActive && data.store.subscriptionStatus !== "active") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Trial expirado. Subscreva para continuar." });
+        }
+        
         return data;
       }),
 

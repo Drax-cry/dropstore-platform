@@ -210,3 +210,6 @@
 
 ## Melhorias de UX
 - [x] CartDrawer abre automaticamente ao adicionar produto ao carrinho
+
+## Bugs Críticos
+- [x] Trial expirado bloqueia admin mas não a vitrine pública — CORRIGIDO: adicionada verificação de trial no endpoint storefront
