@@ -150,6 +150,7 @@ export const appRouter = router({
         primaryColor: z.string().optional(),
         country: z.string().optional(),
         currency: z.string().optional(),
+        checkoutType: z.enum(["whatsapp_cart", "whatsapp_direct", "external_link"]).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         // Verificar se o utilizador já tem uma loja
@@ -184,6 +185,7 @@ export const appRouter = router({
           primaryColor: input.primaryColor ?? "#000000",
           country: input.country ?? "BR",
           currency: input.currency ?? "BRL",
+          checkoutType: input.checkoutType ?? "whatsapp_cart",
           trialEndsAt,
           subscriptionStatus: "trial",
         });
@@ -206,6 +208,7 @@ export const appRouter = router({
         tiktok: z.string().optional().nullable(),
         youtube: z.string().optional().nullable(),
         whatsappMessage: z.string().optional().nullable(),
+        checkoutType: z.enum(["whatsapp_cart", "whatsapp_direct", "external_link"]).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.id);

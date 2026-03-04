@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useParams } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Instagram, Facebook, Youtube, Music2, ShoppingCart } from "lucide-react";
+import { Search, ShoppingBag, MessageCircle, ChevronDown, X, ZoomIn, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Instagram, Facebook, Youtube, Music2, ShoppingCart, ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCart } from "@/hooks/useCart";
 import { useCartContext } from "@/components/CartContext";
@@ -206,16 +206,24 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
 
         {/* Buttons */}
         <div className="space-y-1.5 sm:space-y-2">
-          {checkoutType === "external_link" && product.externalLink ? (
-            <button
-              onClick={() => product.externalLink && window.open(product.externalLink, "_blank")}
-              className="w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ backgroundColor: color }}
-            >
-              <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              {t("storefront.order")}
-            </button>
+          {checkoutType === "external_link" ? (
+            // Modo Link Externo: apenas botão Acessar
+            product.externalLink ? (
+              <button
+                onClick={() => product.externalLink && window.open(product.externalLink, "_blank")}
+                className="w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
+                style={{ backgroundColor: color }}
+              >
+                <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                Acessar
+              </button>
+            ) : (
+              <div className="w-full py-2 rounded-xl text-xs font-semibold text-center bg-gray-100 text-gray-400">
+                Link não configurado
+              </div>
+            )
           ) : checkoutType === "whatsapp_direct" && whatsapp ? (
+            // Modo WhatsApp Direto: apenas botão WhatsApp
             <button
               onClick={handleWhatsApp}
               className="w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
@@ -225,6 +233,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
               {t("storefront.order")}
             </button>
           ) : whatsapp ? (
+            // Modo WhatsApp com Carrinho (padrão): carrinho + WhatsApp
             <>
               <button
                 onClick={handleAddToCart}

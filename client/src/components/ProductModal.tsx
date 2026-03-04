@@ -26,6 +26,7 @@ interface Props {
   categories: Category[];
   subcategories: Subcategory[];
   storeCountry?: string;
+  storeCheckoutType?: string;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -113,7 +114,7 @@ function sortSizes(sizes: string[]): string[] {
   });
 }
 
-export default function ProductModal({ storeId, productId, editProduct, categories, subcategories, storeCountry = "BR", onClose, onSuccess }: Props) {
+export default function ProductModal({ storeId, productId, editProduct, categories, subcategories, storeCountry = "BR", storeCheckoutType = "whatsapp_cart", onClose, onSuccess }: Props) {
   const isEditing = !!editProduct;
 
   // Tamanhos adaptados ao país da loja
@@ -530,18 +531,22 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                 </label>
               </div>
 
-              {/* External Link */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Link Externo (para checkout)</label>
-                <input
-                  type="url"
-                  value={externalLink}
-                  onChange={e => setExternalLink(e.target.value)}
-                  placeholder="Ex: https://seu-shopify.myshopify.com/products/..."
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                />
-                <p className="text-xs text-gray-400 mt-1">Se preenchido, este link será usado para checkout em vez de WhatsApp</p>
-              </div>
+              {/* External Link — só visível quando a loja usa checkout por link externo */}
+              {storeCheckoutType === "external_link" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Link do produto <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="url"
+                    value={externalLink}
+                    onChange={e => setExternalLink(e.target.value)}
+                    placeholder="Ex: https://seu-shopify.myshopify.com/products/..."
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">O cliente será redirecionado para este link ao clicar em "Acessar"</p>
+                </div>
+              )}
 
               {/* Category */}
               <div>

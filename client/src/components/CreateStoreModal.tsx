@@ -26,6 +26,7 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [checkoutType, setCheckoutType] = useState<"whatsapp_cart" | "whatsapp_direct" | "external_link">("whatsapp_cart");
 
   // Formata o número de WhatsApp de acordo com o país selecionado
   const formatWhatsApp = (value: string, countryCode: string): string => {
@@ -156,6 +157,7 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
       logoUrl,
       country: selectedCountry.code,
       currency: selectedCountry.currency,
+      checkoutType,
     });
   };
 
@@ -335,6 +337,35 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
                 <p className="text-sm font-medium text-gray-800">{primaryColor}</p>
                 <p className="text-xs text-gray-400">Usada nos botões e destaques da loja</p>
               </div>
+            </div>
+          </div>
+
+          {/* Checkout Type */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de checkout</label>
+            <div className="space-y-2">
+              {[
+                { value: "whatsapp_cart", label: "WhatsApp com Carrinho", desc: "Cliente adiciona produtos ao carrinho e envia via WhatsApp" },
+                { value: "whatsapp_direct", label: "WhatsApp Direto", desc: "Cada produto tem um botão que abre o WhatsApp imediatamente" },
+                { value: "external_link", label: "Link Externo", desc: "Cada produto tem um link personalizado (ex: Shopify, loja online)" },
+              ].map((opt) => (
+                <label key={opt.value} className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                  checkoutType === opt.value ? "border-black bg-gray-50" : "border-gray-200 hover:border-gray-300"
+                }`}>
+                  <input
+                    type="radio"
+                    name="checkoutType"
+                    value={opt.value}
+                    checked={checkoutType === opt.value}
+                    onChange={() => setCheckoutType(opt.value as typeof checkoutType)}
+                    className="mt-0.5 accent-black"
+                  />
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{opt.label}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{opt.desc}</p>
+                  </div>
+                </label>
+              ))}
             </div>
           </div>
 

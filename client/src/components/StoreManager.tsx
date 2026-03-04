@@ -675,6 +675,7 @@ export default function StoreManager({ storeId, onBack }: Props) {
           categories={categories || []}
           subcategories={allSubcategories || []}
           storeCountry={currentStore?.country ?? "BR"}
+          storeCheckoutType={currentStore?.checkoutType ?? "whatsapp_cart"}
           onClose={() => { setShowProductModal(false); setEditingProduct(null); setEditingProductData(null); }}
           onSuccess={() => {
             setShowProductModal(false);
