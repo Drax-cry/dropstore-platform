@@ -1,0 +1,1 @@
+ALTER TABLE `products` ADD `showPrice` int DEFAULT 1;

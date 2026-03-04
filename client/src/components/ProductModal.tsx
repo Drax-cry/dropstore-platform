@@ -15,6 +15,7 @@ interface ProductData {
   categoryId: number;
   subcategoryId: number | null;
   discountPercent: string | null;
+  showPrice?: number;
 }
 
 interface Props {
@@ -133,6 +134,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
   const [imageFile, setImageFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const [sizeType, setSizeType] = useState<"clothing" | "shoes" | "custom">("clothing");
   const [discountPercent, setDiscountPercent] = useState(editProduct?.discountPercent ?? "");
+  const [showPrice, setShowPrice] = useState(editProduct?.showPrice === 0 ? false : true);
   const [imageInputMode, setImageInputMode] = useState<"file" | "url">("file");
   const [imageUrl, setImageUrl] = useState("");
   const [imageLoadError, setImageLoadError] = useState(false);
@@ -150,6 +152,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
       setSelectedSizes(editProduct.sizes ? sortSizes(JSON.parse(editProduct.sizes)) : []);
       setImagePreview(editProduct.imageUrl ?? null);
       setDiscountPercent(editProduct.discountPercent ?? "");
+      setShowPrice(editProduct.showPrice === 0 ? false : true);
       setImageFile(null);
       setImageUrl("");
     }
@@ -277,6 +280,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
         sizes: selectedSizes,
         description: description.trim() || undefined,
         discountPercent: discountPercent || null,
+        showPrice: showPrice ? 1 : 0,
       });
     } else {
       createProductMutation.mutate({
@@ -290,6 +294,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
         sizes: selectedSizes,
         description: description.trim() || undefined,
         discountPercent: discountPercent || undefined,
+        showPrice: showPrice ? 1 : 0,
       });
     }
   };
@@ -504,6 +509,20 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                     Preço com desconto: R$ {(parseFloat(price) * (1 - parseFloat(discountPercent) / 100)).toFixed(2)}
                   </p>
                 )}
+              </div>
+
+              {/* Show Price */}
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
+                <input
+                  type="checkbox"
+                  id="showPrice"
+                  checked={showPrice}
+                  onChange={e => setShowPrice(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+                />
+                <label htmlFor="showPrice" className="text-sm font-medium text-gray-700 cursor-pointer flex-1">
+                  Mostrar preço na vitrine
+                </label>
               </div>
 
               {/* Category */}

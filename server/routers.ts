@@ -400,6 +400,7 @@ export const appRouter = router({
         sizes: z.array(z.string()).optional(),
         description: z.string().optional(),
         discountPercent: z.string().optional(),
+        showPrice: z.number().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.storeId);
@@ -417,6 +418,7 @@ export const appRouter = router({
           sizes: input.sizes ? JSON.stringify(input.sizes) : "[]",
           description: input.description,
           discountPercent: input.discountPercent,
+          showPrice: input.showPrice ?? 1,
         });
         return { success: true };
       }),
@@ -434,6 +436,7 @@ export const appRouter = router({
         sizes: z.array(z.string()).optional(),
         description: z.string().optional(),
         discountPercent: z.string().optional().nullable(),
+        showPrice: z.number().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.storeId);

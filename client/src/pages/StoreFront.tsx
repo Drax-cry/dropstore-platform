@@ -51,6 +51,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
     imageUrl: string | null;
     sizes: string | null;
     discountPercent?: string | null;
+    showPrice?: number | null;
   };
   whatsapp: string | null;
   primaryColor: string | null;
@@ -160,19 +161,23 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       {/* Content */}
       <div className="p-3 sm:p-4">
         <h3 className="font-semibold text-gray-900 mb-1 text-xs sm:text-sm leading-tight line-clamp-2">{product.name}</h3>
-        {discountPct > 0 ? (
-          <div className="mb-2 sm:mb-3">
-            <p className="text-xs text-gray-400 line-through">
+        {product.showPrice !== 0 ? (
+          discountPct > 0 ? (
+            <div className="mb-2 sm:mb-3">
+              <p className="text-xs text-gray-400 line-through">
+                {formatPrice(originalPrice, currency)}
+              </p>
+              <p className="text-base sm:text-lg font-bold text-red-600">
+                {formatPrice(finalPrice, currency)}
+              </p>
+            </div>
+          ) : (
+            <p className="text-base sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">
               {formatPrice(originalPrice, currency)}
             </p>
-            <p className="text-base sm:text-lg font-bold text-red-600">
-              {formatPrice(finalPrice, currency)}
-            </p>
-          </div>
+          )
         ) : (
-          <p className="text-base sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">
-            {formatPrice(originalPrice, currency)}
-          </p>
+          <div className="mb-2 sm:mb-3 h-6"></div>
         )}
 
         {/* Size Selector */}

@@ -97,6 +97,7 @@ export const products = mysqlTable("products", {
   sizes: varchar("sizes", { length: 500 }),
   discountPercent: decimal("discountPercent", { precision: 5, scale: 2 }),
   description: text("description"),
+  showPrice: int("showPrice").default(1),
   isActive: int("isActive").default(1),
   order: int("order").default(0),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
