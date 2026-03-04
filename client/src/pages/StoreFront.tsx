@@ -41,8 +41,7 @@ function formatPrice(value: number, currency: string | null): string {
   const symbol = CURRENCY_SYMBOLS[currency ?? "BRL"] ?? "R$";
   return `${symbol} ${value.toFixed(2).replace(".", ",")}`;
 }
-
-function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessage, storeName, storeSlug }: {
+function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessage, storeName, storeSlug, checkoutType = "whatsapp_cart" }: {
   product: {
     id: number;
     name: string;
@@ -209,7 +208,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
         <div className="space-y-1.5 sm:space-y-2">
           {checkoutType === "external_link" && product.externalLink ? (
             <button
-              onClick={() => window.open(product.externalLink, "_blank")}
+              onClick={() => product.externalLink && window.open(product.externalLink, "_blank")}
               className="w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
               style={{ backgroundColor: color }}
             >
