@@ -52,6 +52,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
     sizes: string | null;
     discountPercent?: string | null;
     showPrice?: number | null;
+    externalLink?: string | null;
   };
   whatsapp: string | null;
   primaryColor: string | null;
@@ -59,6 +60,7 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
   whatsappMessage?: string | null;
   storeName: string;
   storeSlug: string;
+  checkoutType?: string;
 }) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [imageError, setImageError] = useState(false);
@@ -205,7 +207,25 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
 
         {/* Buttons */}
         <div className="space-y-1.5 sm:space-y-2">
-          {whatsapp ? (
+          {checkoutType === "external_link" && product.externalLink ? (
+            <button
+              onClick={() => window.open(product.externalLink, "_blank")}
+              className="w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: color }}
+            >
+              <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              {t("storefront.order")}
+            </button>
+          ) : checkoutType === "whatsapp_direct" && whatsapp ? (
+            <button
+              onClick={handleWhatsApp}
+              className="w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: color }}
+            >
+              <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              {t("storefront.order")}
+            </button>
+          ) : whatsapp ? (
             <>
               <button
                 onClick={handleAddToCart}
@@ -693,6 +713,7 @@ export default function StoreFront() {
                 whatsappMessage={store.whatsappMessage}
                 storeName={store.name}
                 storeSlug={store.slug}
+                checkoutType={store.checkoutType}
               />
             ))}
           </div>

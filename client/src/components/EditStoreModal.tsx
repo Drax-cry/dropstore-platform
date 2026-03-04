@@ -31,6 +31,7 @@ interface StoreData {
   tiktok?: string | null;
   youtube?: string | null;
   whatsappMessage?: string | null;
+  checkoutType?: string | null;
 }
 
 interface Props {
@@ -39,7 +40,7 @@ interface Props {
   onSuccess: () => void;
 }
 
-type TabKey = "info" | "contact" | "social" | "whatsapp";
+type TabKey = "info" | "contact" | "social" | "whatsapp" | "checkout";
 
 const DEFAULT_WHATSAPP_MESSAGE = `Olá! Tenho interesse no seguinte produto:
 
@@ -92,6 +93,9 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
   const [whatsappMessage, setWhatsappMessage] = useState(
     store.whatsappMessage ?? DEFAULT_WHATSAPP_MESSAGE
   );
+
+  // Checkout type
+  const [checkoutType, setCheckoutType] = useState<"whatsapp_cart" | "whatsapp_direct" | "external_link">(store.checkoutType as any ?? "whatsapp_cart");
 
   const utils = trpc.useUtils();
 
@@ -158,6 +162,7 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
       tiktok: tiktok.trim() || null,
       youtube: youtube.trim() || null,
       whatsappMessage: whatsappMessage.trim() || null,
+      checkoutType,
     });
   };
 
@@ -168,6 +173,7 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
     { key: "contact", label: "Contacto" },
     { key: "social", label: "Redes Sociais" },
     { key: "whatsapp", label: "Mensagem ZAP" },
+    { key: "checkout", label: "Checkout" },
   ];
 
   return (
@@ -508,6 +514,91 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                   placeholder="https://www.youtube.com/c/seu_canal/ ou seu_canal"
                   className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
                 />
+              </div>
+            </>
+          )}
+
+          {/* ---- TAB: CHECKOUT ---- */}
+          {activeTab === "checkout" && (
+            <>
+              <div className="flex items-center gap-2 -mt-1 mb-4">
+                <MessageCircle className="w-4 h-4 text-blue-600" />
+                <p className="text-sm font-medium text-gray-700">Tipo de Checkout</p>
+              </div>
+              <p className="text-xs text-gray-400 mb-4">
+                Escolha como os clientes vão fazer checkout dos produtos:
+              </p>
+
+              {/* Opção 1: WhatsApp com Carrinho */}
+              <div className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all" 
+                style={{
+                  borderColor: checkoutType === "whatsapp_cart" ? "#000" : "#e5e7eb",
+                  backgroundColor: checkoutType === "whatsapp_cart" ? "#f9fafb" : "#fff"
+                }}
+                onClick={() => setCheckoutType("whatsapp_cart")}
+              >
+                <div className="flex items-start gap-3">
+                  <input
+                    type="radio"
+                    name="checkout"
+                    value="whatsapp_cart"
+                    checked={checkoutType === "whatsapp_cart"}
+                    onChange={() => setCheckoutType("whatsapp_cart")}
+                    className="mt-1 w-4 h-4 cursor-pointer"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 text-sm">WhatsApp com Carrinho</p>
+                    <p className="text-xs text-gray-500 mt-1">Cliente adiciona produtos ao carrinho e depois envia a encomenda via WhatsApp</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Opção 2: WhatsApp Direto */}
+              <div className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all" 
+                style={{
+                  borderColor: checkoutType === "whatsapp_direct" ? "#000" : "#e5e7eb",
+                  backgroundColor: checkoutType === "whatsapp_direct" ? "#f9fafb" : "#fff"
+                }}
+                onClick={() => setCheckoutType("whatsapp_direct")}
+              >
+                <div className="flex items-start gap-3">
+                  <input
+                    type="radio"
+                    name="checkout"
+                    value="whatsapp_direct"
+                    checked={checkoutType === "whatsapp_direct"}
+                    onChange={() => setCheckoutType("whatsapp_direct")}
+                    className="mt-1 w-4 h-4 cursor-pointer"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 text-sm">WhatsApp Direto</p>
+                    <p className="text-xs text-gray-500 mt-1">Cada produto tem um botão que abre o WhatsApp diretamente com a mensagem do produto</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Opção 3: Link Externo */}
+              <div className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all" 
+                style={{
+                  borderColor: checkoutType === "external_link" ? "#000" : "#e5e7eb",
+                  backgroundColor: checkoutType === "external_link" ? "#f9fafb" : "#fff"
+                }}
+                onClick={() => setCheckoutType("external_link")}
+              >
+                <div className="flex items-start gap-3">
+                  <input
+                    type="radio"
+                    name="checkout"
+                    value="external_link"
+                    checked={checkoutType === "external_link"}
+                    onChange={() => setCheckoutType("external_link")}
+                    className="mt-1 w-4 h-4 cursor-pointer"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 text-sm">Link Externo</p>
+                    <p className="text-xs text-gray-500 mt-1">Cada produto pode ter um link personalizado (ex: Shopify, Loja Online, etc.)</p>
+                  </div>
+                </div>
               </div>
             </>
           )}

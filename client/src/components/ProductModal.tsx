@@ -16,6 +16,7 @@ interface ProductData {
   subcategoryId: number | null;
   discountPercent: string | null;
   showPrice?: number;
+  externalLink?: string | null;
 }
 
 interface Props {
@@ -135,6 +136,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
   const [sizeType, setSizeType] = useState<"clothing" | "shoes" | "custom">("clothing");
   const [discountPercent, setDiscountPercent] = useState(editProduct?.discountPercent ?? "");
   const [showPrice, setShowPrice] = useState(editProduct?.showPrice === 0 ? false : true);
+  const [externalLink, setExternalLink] = useState(editProduct?.externalLink ?? "");
   const [imageInputMode, setImageInputMode] = useState<"file" | "url">("file");
   const [imageUrl, setImageUrl] = useState("");
   const [imageLoadError, setImageLoadError] = useState(false);
@@ -153,6 +155,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
       setImagePreview(editProduct.imageUrl ?? null);
       setDiscountPercent(editProduct.discountPercent ?? "");
       setShowPrice(editProduct.showPrice === 0 ? false : true);
+      setExternalLink(editProduct.externalLink ?? "");
       setImageFile(null);
       setImageUrl("");
     }
@@ -281,6 +284,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
         description: description.trim() || undefined,
         discountPercent: discountPercent || null,
         showPrice: showPrice ? 1 : 0,
+        externalLink: externalLink.trim() || undefined,
       });
     } else {
       createProductMutation.mutate({
@@ -295,6 +299,7 @@ export default function ProductModal({ storeId, productId, editProduct, categori
         description: description.trim() || undefined,
         discountPercent: discountPercent || undefined,
         showPrice: showPrice ? 1 : 0,
+        externalLink: externalLink.trim() || undefined,
       });
     }
   };
@@ -523,6 +528,19 @@ export default function ProductModal({ storeId, productId, editProduct, categori
                 <label htmlFor="showPrice" className="text-sm font-medium text-gray-700 cursor-pointer flex-1">
                   Mostrar preço na vitrine
                 </label>
+              </div>
+
+              {/* External Link */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Link Externo (para checkout)</label>
+                <input
+                  type="url"
+                  value={externalLink}
+                  onChange={e => setExternalLink(e.target.value)}
+                  placeholder="Ex: https://seu-shopify.myshopify.com/products/..."
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                />
+                <p className="text-xs text-gray-400 mt-1">Se preenchido, este link será usado para checkout em vez de WhatsApp</p>
               </div>
 
               {/* Category */}

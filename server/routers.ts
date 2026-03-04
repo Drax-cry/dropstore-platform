@@ -401,6 +401,7 @@ export const appRouter = router({
         description: z.string().optional(),
         discountPercent: z.string().optional(),
         showPrice: z.number().optional(),
+        externalLink: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.storeId);
@@ -419,6 +420,7 @@ export const appRouter = router({
           description: input.description,
           discountPercent: input.discountPercent,
           showPrice: input.showPrice ?? 1,
+          externalLink: input.externalLink,
         });
         return { success: true };
       }),
@@ -437,6 +439,7 @@ export const appRouter = router({
         description: z.string().optional(),
         discountPercent: z.string().optional().nullable(),
         showPrice: z.number().optional(),
+        externalLink: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.storeId);
