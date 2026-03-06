@@ -12,6 +12,7 @@ import BannerManager from "./BannerManager";
 import TrialBlockModal from "./TrialBlockModal";
 import TrialCountdownBanner from "./TrialCountdownBanner";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { SubscriptionTab } from "./SubscriptionTab";
 
 interface Props {
   storeId: number;
@@ -63,6 +64,10 @@ export default function StoreManager({ storeId, onBack }: Props) {
     { storeId },
     { enabled: !!storeId }
   );
+
+  // Extract trial data
+  const trialEndsAt = trialStatus?.status?.trialEndsAt ? new Date(trialStatus.status.trialEndsAt) : null;
+  const subscriptionStatus = (trialStatus?.status?.status ?? null) as "trial" | "active" | "expired" | "cancelled" | null;
 
   // Show trial block modal if trial expired
   useEffect(() => {
@@ -533,149 +538,18 @@ export default function StoreManager({ storeId, onBack }: Props) {
         </div>
       )}
 
-      {/* Subscription Tab */}
-      {activeTab === "subscription" && (() => {
-        const status = trialStatus?.status;
-        const isActive = trialStatus?.isActive;
-        const trialEndsAt = status?.trialEndsAt ? new Date(status.trialEndsAt) : null;
-        const subscriptionStatus = status?.status; // "trial" | "active" | "expired" | "cancelled"
-        const isFree = !trialEndsAt; // lojas antigas sem trial
-        const now = new Date();
-        const daysLeft = trialEndsAt ? Math.max(0, Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))) : null;
-        const isTrialExpired = trialEndsAt && trialEndsAt < now;
-        const isPaid = subscriptionStatus === "active";
-
-        return (
-          <div className="max-w-lg">
-            <h2 className="text-base font-semibold text-gray-800 mb-6">Estado da Subscrição</h2>
-
-            {/* Status Card */}
-            <div className={`rounded-2xl border-2 p-6 mb-6 ${
-              isFree ? "border-green-200 bg-green-50" :
-              isPaid ? "border-indigo-200 bg-indigo-50" :
-              isActive ? "border-amber-200 bg-amber-50" :
-              "border-red-200 bg-red-50"
-            }`}>
-              <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                  isFree ? "bg-green-100" :
-                  isPaid ? "bg-indigo-100" :
-                  isActive ? "bg-amber-100" :
-                  "bg-red-100"
-                }`}>
-                  {isFree ? <CheckCircle className="w-6 h-6 text-green-600" /> :
-                   isPaid ? <Zap className="w-6 h-6 text-indigo-600" /> :
-                   isActive ? <Clock className="w-6 h-6 text-amber-600" /> :
-                   <XCircle className="w-6 h-6 text-red-600" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`font-bold text-lg ${
-                    isFree ? "text-green-800" :
-                    isPaid ? "text-indigo-800" :
-                    isActive ? "text-amber-800" :
-                    "text-red-800"
-                  }`}>
-                    {isFree ? "Plano Gratuito" :
-                     isPaid ? "Plano Ativo" :
-                     isActive ? "Trial Gratuito" :
-                     "Trial Expirado"}
-                  </p>
-                  <p className={`text-sm mt-1 ${
-                    isFree ? "text-green-600" :
-                    isPaid ? "text-indigo-600" :
-                    isActive ? "text-amber-600" :
-                    "text-red-600"
-                  }`}>
-                    {isFree ? "Esta loja tem acesso gratuito permanente" :
-                     isPaid ? "A sua subscrição está ativa e será renovada mensalmente" :
-                     isActive && daysLeft !== null ? `Expira em ${daysLeft} dia${daysLeft !== 1 ? "s" : ""}` :
-                     "O período de trial terminou. Subscreva para continuar"}
-                  </p>
-                  {trialEndsAt && (
-                    <p className="text-xs mt-2 opacity-70">
-                      {isPaid ? "Subscrição ativa" : `Data de expiração: ${trialEndsAt.toLocaleDateString("pt-PT", { day: "2-digit", month: "long", year: "numeric" })}`}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Progress Bar for Trial */}
-            {!isFree && !isPaid && trialEndsAt && (
-              <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">Progresso do Trial</span>
-                  <span className="text-sm text-gray-500">{daysLeft} / 3 dias restantes</span>
-                </div>
-                <div className="w-full bg-gray-100 rounded-full h-2.5">
-                  <div
-                    className={`h-2.5 rounded-full transition-all ${
-                      daysLeft === 0 ? "bg-red-500" : daysLeft === 1 ? "bg-amber-500" : "bg-indigo-500"
-                    }`}
-                    style={{ width: `${Math.min(100, ((daysLeft ?? 0) / 3) * 100)}%` }}
-                  />
-                </div>
-              </div>
+            {/* Subscription Tab */}
+            {activeTab === "subscription" && (
+              <SubscriptionTab
+                storeId={storeId}
+                trialEndsAt={trialEndsAt}
+                subscriptionStatus={subscriptionStatus}
+                isPending={cancelSubscriptionMutation.isPending}
+                onInitiateCheckout={initiateCheckout}
+                onCancelSubscription={handleCancelSubscription}
+              />
             )}
 
-            {/* Plan Details */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-              <h3 className="text-sm font-semibold text-gray-800 mb-3">Detalhes do Plano</h3>
-              <div className="space-y-2">
-                {[
-                  "Loja online personalizada",
-                  "Produtos ilimitados",
-                  "Categorias e subcategorias",
-                  "Banners e promoções",
-                  "Integração WhatsApp",
-                  "Suporte prioritário",
-                ].map(feature => (
-                  <div key={feature} className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />
-                    <span className="text-sm text-gray-600">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* CTA */}
-            {!isFree && !isPaid && (
-              <button
-                onClick={() => initiateCheckout(storeId)}
-                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
-              >
-                <CreditCard className="w-5 h-5" />
-                {isTrialExpired ? "Desbloquear loja — €5/mês" : "Subscrever agora — €5/mês"}
-              </button>
-            )}
-            {isPaid && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-xl p-4">
-                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span>Subscricao ativa. Sera cobrado 5/mes automaticamente via Stripe.</span>
-                </div>
-                <button
-                  onClick={() => handleCancelSubscription(storeId)}
-                  disabled={cancelSubscriptionMutation.isPending}
-                  className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed text-red-600 font-semibold py-3 px-6 rounded-xl transition-colors border border-red-200"
-                >
-                  {cancelSubscriptionMutation.isPending ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-                      A cancelar...
-                    </>
-                  ) : (
-                    <>
-                      <X className="w-5 h-5" />
-                      Cancelar Subscricao
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      })()}
 
       {showProductModal && (
         <ProductModal
