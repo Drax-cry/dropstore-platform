@@ -252,23 +252,58 @@ export const appRouter = router({
         if (!store || store.userId !== ctx.user.id) {
           throw new TRPCError({ code: "FORBIDDEN" });
         }
-        if (!store.stripeSubscriptionId) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "Nenhuma subscrição ativa" });
+
+        const { getStripe } = await import("./stripe");
+        const stripe = getStripe();
+
+        let subscriptionId = store.stripeSubscriptionId;
+
+        // Se não temos o ID da subscrição na BD, tentar recuperar via Stripe API
+        if (!subscriptionId && store.stripeCustomerId) {
+          console.log(`[Cancel] stripeSubscriptionId em falta, a recuperar via customer ${store.stripeCustomerId}`);
+          try {
+            const subs = await stripe.subscriptions.list({
+              customer: store.stripeCustomerId,
+              status: "active",
+              limit: 1,
+            });
+            if (subs.data.length > 0) {
+              subscriptionId = subs.data[0].id;
+              // Guardar na BD para uso futuro
+              await updateStoreSubscription(input.storeId, { stripeSubscriptionId: subscriptionId });
+              console.log(`[Cancel] Recuperado subscriptionId: ${subscriptionId}`);
+            }
+          } catch (e) {
+            console.error(`[Cancel] Erro ao recuperar subscrições:`, e);
+          }
         }
+
+        if (!subscriptionId) {
+          // Sem subscrição no Stripe — apenas marcar como cancelado na BD
+          console.warn(`[Cancel] Nenhuma subscrição Stripe encontrada para loja ${input.storeId}, a marcar como cancelado localmente`);
+          await updateStoreSubscription(input.storeId, { subscriptionStatus: "cancelled" });
+          return { success: true };
+        }
+
         try {
-          const { getStripe } = await import("./stripe");
-          const stripe = getStripe();
-          console.log(`[Cancel] Cancelando subscrição ${store.stripeSubscriptionId} imediatamente`);
-          const cancelled = await stripe.subscriptions.cancel(store.stripeSubscriptionId);
+          console.log(`[Cancel] Cancelando subscrição ${subscriptionId} imediatamente`);
+          const cancelled = await stripe.subscriptions.cancel(subscriptionId);
           console.log(`[Cancel] Status no Stripe: ${cancelled.status}`);
         } catch (error) {
           const errorMsg = error instanceof Error ? error.message : String(error);
           console.error(`[Cancel] Erro ao cancelar subscrição no Stripe:`, errorMsg);
+          // Se a subscrição já não existe no Stripe, marcar como cancelado na BD
+          if (errorMsg.includes("No such subscription") || errorMsg.includes("resource_missing")) {
+            await updateStoreSubscription(input.storeId, { subscriptionStatus: "cancelled" });
+            return { success: true };
+          }
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `Erro Stripe: ${errorMsg}` });
         }
+
         // Atualizar BD local após cancelamento confirmado no Stripe
         await updateStoreSubscription(input.storeId, {
           subscriptionStatus: "cancelled",
+          stripeSubscriptionId: undefined,
         });
         return { success: true };
       }),
