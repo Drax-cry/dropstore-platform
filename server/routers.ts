@@ -257,18 +257,19 @@ export const appRouter = router({
         }
         try {
           const { getStripe } = await import("./stripe");
-          console.log(`[Cancel] Cancelando subscrição ${store.stripeSubscriptionId}`);
           const stripe = getStripe();
-          await stripe.subscriptions.update(store.stripeSubscriptionId, {
-            cancel_at_period_end: true
-          });
-          console.log(`[Cancel] Subscrição ${store.stripeSubscriptionId} marcada para cancelamento`);
+          console.log(`[Cancel] Cancelando subscrição ${store.stripeSubscriptionId} imediatamente`);
+          const cancelled = await stripe.subscriptions.cancel(store.stripeSubscriptionId);
+          console.log(`[Cancel] Status no Stripe: ${cancelled.status}`);
         } catch (error) {
           const errorMsg = error instanceof Error ? error.message : String(error);
-          console.error(`[Cancel] Erro ao cancelar subscrição:`, errorMsg);
-          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: errorMsg });
+          console.error(`[Cancel] Erro ao cancelar subscrição no Stripe:`, errorMsg);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `Erro Stripe: ${errorMsg}` });
         }
-        await updateStoreSubscription(input.storeId, { subscriptionStatus: "cancelled" });
+        // Atualizar BD local após cancelamento confirmado no Stripe
+        await updateStoreSubscription(input.storeId, {
+          subscriptionStatus: "cancelled",
+        });
         return { success: true };
       }),
   }),
