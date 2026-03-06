@@ -14,6 +14,14 @@ const COUNTRIES = [
   { code: "CO", name: "Colômbia", flag: "🇨🇴", prefix: "+57", currency: "COP", symbol: "COP" },
 ];
 
+const CURRENCIES = [
+  { code: "BRL", symbol: "R$", name: "Real Brasileiro" },
+  { code: "EUR", symbol: "€", name: "Euro" },
+  { code: "USD", symbol: "$", name: "Dólar Americano" },
+  { code: "ARS", symbol: "$", name: "Peso Argentino" },
+  { code: "COP", symbol: "$", name: "Peso Colombiano" },
+];
+
 interface StoreData {
   id: number;
   name: string;
@@ -53,11 +61,9 @@ Poderia me dar mais informações?`;
 export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
   const [activeTab, setActiveTab] = useState<TabKey>("info");
 
-  // Info tab
   const [name, setName] = useState(store.name);
   const [slogan, setSlogan] = useState(store.slogan ?? "");
 
-  // Remove o prefixo do número ao inicializar para evitar duplicação ao salvar
   const stripPrefix = (number: string, prefix: string) => {
     const digits = number.replace(/\D/g, "");
     const prefixDigits = prefix.replace(/\D/g, "");
@@ -68,33 +74,32 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
   };
 
   const initialCountry = COUNTRIES.find(c => c.code === store.country) ?? COUNTRIES[0];
+
   const [whatsapp, setWhatsapp] = useState(() => {
     if (!store.whatsappNumber) return "";
     return stripPrefix(store.whatsappNumber, initialCountry.prefix);
   });
+
   const [primaryColor, setPrimaryColor] = useState(store.primaryColor ?? "#000000");
   const [selectedCountry, setSelectedCountry] = useState(initialCountry);
+  const [selectedCurrency, setSelectedCurrency] = useState(store.currency ?? "BRL");
   const [logoPreview, setLogoPreview] = useState<string | null>(store.logoUrl ?? null);
   const [logoFile, setLogoFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Contact tab
   const [address, setAddress] = useState(store.address ?? "");
   const [phone, setPhone] = useState(store.phone ?? "");
   const [email, setEmail] = useState(store.email ?? "");
 
-  // Social tab
   const [instagram, setInstagram] = useState(store.instagram ?? "");
   const [facebook, setFacebook] = useState(store.facebook ?? "");
   const [tiktok, setTiktok] = useState(store.tiktok ?? "");
   const [youtube, setYoutube] = useState(store.youtube ?? "");
 
-  // WhatsApp message tab
   const [whatsappMessage, setWhatsappMessage] = useState(
     store.whatsappMessage ?? DEFAULT_WHATSAPP_MESSAGE
   );
 
-  // Checkout type
   const [checkoutType, setCheckoutType] = useState<"whatsapp_cart" | "whatsapp_direct" | "external_link">(store.checkoutType as any ?? "whatsapp_cart");
 
   const utils = trpc.useUtils();
@@ -154,6 +159,7 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
         ? `${selectedCountry.prefix}${whatsapp.replace(/\D/g, "")}`
         : undefined,
       primaryColor,
+      currency: selectedCurrency,
       address: address.trim() || null,
       phone: phone.trim() || null,
       email: email.trim() || null,
@@ -180,7 +186,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-black rounded-xl flex items-center justify-center">
@@ -193,7 +198,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="flex border-b border-gray-100 px-2 sm:px-6 overflow-x-auto">
           {tabs.map(tab => (
             <button
@@ -212,10 +216,8 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* ---- TAB: INFORMAÇÕES ---- */}
           {activeTab === "info" && (
             <>
-              {/* Logo Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Logo da loja</label>
                 <div className="flex items-center gap-4">
@@ -243,7 +245,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
               </div>
 
-              {/* Nome */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Nome da loja <span className="text-red-500">*</span>
@@ -258,7 +259,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 />
               </div>
 
-              {/* Slogan */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Slogan</label>
                 <input
@@ -270,7 +270,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 />
               </div>
 
-              {/* País */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">País</label>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -292,7 +291,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 </div>
               </div>
 
-              {/* WhatsApp */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">WhatsApp</label>
                 <div className="flex">
@@ -309,7 +307,28 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 </div>
               </div>
 
-              {/* Cor principal */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Moeda da loja
+                </label>
+
+                <select
+                  value={selectedCurrency}
+                  onChange={(e) => setSelectedCurrency(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                >
+                  {CURRENCIES.map((currency) => (
+                    <option key={currency.code} value={currency.code}>
+                      {currency.symbol} {currency.name} ({currency.code})
+                    </option>
+                  ))}
+                </select>
+
+                <p className="text-xs text-gray-400 mt-1">
+                  Esta moeda será usada para exibir os preços da loja
+                </p>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Cor principal</label>
                 <div className="flex items-center gap-3">
@@ -330,14 +349,12 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
             </>
           )}
 
-          {/* ---- TAB: CONTACTO ---- */}
           {activeTab === "contact" && (
             <>
               <p className="text-xs text-gray-400 -mt-1">
                 Estas informações serão exibidas no rodapé da sua vitrine pública.
               </p>
 
-              {/* Endereço */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                   <MapPin className="w-4 h-4 text-gray-400" />
@@ -352,7 +369,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 />
               </div>
 
-              {/* Telefone */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                   <Phone className="w-4 h-4 text-gray-400" />
@@ -368,7 +384,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 <p className="text-xs text-gray-400 mt-1">Diferente do WhatsApp — pode ser um número fixo ou alternativo.</p>
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                   <Mail className="w-4 h-4 text-gray-400" />
@@ -385,7 +400,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
             </>
           )}
 
-          {/* ---- TAB: MENSAGEM WHATSAPP ---- */}
           {activeTab === "whatsapp" && (
             <>
               <div className="flex items-center gap-2 -mt-1 mb-1">
@@ -396,7 +410,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 Esta mensagem é enviada quando o cliente clica em "Encomendar via WhatsApp". Use as variáveis abaixo para personalizar:
               </p>
 
-              {/* Variáveis disponíveis */}
               <div className="bg-gray-50 rounded-xl p-3 mb-3">
                 <p className="text-xs font-medium text-gray-600 mb-2">Variáveis disponíveis:</p>
                 <div className="flex flex-wrap gap-2">
@@ -413,7 +426,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 </div>
               </div>
 
-              {/* Editor de mensagem */}
               <div>
                 <textarea
                   value={whatsappMessage}
@@ -424,7 +436,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 />
               </div>
 
-              {/* Preview */}
               {whatsappMessage && (
                 <div className="bg-green-50 border border-green-100 rounded-xl p-3">
                   <p className="text-xs font-medium text-green-700 mb-2">Pré-visualização (exemplo):</p>
@@ -437,7 +448,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 </div>
               )}
 
-              {/* Botão de reset */}
               <button
                 type="button"
                 onClick={() => setWhatsappMessage(DEFAULT_WHATSAPP_MESSAGE)}
@@ -449,14 +459,12 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
             </>
           )}
 
-          {/* ---- TAB: REDES SOCIAIS ---- */}
           {activeTab === "social" && (
             <>
               <p className="text-xs text-gray-400 -mt-1">
                 Cole o URL completo do seu perfil (ex: https://www.instagram.com/seu_usuario/) ou apenas o nome de utilizador.
               </p>
 
-              {/* Instagram */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                   <Instagram className="w-4 h-4 text-gray-400" />
@@ -471,7 +479,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 />
               </div>
 
-              {/* Facebook */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                   <Facebook className="w-4 h-4 text-gray-400" />
@@ -486,7 +493,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 />
               </div>
 
-              {/* TikTok */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                   <Music2 className="w-4 h-4 text-gray-400" />
@@ -501,7 +507,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 />
               </div>
 
-              {/* YouTube */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                   <Youtube className="w-4 h-4 text-gray-400" />
@@ -518,7 +523,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
             </>
           )}
 
-          {/* ---- TAB: CHECKOUT ---- */}
           {activeTab === "checkout" && (
             <>
               <div className="flex items-center gap-2 -mt-1 mb-4">
@@ -529,8 +533,8 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 Escolha como os clientes vão fazer checkout dos produtos:
               </p>
 
-              {/* Opção 1: WhatsApp com Carrinho */}
-              <div className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all" 
+              <div
+                className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all"
                 style={{
                   borderColor: checkoutType === "whatsapp_cart" ? "#000" : "#e5e7eb",
                   backgroundColor: checkoutType === "whatsapp_cart" ? "#f9fafb" : "#fff"
@@ -553,8 +557,8 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 </div>
               </div>
 
-              {/* Opção 2: WhatsApp Direto */}
-              <div className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all" 
+              <div
+                className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all"
                 style={{
                   borderColor: checkoutType === "whatsapp_direct" ? "#000" : "#e5e7eb",
                   backgroundColor: checkoutType === "whatsapp_direct" ? "#f9fafb" : "#fff"
@@ -577,8 +581,8 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
                 </div>
               </div>
 
-              {/* Opção 3: Link Externo */}
-              <div className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all" 
+              <div
+                className="mb-4 p-4 border-2 rounded-xl cursor-pointer transition-all"
                 style={{
                   borderColor: checkoutType === "external_link" ? "#000" : "#e5e7eb",
                   backgroundColor: checkoutType === "external_link" ? "#f9fafb" : "#fff"
@@ -603,7 +607,6 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
             </>
           )}
 
-          {/* Actions */}
           <div className="flex gap-3 pt-2">
             <button
               type="button"
