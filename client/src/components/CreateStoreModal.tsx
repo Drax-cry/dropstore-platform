@@ -15,6 +15,13 @@ const COUNTRIES = [
   { code: "AR", name: "Argentina", flag: "🇦🇷", dialCode: "+54", currency: "ARS", currencySymbol: "$", currencyName: "Peso Argentino" },
   { code: "CO", name: "Colômbia", flag: "🇨🇴", dialCode: "+57", currency: "COP", currencySymbol: "$", currencyName: "Peso Colombiano" },
 ];
+const CURRENCIES = [
+  { code: "BRL", symbol: "R$", name: "Real Brasileiro" },
+  { code: "EUR", symbol: "€", name: "Euro" },
+  { code: "USD", symbol: "$", name: "Dólar Americano" },
+  { code: "ARS", symbol: "$", name: "Peso Argentino" },
+  { code: "COP", symbol: "$", name: "Peso Colombiano" },
+];
 
 export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const [name, setName] = useState("");
