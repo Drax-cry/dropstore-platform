@@ -252,13 +252,18 @@ export const appRouter = router({
         if (!store || store.userId !== ctx.user.id) {
           throw new TRPCError({ code: "FORBIDDEN" });
         }
-        if (store.stripeSubscriptionId) {
-          try {
-            const { getStripe } = await import("./stripe");
-            await getStripe().subscriptions.cancel(store.stripeSubscriptionId);
-          } catch (error) {
-            throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro" });
-          }
+        if (!store.stripeSubscriptionId) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Nenhuma subscrição ativa" });
+        }
+        try {
+          const { getStripe } = await import("./stripe");
+          console.log(`[Cancel] Cancelando subscrição ${store.stripeSubscriptionId}`);
+          await getStripe().subscriptions.cancel(store.stripeSubscriptionId);
+          console.log(`[Cancel] Subscrição ${store.stripeSubscriptionId} cancelada com sucesso`);
+        } catch (error) {
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          console.error(`[Cancel] Erro ao cancelar subscrição:`, errorMsg);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: errorMsg });
         }
         await updateStoreSubscription(input.storeId, { subscriptionStatus: "cancelled" });
         return { success: true };

@@ -13,6 +13,17 @@ export default function Home() {
     }
   }, [loading, isAuthenticated, navigate]);
 
+  useEffect(() => {
+    document.title = "katail — Crie a sua loja online grátis";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", "katail é a plataforma para criar catálogos e lojas online. Venda pelo WhatsApp, partilhe produtos e gira o seu negócio digital de forma simples e rápida.");
+    }
+    return () => {
+      document.title = "katail";
+    };
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">

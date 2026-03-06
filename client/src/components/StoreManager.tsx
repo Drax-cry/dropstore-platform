@@ -656,10 +656,20 @@ export default function StoreManager({ storeId, onBack }: Props) {
                 </div>
                 <button
                   onClick={() => handleCancelSubscription(storeId)}
-                  className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-3 px-6 rounded-xl transition-colors border border-red-200"
+                  disabled={cancelSubscriptionMutation.isPending}
+                  className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed text-red-600 font-semibold py-3 px-6 rounded-xl transition-colors border border-red-200"
                 >
-                  <X className="w-5 h-5" />
-                  Cancelar Subscricao
+                  {cancelSubscriptionMutation.isPending ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                      A cancelar...
+                    </>
+                  ) : (
+                    <>
+                      <X className="w-5 h-5" />
+                      Cancelar Subscricao
+                    </>
+                  )}
                 </button>
               </div>
             )}
