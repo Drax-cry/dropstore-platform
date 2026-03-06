@@ -200,6 +200,7 @@ export const appRouter = router({
         logoUrl: z.string().optional(),
         whatsappNumber: z.string().optional(),
         primaryColor: z.string().optional(),
+        currency: z.string().optional(),
         address: z.string().optional().nullable(),
         phone: z.string().optional().nullable(),
         email: z.string().optional().nullable(),
