@@ -65,11 +65,12 @@ export default function Admin() {
     <>
       <div className="p-5 border-b border-gray-100">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-              <ShoppingBag className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-base" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>katail</span>
+          <div className="flex items-center">
+            <img
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663381128526/SeuQjnbipodmivsL.png"
+              alt="katail"
+              className="h-9 w-auto object-contain"
+            />
           </div>
           {/* Close button only on mobile */}
           <button
@@ -177,11 +178,12 @@ export default function Admin() {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-black rounded-lg flex items-center justify-center">
-              <ShoppingBag className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-bold text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>katail</span>
+          <div className="flex items-center">
+            <img
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663381128526/SeuQjnbipodmivsL.png"
+              alt="katail"
+              className="h-8 w-auto object-contain"
+            />
           </div>
           {selectedStore && (
             <span className="text-sm text-gray-500 truncate ml-auto">{selectedStore.name}</span>

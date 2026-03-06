@@ -115,11 +115,12 @@ export default function Katail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-10">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg btn-primary flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">K</span>
-                </div>
-                <span className="font-bold text-gray-900 text-lg tracking-tight">katail</span>
+              <div className="flex items-center">
+                <img
+                  src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663381128526/SeuQjnbipodmivsL.png"
+                  alt="katail"
+                  className="h-9 w-auto object-contain"
+                />
               </div>
               <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-500">
                 <a href="#features" className="hover:text-gray-900 transition-colors">{t("nav.features")}</a>
@@ -416,10 +417,11 @@ export default function Katail() {
         <div className="max-w-7xl mx-auto">
           <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg btn-primary flex items-center justify-center">
-                <span className="text-white font-bold text-xs">K</span>
-              </div>
-              <span className="font-bold text-gray-900">katail</span>
+              <img
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663381128526/SeuQjnbipodmivsL.png"
+                alt="katail"
+                className="h-7 w-auto object-contain"
+              />
               <span className="text-gray-400 text-sm ml-2">© 2025 · {t("footer.rights")}</span>
             </div>
             <div className="flex items-center gap-4">

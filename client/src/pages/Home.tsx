@@ -44,13 +44,12 @@ export default function Home() {
       {/* Header */}
       <header className="border-b border-gray-100 sticky top-0 z-50 bg-white/95 backdrop-blur-sm">
         <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-              <ShoppingBag className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-lg tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              katail
-            </span>
+          <div className="flex items-center">
+            <img
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663381128526/SeuQjnbipodmivsL.png"
+              alt="katail"
+              className="h-9 w-auto object-contain"
+            />
           </div>
           <a
             href="/auth"
@@ -182,11 +181,12 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8">
         <div className="container flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-black rounded-md flex items-center justify-center">
-              <ShoppingBag className="w-3 h-3 text-white" />
-            </div>
-            <span className="font-semibold text-sm">katail</span>
+          <div className="flex items-center">
+            <img
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663381128526/SeuQjnbipodmivsL.png"
+              alt="katail"
+              className="h-7 w-auto object-contain"
+            />
           </div>
           <p className="text-xs text-gray-400">© 2025 katail. Todos os direitos reservados.</p>
         </div>

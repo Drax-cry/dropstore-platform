@@ -834,9 +834,15 @@ export default function StoreFront() {
 
           {/* Bottom bar */}
           <div className="border-t border-gray-200 pt-6 text-center">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-400 flex items-center justify-center gap-1.5 flex-wrap">
               {store.name} · Powered by{" "}
-              <a href="/" className="font-medium text-gray-600 hover:text-gray-900">katail</a>
+              <a href="/" className="inline-flex items-center">
+                <img
+                  src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663381128526/SeuQjnbipodmivsL.png"
+                  alt="katail"
+                  className="h-5 w-auto object-contain"
+                />
+              </a>
             </p>
           </div>
         </div>
