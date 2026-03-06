@@ -30,17 +30,19 @@ function useScrollFadeIn() {
   return ref;
 }
 
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  BRL: "R$",
-  EUR: "€",
-  ARS: "$",
-  COP: "$",
-};
-
 function formatPrice(value: number, currency: string | null): string {
-  const symbol = CURRENCY_SYMBOLS[currency ?? "BRL"] ?? "R$";
-  return `${symbol} ${value.toFixed(2).replace(".", ",")}`;
+  const code = currency ?? "BRL";
+
+  try {
+    return new Intl.NumberFormat("pt-PT", {
+      style: "currency",
+      currency: code,
+    }).format(value);
+  } catch {
+    return `${code} ${value.toFixed(2)}`;
+  }
 }
+
 function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessage, storeName, storeSlug, checkoutType = "whatsapp_cart" }: {
   product: {
     id: number;
@@ -81,7 +83,6 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       ? `${formatPrice(finalPrice, currency)} (${discountPct}% OFF)`
       : formatPrice(originalPrice, currency);
 
-    // Usa mensagem personalizada do lojista ou a mensagem padrão no idioma do browser do cliente
     const template = whatsappMessage || t("storefront.whatsappDefault");
     const finalMsg = template
       .replace(/\{\{produto\}\}/g, `${product.name}${product.brand ? ` - ${product.brand}` : ""}`)
@@ -114,7 +115,6 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       whatsappNumber: whatsapp,
     });
 
-    // Abrir o carrinho automaticamente
     openCart();
 
     setAddedToCart(true);
@@ -127,7 +127,6 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
       style={{ opacity: 0, transform: "translateY(20px)", transition: "opacity 0.5s ease, transform 0.5s ease" }}
       className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-xl transition-all duration-300 group"
     >
-      {/* Image */}
       <div className="aspect-square bg-gray-100 overflow-hidden relative">
         {product.imageUrl && !imageError ? (
           <img
@@ -159,7 +158,6 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
         )}
       </div>
 
-      {/* Content */}
       <div className="p-3 sm:p-4">
         <h3 className="font-semibold text-gray-900 mb-1 text-xs sm:text-sm leading-tight line-clamp-2">{product.name}</h3>
         {product.showPrice !== 0 ? (
@@ -181,7 +179,6 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
           <div className="mb-2 sm:mb-3 h-6"></div>
         )}
 
-        {/* Size Selector */}
         {sizes.length > 0 && (
           <div className="mb-2 sm:mb-3">
             <p className="text-xs text-gray-400 mb-1">Tamanho:</p>
@@ -204,10 +201,8 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
           </div>
         )}
 
-        {/* Buttons */}
         <div className="space-y-1.5 sm:space-y-2">
           {checkoutType === "external_link" ? (
-            // Modo Link Externo: apenas botão Acessar
             product.externalLink ? (
               <button
                 onClick={() => product.externalLink && window.open(product.externalLink, "_blank")}
@@ -223,7 +218,6 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
               </div>
             )
           ) : checkoutType === "whatsapp_direct" && whatsapp ? (
-            // Modo WhatsApp Direto: apenas botão WhatsApp
             <button
               onClick={handleWhatsApp}
               className="w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
@@ -233,14 +227,13 @@ function ProductCard({ product, whatsapp, primaryColor, currency, whatsappMessag
               {t("storefront.order")}
             </button>
           ) : whatsapp ? (
-            // Modo WhatsApp com Carrinho (padrão): carrinho + WhatsApp
             <>
               <button
                 onClick={handleAddToCart}
                 className={`w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98] ${
                   addedToCart
-                    ? 'bg-green-500 text-white'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-100 text-gray-900 hover:bg-gray-200"
                 }`}
               >
                 <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -278,20 +271,16 @@ export default function StoreFront() {
   const [sortPrice, setSortPrice] = useState<"none" | "asc" | "desc">("none");
   const [selectedSizeFilters, setSelectedSizeFilters] = useState<string[]>([]);
 
-  // Use storefront endpoint que tem verificacao de trial
   const { data: storefrontData, isLoading: storeLoading, error: storeError } = trpc.stores.storefront.useQuery(
     { slug: slug || "" },
     { enabled: !!slug }
   );
   
-  // Extrair dados do storefront
   const store = storefrontData?.store;
   const categories = storefrontData?.categories || [];
   const allSubcategories = storefrontData?.subcategories || [];
   const allProducts = storefrontData?.products || [];
   const banners = storefrontData?.banners || [];
-
-
 
   const [bannerIndex, setBannerIndex] = useState(0);
 
@@ -303,14 +292,12 @@ export default function StoreFront() {
     return () => clearInterval(timer);
   }, [banners]);
 
-  // Set first category as active when loaded
   useEffect(() => {
     if (categories && categories.length > 0 && activeCategoryId === null) {
       setActiveCategoryId(categories[0].id);
     }
   }, [categories, activeCategoryId]);
 
-  // Handler para mudar de categoria — limpa filtros de tamanho e subcategoria
   const handleCategoryChange = (catId: number) => {
     setActiveCategoryId(catId);
     setActiveSubId(null);
@@ -322,11 +309,8 @@ export default function StoreFront() {
     [allSubcategories, activeCategoryId]
   );
 
-  // Compute unique sizes from products of the ACTIVE category (before size filter)
-  // Also compute count per size for display (ex: "M (12)")
   const { availableSizes, sizeCount } = useMemo(() => {
     if (!allProducts) return { availableSizes: [], sizeCount: {} as Record<string, number> };
-    // Filter by active category (and sub) but NOT by size filter
     let baseProducts = allProducts;
     if (activeCategoryId !== null) {
       baseProducts = baseProducts.filter((p: Product) => p.categoryId === activeCategoryId);
@@ -432,11 +416,9 @@ export default function StoreFront() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container">
           <div className="flex items-center h-14 sm:h-16 gap-2 sm:gap-4">
-            {/* Logo */}
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               {store.logoUrl ? (
                 <img src={store.logoUrl} alt={store.name} className="h-8 sm:h-9 w-auto object-contain max-w-[80px] sm:max-w-none" />
@@ -450,7 +432,6 @@ export default function StoreFront() {
               </span>
             </div>
 
-            {/* Search */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -468,7 +449,6 @@ export default function StoreFront() {
               )}
             </div>
 
-            {/* Cart + Language Switcher */}
             <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               <CartDrawer />
               <LanguageSwitcher variant="light" />
@@ -477,17 +457,14 @@ export default function StoreFront() {
         </div>
       </header>
 
-      {/* Banner Carousel */}
       {banners && banners.length > 0 && (
         <div className="relative w-full overflow-hidden bg-gray-100">
-          {/* Track */}
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${bannerIndex * 100}%)` }}
           >
             {banners.map((banner: StoreBanner, i: number) => (
               <div key={banner.id} className="w-full flex-shrink-0 relative">
-                {/* Aspect-ratio container: 2:1 mobile → 3:1 tablet → 4:1 desktop */}
                 <div className="w-full aspect-[2/1] sm:aspect-[3/1] lg:aspect-[4/1] bg-gray-200">
                   <img
                     src={banner.imageUrl}
@@ -506,7 +483,6 @@ export default function StoreFront() {
             ))}
           </div>
 
-          {/* Navigation arrows */}
           {banners.length > 1 && (
             <>
               <button
@@ -524,7 +500,6 @@ export default function StoreFront() {
                 <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
               </button>
 
-              {/* Dots */}
               <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                 {banners.map((_: StoreBanner, i: number) => (
                   <button
@@ -545,7 +520,6 @@ export default function StoreFront() {
         </div>
       )}
 
-      {/* Hero Section — apenas quando não há banners */}
       {(!banners || banners.length === 0) && (
         <section
           className="py-10 sm:py-16 px-4 text-center relative overflow-hidden"
@@ -568,7 +542,6 @@ export default function StoreFront() {
         </section>
       )}
 
-      {/* Subcategory Filter */}
       {subsForActiveCategory.length > 0 && (
         <div className="bg-gray-50 border-b border-gray-100 py-3">
           <div className="container">
@@ -603,10 +576,8 @@ export default function StoreFront() {
         </div>
       )}
 
-      {/* Products Grid with Sidebar */}
       <main className="container py-4 sm:py-6 md:py-10">
         <div className="flex gap-4 lg:gap-6">
-          {/* Sidebar */}
           {categories && categories.length > 0 && (
             <CategorySidebar
               categories={categories.map((cat: Category) => ({
@@ -627,126 +598,120 @@ export default function StoreFront() {
             />
           )}
 
-          {/* Main Content */}
           <div className="flex-1">
-            {/* Size Filter Bar */}
-        {availableSizes.length > 0 && (
-          <div className="mb-5">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-medium text-gray-500 shrink-0">Tamanho:</span>
-              <button
-                onClick={() => setSelectedSizeFilters([])}
-                className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
-                  selectedSizeFilters.length === 0
-                    ? "text-white border-transparent"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
-                }`}
-                style={selectedSizeFilters.length === 0 ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
-              >
-                {t("storefront.all")}
-              </button>
-              {availableSizes.map(size => {
-                const isActive = selectedSizeFilters.includes(size);
-                const count = sizeCount[size] || 0;
-                return (
+            {availableSizes.length > 0 && (
+              <div className="mb-5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-medium text-gray-500 shrink-0">Tamanho:</span>
                   <button
-                    key={size}
-                    onClick={() => {
-                      setSelectedSizeFilters(prev =>
-                        isActive ? prev.filter(s => s !== size) : [...prev, size]
-                      );
-                    }}
+                    onClick={() => setSelectedSizeFilters([])}
                     className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
-                      isActive
+                      selectedSizeFilters.length === 0
                         ? "text-white border-transparent"
                         : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
                     }`}
-                    style={isActive ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
-                    title={`${count} produto${count !== 1 ? 's' : ''} com tamanho ${size}`}
+                    style={selectedSizeFilters.length === 0 ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
                   >
-                    {size} <span className={`opacity-60 ${isActive ? '' : 'text-gray-400'}`}>({count})</span>
+                    {t("storefront.all")}
                   </button>
-                );
-              })}
-              {selectedSizeFilters.length > 0 && (
-                <button
-                  onClick={() => setSelectedSizeFilters([])}
-                  className="text-xs text-gray-400 hover:text-gray-600 underline ml-1"
+                  {availableSizes.map(size => {
+                    const isActive = selectedSizeFilters.includes(size);
+                    const count = sizeCount[size] || 0;
+                    return (
+                      <button
+                        key={size}
+                        onClick={() => {
+                          setSelectedSizeFilters(prev =>
+                            isActive ? prev.filter(s => s !== size) : [...prev, size]
+                          );
+                        }}
+                        className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+                          isActive
+                            ? "text-white border-transparent"
+                            : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                        }`}
+                        style={isActive ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+                        title={`${count} produto${count !== 1 ? "s" : ""} com tamanho ${size}`}
+                      >
+                        {size} <span className={`opacity-60 ${isActive ? "" : "text-gray-400"}`}>({count})</span>
+                      </button>
+                    );
+                  })}
+                  {selectedSizeFilters.length > 0 && (
+                    <button
+                      onClick={() => setSelectedSizeFilters([])}
+                      className="text-xs text-gray-400 hover:text-gray-600 underline ml-1"
+                    >
+                      Limpar
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <div className="mb-4 sm:mb-6 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                {searchQuery && (
+                  <>
+                    <p className="text-xs sm:text-sm text-gray-500 truncate">
+                      {filteredProducts.length} {t("storefront.results")} "{searchQuery}"
+                    </p>
+                    <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline flex-shrink-0">
+                      {t("common.back")}
+                    </button>
+                  </>
+                )}
+              </div>
+              
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <label className="text-xs text-gray-600 font-medium hidden sm:block">{t("storefront.sort")}:</label>
+                <select
+                  value={sortPrice}
+                  onChange={(e) => setSortPrice(e.target.value as "none" | "asc" | "desc")}
+                  className="text-xs border border-gray-200 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 focus:outline-none focus:ring-2 focus:ring-black bg-white cursor-pointer"
                 >
-                  Limpar
-                </button>
-              )}
+                  <option value="none">{t("storefront.sortDefault")}</option>
+                  <option value="asc">{t("storefront.sortAsc")}</option>
+                  <option value="desc">{t("storefront.sortDesc")}</option>
+                </select>
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* Search results info and Price Filter */}
-        <div className="mb-4 sm:mb-6 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
-            {searchQuery && (
-              <>
-                <p className="text-xs sm:text-sm text-gray-500 truncate">
-                  {filteredProducts.length} {t("storefront.results")} "{searchQuery}"
-                </p>
-                <button onClick={() => setSearchQuery("")} className="text-xs text-gray-400 hover:text-gray-600 underline flex-shrink-0">
-                  {t("common.back")}
-                </button>
-              </>
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
+                {filteredProducts.map((product: Product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    whatsapp={store.whatsappNumber}
+                    primaryColor={primaryColor}
+                    currency={store.currency ?? "BRL"}
+                    whatsappMessage={store.whatsappMessage}
+                    storeName={store.name}
+                    storeSlug={store.slug}
+                    checkoutType={store.checkoutType}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20">
+                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <ShoppingBag className="w-8 h-8 text-gray-300" />
+                </div>
+                <p className="text-gray-500 font-medium">{t("storefront.noProducts")}</p>
+                {searchQuery && (
+                  <p className="text-gray-400 text-sm mt-1">{t("storefront.noProductsSearch")}</p>
+                )}
+              </div>
             )}
-          </div>
-          
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <label className="text-xs text-gray-600 font-medium hidden sm:block">{t("storefront.sort")}:</label>
-            <select
-              value={sortPrice}
-              onChange={(e) => setSortPrice(e.target.value as "none" | "asc" | "desc")}
-              className="text-xs border border-gray-200 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 focus:outline-none focus:ring-2 focus:ring-black bg-white cursor-pointer"
-            >
-              <option value="none">{t("storefront.sortDefault")}</option>
-              <option value="asc">{t("storefront.sortAsc")}</option>
-              <option value="desc">{t("storefront.sortDesc")}</option>
-            </select>
-          </div>
-        </div>
-
-        {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
-            {filteredProducts.map((product: Product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                whatsapp={store.whatsappNumber}
-                primaryColor={primaryColor}
-                currency={store.currency ?? "BRL"}
-                whatsappMessage={store.whatsappMessage}
-                storeName={store.name}
-                storeSlug={store.slug}
-                checkoutType={store.checkoutType}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <ShoppingBag className="w-8 h-8 text-gray-300" />
-            </div>
-            <p className="text-gray-500 font-medium">{t("storefront.noProducts")}</p>
-            {searchQuery && (
-              <p className="text-gray-400 text-sm mt-1">{t("storefront.noProductsSearch")}</p>
-            )}
-          </div>
-        )}
           </div>
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-gray-100 mt-10" style={{ backgroundColor: "#fafafa" }}>
         <div className="container py-10">
-          {/* Contact & Social Grid */}
           {(store.address || store.phone || store.email || store.instagram || store.facebook || store.tiktok || store.youtube) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
-              {/* Contact Info */}
               {(store.address || store.phone || store.email) && (
                 <div>
                   <h3 className="text-sm font-semibold text-gray-800 mb-4">{t("storefront.contact")}</h3>
@@ -777,53 +742,52 @@ export default function StoreFront() {
                 </div>
               )}
 
-              {/* Social Media */}
               {(store.instagram || store.facebook || store.tiktok || store.youtube) && (
                 <div>
                   <h3 className="text-sm font-semibold text-gray-800 mb-4">Redes Sociais</h3>
                   <div className="flex flex-wrap gap-3">
                     {store.instagram && (
                       <a
-                        href={store.instagram.startsWith('http') ? store.instagram : `https://www.instagram.com/${store.instagram}/`}
+                        href={store.instagram.startsWith("http") ? store.instagram : `https://www.instagram.com/${store.instagram}/`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
                       >
                         <Instagram className="w-4 h-4" />
-                        <span>@{store.instagram.split('/').filter(Boolean).pop() || store.instagram}</span>
+                        <span>@{store.instagram.split("/").filter(Boolean).pop() || store.instagram}</span>
                       </a>
                     )}
                     {store.facebook && (
                       <a
-                        href={store.facebook.startsWith('http') ? store.facebook : `https://www.facebook.com/${store.facebook}`}
+                        href={store.facebook.startsWith("http") ? store.facebook : `https://www.facebook.com/${store.facebook}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
                       >
                         <Facebook className="w-4 h-4" />
-                        <span>{store.facebook.split('/').filter(Boolean).pop() || store.facebook}</span>
+                        <span>{store.facebook.split("/").filter(Boolean).pop() || store.facebook}</span>
                       </a>
                     )}
                     {store.tiktok && (
                       <a
-                        href={store.tiktok.startsWith('http') ? store.tiktok : `https://www.tiktok.com/@${store.tiktok}`}
+                        href={store.tiktok.startsWith("http") ? store.tiktok : `https://www.tiktok.com/@${store.tiktok}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
                       >
                         <Music2 className="w-4 h-4" />
-                        <span>@{store.tiktok.split('/').filter(Boolean).pop() || store.tiktok}</span>
+                        <span>@{store.tiktok.split("/").filter(Boolean).pop() || store.tiktok}</span>
                       </a>
                     )}
                     {store.youtube && (
                       <a
-                        href={store.youtube.startsWith('http') ? store.youtube : `https://www.youtube.com/c/${store.youtube}`}
+                        href={store.youtube.startsWith("http") ? store.youtube : `https://www.youtube.com/c/${store.youtube}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white border border-gray-200 rounded-xl px-3 py-2 hover:border-gray-400"
                       >
                         <Youtube className="w-4 h-4" />
-                        <span>{store.youtube.split('/').filter(Boolean).pop() || store.youtube}</span>
+                        <span>{store.youtube.split("/").filter(Boolean).pop() || store.youtube}</span>
                       </a>
                     )}
                   </div>
@@ -832,7 +796,6 @@ export default function StoreFront() {
             </div>
           )}
 
-          {/* Bottom bar */}
           <div className="border-t border-gray-200 pt-6 text-center">
             <p className="text-sm text-gray-400 flex items-center justify-center gap-1.5 flex-wrap">
               {store.name} · Powered by{" "}
