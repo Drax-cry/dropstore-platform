@@ -258,8 +258,11 @@ export const appRouter = router({
         try {
           const { getStripe } = await import("./stripe");
           console.log(`[Cancel] Cancelando subscrição ${store.stripeSubscriptionId}`);
-          await getStripe().subscriptions.cancel(store.stripeSubscriptionId);
-          console.log(`[Cancel] Subscrição ${store.stripeSubscriptionId} cancelada com sucesso`);
+          const stripe = getStripe();
+          await stripe.subscriptions.update(store.stripeSubscriptionId, {
+            cancel_at_period_end: true
+          });
+          console.log(`[Cancel] Subscrição ${store.stripeSubscriptionId} marcada para cancelamento`);
         } catch (error) {
           const errorMsg = error instanceof Error ? error.message : String(error);
           console.error(`[Cancel] Erro ao cancelar subscrição:`, errorMsg);
