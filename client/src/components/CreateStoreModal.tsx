@@ -15,6 +15,7 @@ const COUNTRIES = [
   { code: "AR", name: "Argentina", flag: "🇦🇷", dialCode: "+54", currency: "ARS", currencySymbol: "$", currencyName: "Peso Argentino" },
   { code: "CO", name: "Colômbia", flag: "🇨🇴", dialCode: "+57", currency: "COP", currencySymbol: "$", currencyName: "Peso Colombiano" },
 ];
+
 const CURRENCIES = [
   { code: "BRL", symbol: "R$", name: "Real Brasileiro" },
   { code: "EUR", symbol: "€", name: "Euro" },
@@ -31,41 +32,36 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<{ fileBase64: string; mimeType: string; fileName: string } | null>(null);
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
+  const [selectedCurrency, setSelectedCurrency] = useState(COUNTRIES[0].currency);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [checkoutType, setCheckoutType] = useState<"whatsapp_cart" | "whatsapp_direct" | "external_link">("whatsapp_cart");
 
-  // Formata o número de WhatsApp de acordo com o país selecionado
   const formatWhatsApp = (value: string, countryCode: string): string => {
     const digits = value.replace(/\D/g, "");
     switch (countryCode) {
       case "BR": {
-        // Brasil: (11) 99999-9999 ou (11) 9999-9999
         if (digits.length <= 2) return digits;
         if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
         if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
         return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
       }
       case "PT": {
-        // Portugal: 912 345 678
         if (digits.length <= 3) return digits;
         if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
         return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
       }
       case "ES": {
-        // Espanha: 612 345 678
         if (digits.length <= 3) return digits;
         if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
         return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
       }
       case "AR": {
-        // Argentina: 11 1234-5678
         if (digits.length <= 2) return digits;
         if (digits.length <= 6) return `${digits.slice(0, 2)} ${digits.slice(2)}`;
         return `${digits.slice(0, 2)} ${digits.slice(2, 6)}-${digits.slice(6, 10)}`;
       }
       case "CO": {
-        // Colômbia: 312 345 6789
         if (digits.length <= 3) return digits;
         if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
         return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 10)}`;
@@ -78,11 +74,12 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatWhatsApp(e.target.value, selectedCountry.code);
     setWhatsapp(formatted);
-    if (errors.whatsapp) setErrors(p => ({ ...p, whatsapp: "" }));
+    if (errors.whatsapp) setErrors((p) => ({ ...p, whatsapp: "" }));
   };
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
+
     if (!name.trim()) {
       newErrors.name = "Nome da loja é obrigatório";
     } else if (name.trim().length < 2) {
@@ -90,15 +87,18 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
     } else if (name.trim().length > 50) {
       newErrors.name = "Nome deve ter no máximo 50 caracteres";
     }
+
     if (slogan.trim().length > 0 && slogan.trim().length < 3) {
       newErrors.slogan = "Slogan deve ter pelo menos 3 caracteres";
     }
+
     if (whatsapp.trim().length > 0) {
       const digits = whatsapp.replace(/\D/g, "");
       if (digits.length < 8) {
         newErrors.whatsapp = "Número de WhatsApp inválido (mínimo 8 dígitos)";
       }
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -113,30 +113,37 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
   });
 
   const handleCountryChange = (code: string) => {
-    const country = COUNTRIES.find(c => c.code === code);
+    const country = COUNTRIES.find((c) => c.code === code);
     if (country) {
       setSelectedCountry(country);
-      // Reformatar o número ao mudar de país
+
       if (whatsapp) {
         setWhatsapp(formatWhatsApp(whatsapp, code));
       }
-      setErrors(p => ({ ...p, whatsapp: "" }));
+
+      setErrors((p) => ({ ...p, whatsapp: "" }));
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Imagem muito grande. Máximo 5MB.");
       return;
     }
+
     const reader = new FileReader();
     reader.onload = (ev) => {
       const result = ev.target?.result as string;
       setLogoPreview(result);
       const base64 = result.split(",")[1];
-      setLogoFile({ fileBase64: base64, mimeType: file.type, fileName: file.name });
+      setLogoFile({
+        fileBase64: base64,
+        mimeType: file.type,
+        fileName: file.name,
+      });
     };
     reader.readAsDataURL(file);
   };
@@ -146,9 +153,14 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
     if (!validate()) return;
 
     let logoUrl: string | undefined;
+
     if (logoFile) {
       try {
-        const result = await uploadLogoMutation.mutateAsync({ fileBase64: logoFile.fileBase64, mimeType: logoFile.mimeType, fileName: logoFile.fileName });
+        const result = await uploadLogoMutation.mutateAsync({
+          fileBase64: logoFile.fileBase64,
+          mimeType: logoFile.mimeType,
+          fileName: logoFile.fileName,
+        });
         logoUrl = result.url;
       } catch {
         toast.error("Erro ao fazer upload da logo");
@@ -159,11 +171,13 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
     createStoreMutation.mutate({
       name: name.trim(),
       slogan: slogan.trim() || undefined,
-      whatsappNumber: whatsapp.trim() ? `${selectedCountry.dialCode.replace("+", "")}${whatsapp.trim().replace(/\D/g, "")}` : undefined,
+      whatsappNumber: whatsapp.trim()
+        ? `${selectedCountry.dialCode.replace("+", "")}${whatsapp.trim().replace(/\D/g, "")}`
+        : undefined,
       primaryColor,
       logoUrl,
       country: selectedCountry.code,
-      currency: selectedCountry.currency,
+      currency: selectedCurrency,
       checkoutType,
     });
   };
@@ -187,7 +201,6 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Logo Upload */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Logo da loja</label>
             <div
@@ -216,7 +229,6 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             />
           </div>
 
-          {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Nome da loja <span className="text-red-500">*</span>
@@ -224,7 +236,10 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             <input
               type="text"
               value={name}
-              onChange={e => { setName(e.target.value); if (errors.name) setErrors(p => ({ ...p, name: "" })); }}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (errors.name) setErrors((p) => ({ ...p, name: "" }));
+              }}
               placeholder="Ex: Minha Drop Store"
               className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all ${
                 errors.name ? "border-red-400 bg-red-50" : "border-gray-200"
@@ -238,13 +253,15 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             <p className="text-xs text-gray-400 mt-1">{name.trim().length}/50 caracteres (mínimo 2)</p>
           </div>
 
-          {/* Slogan */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Slogan</label>
             <input
               type="text"
               value={slogan}
-              onChange={e => { setSlogan(e.target.value); if (errors.slogan) setErrors(p => ({ ...p, slogan: "" })); }}
+              onChange={(e) => {
+                setSlogan(e.target.value);
+                if (errors.slogan) setErrors((p) => ({ ...p, slogan: "" }));
+              }}
               placeholder="Ex: O Melhor Drop é Aqui"
               className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all ${
                 errors.slogan ? "border-red-400 bg-red-50" : "border-gray-200"
@@ -257,11 +274,10 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             )}
           </div>
 
-          {/* Country Selector */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">País</label>
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-              {COUNTRIES.map(country => (
+              {COUNTRIES.map((country) => (
                 <button
                   key={country.code}
                   type="button"
@@ -279,11 +295,13 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
               ))}
             </div>
             <p className="text-xs text-gray-400 mt-1.5">
-              País selecionado: <span className="font-medium text-gray-700">{selectedCountry.flag} {selectedCountry.name}</span>
+              País selecionado:{" "}
+              <span className="font-medium text-gray-700">
+                {selectedCountry.flag} {selectedCountry.name}
+              </span>
             </p>
           </div>
 
-          {/* WhatsApp */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Número WhatsApp</label>
             <div className="flex">
@@ -295,11 +313,15 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
                 value={whatsapp}
                 onChange={handleWhatsAppChange}
                 placeholder={
-                  selectedCountry.code === "BR" ? "(11) 99999-9999" :
-                  selectedCountry.code === "PT" ? "912 345 678" :
-                  selectedCountry.code === "ES" ? "612 345 678" :
-                  selectedCountry.code === "AR" ? "11 1234-5678" :
-                  "312 345 6789"
+                  selectedCountry.code === "BR"
+                    ? "(11) 99999-9999"
+                    : selectedCountry.code === "PT"
+                      ? "912 345 678"
+                      : selectedCountry.code === "ES"
+                        ? "612 345 678"
+                        : selectedCountry.code === "AR"
+                          ? "11 1234-5678"
+                          : "312 345 6789"
                 }
                 maxLength={selectedCountry.code === "BR" ? 15 : 12}
                 className={`flex-1 border rounded-r-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all ${
@@ -315,29 +337,35 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             <p className="text-xs text-gray-400 mt-1">Número sem código do país (já incluído automaticamente)</p>
           </div>
 
-          {/* Currency Info */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Moeda</label>
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
-              <div className="w-10 h-10 bg-white rounded-lg border border-gray-200 flex items-center justify-center text-lg font-bold text-gray-700">
-                {selectedCountry.currencySymbol}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-800">{selectedCountry.currencyName}</p>
-                <p className="text-xs text-gray-400">Código: {selectedCountry.currency} · Símbolo: {selectedCountry.currencySymbol}</p>
-              </div>
-            </div>
-            <p className="text-xs text-gray-400 mt-1">Moeda definida automaticamente pelo país selecionado</p>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Moeda da loja
+            </label>
+
+            <select
+              value={selectedCurrency}
+              onChange={(e) => setSelectedCurrency(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+            >
+              {CURRENCIES.map((currency) => (
+                <option key={currency.code} value={currency.code}>
+                  {currency.symbol} {currency.name} ({currency.code})
+                </option>
+              ))}
+            </select>
+
+            <p className="text-xs text-gray-400 mt-1">
+              Escolha a moeda que será exibida na sua loja
+            </p>
           </div>
 
-          {/* Primary Color */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Cor principal</label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
                 value={primaryColor}
-                onChange={e => setPrimaryColor(e.target.value)}
+                onChange={(e) => setPrimaryColor(e.target.value)}
                 className="w-12 h-12 rounded-xl border border-gray-200 cursor-pointer p-1"
               />
               <div>
@@ -347,7 +375,6 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             </div>
           </div>
 
-          {/* Checkout Type */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de checkout</label>
             <div className="space-y-2">
@@ -356,9 +383,12 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
                 { value: "whatsapp_direct", label: "WhatsApp Direto", desc: "Cada produto tem um botão que abre o WhatsApp imediatamente" },
                 { value: "external_link", label: "Link Externo", desc: "Cada produto tem um link personalizado (ex: Shopify, loja online)" },
               ].map((opt) => (
-                <label key={opt.value} className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                  checkoutType === opt.value ? "border-black bg-gray-50" : "border-gray-200 hover:border-gray-300"
-                }`}>
+                <label
+                  key={opt.value}
+                  className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    checkoutType === opt.value ? "border-black bg-gray-50" : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
                   <input
                     type="radio"
                     name="checkoutType"
@@ -376,7 +406,6 @@ export default function CreateStoreModal({ onClose, onSuccess }: Props) {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 pt-2">
             <button
               type="button"
