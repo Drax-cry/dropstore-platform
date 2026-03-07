@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import {
@@ -25,6 +26,7 @@ const CURRENCIES = [
 interface StoreData {
   id: number;
   name: string;
+  slug: string;
   slogan: string | null;
   logoUrl: string | null;
   whatsappNumber: string | null;
@@ -59,6 +61,7 @@ const DEFAULT_WHATSAPP_MESSAGE = `Olá! Tenho interesse no seguinte produto:
 Poderia me dar mais informações?`;
 
 export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
+  const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<TabKey>("info");
 
   const [name, setName] = useState(store.name);
@@ -100,15 +103,28 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
     store.whatsappMessage ?? DEFAULT_WHATSAPP_MESSAGE
   );
 
-  const [checkoutType, setCheckoutType] = useState<"whatsapp_cart" | "whatsapp_direct" | "external_link">(store.checkoutType as any ?? "whatsapp_cart");
+  const [checkoutType, setCheckoutType] = useState<"whatsapp_cart" | "whatsapp_direct" | "external_link">(
+    (store.checkoutType as any) ?? "whatsapp_cart"
+  );
 
   const utils = trpc.useUtils();
 
   const uploadLogoMutation = trpc.stores.uploadLogo.useMutation();
+
   const updateStoreMutation = trpc.stores.update.useMutation({
-    onSuccess: () => {
+    onSuccess: async (data) => {
       toast.success("Loja atualizada com sucesso!");
-      utils.stores.myStores.invalidate();
+      await utils.stores.myStores.invalidate();
+
+      const newSlug = data?.slug;
+      const nameChanged = name.trim() !== store.name;
+
+      if (nameChanged && newSlug && newSlug !== store.slug) {
+        onClose();
+        navigate(`/${newSlug}`);
+        return;
+      }
+
       onSuccess();
     },
     onError: (err) => toast.error(err.message || "Erro ao atualizar loja"),
@@ -117,10 +133,12 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Imagem muito grande. Máximo 5MB.");
       return;
     }
+
     const reader = new FileReader();
     reader.onload = (ev) => {
       const result = ev.target?.result as string;
@@ -136,6 +154,7 @@ export default function EditStoreModal({ store, onClose, onSuccess }: Props) {
     if (!name.trim()) return;
 
     let logoUrl: string | undefined = store.logoUrl ?? undefined;
+
     if (logoFile) {
       try {
         const result = await uploadLogoMutation.mutateAsync({
