@@ -171,6 +171,7 @@ export const appRouter = router({
           slug = `${baseSlug}-${attempt}`;
           existing = await getStoreBySlug(slug);
         }
+
         // Trial de 3 dias para novas lojas
         const trialEndsAt = new Date();
         trialEndsAt.setDate(trialEndsAt.getDate() + 3);
@@ -213,12 +214,35 @@ export const appRouter = router({
       }))
       .mutation(async ({ ctx, input }) => {
         const store = await getStoreById(input.id);
+
         if (!store || store.userId !== ctx.user.id) {
           throw new TRPCError({ code: "FORBIDDEN" });
         }
+
         const { id, ...data } = input;
-        await updateStore(id, data);
-        return { success: true };
+        const updateData: Record<string, unknown> = { ...data };
+
+        if (input.name && input.name.trim() !== store.name) {
+          const baseSlug = slugify(input.name);
+          let slug = baseSlug;
+          let existing = await getStoreBySlug(slug);
+          let attempt = 0;
+
+          while (existing && existing.id !== input.id) {
+            attempt++;
+            slug = `${baseSlug}-${attempt}`;
+            existing = await getStoreBySlug(slug);
+          }
+
+          updateData.slug = slug;
+        }
+
+        await updateStore(id, updateData as Parameters<typeof updateStore>[1]);
+
+        return {
+          success: true,
+          slug: typeof updateData.slug === "string" ? updateData.slug : store.slug,
+        };
       }),
 
     delete: protectedProcedure
