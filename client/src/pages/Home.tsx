@@ -9,7 +9,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      navigate("/admin");
+      navigate("/katail/admin");
     }
   }, [loading, isAuthenticated, navigate]);
 
@@ -63,7 +63,7 @@ export default function Home() {
             />
           </div>
           <a
-            href="/auth"
+            href="/katail/auth"
             className="inline-flex items-center gap-2 bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
           >
             Entrar
@@ -89,7 +89,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a
-              href="/auth"
+              href="/katail/auth"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-black text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-gray-800 transition-all hover:scale-105 shadow-lg shadow-black/10"
             >
               Criar a minha loja
@@ -180,7 +180,7 @@ export default function Home() {
             Crie a sua loja em minutos e comece a receber pedidos hoje.
           </p>
           <a
-            href="/auth"
+            href="/katail/auth"
             className="inline-flex items-center gap-2 bg-white text-black px-6 sm:px-8 py-3.5 rounded-full text-base font-semibold hover:bg-gray-100 transition-all hover:scale-105"
           >
             Começar agora — é grátis

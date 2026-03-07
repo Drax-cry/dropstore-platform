@@ -16,7 +16,7 @@ export default function Katail() {
     onSuccess: async () => {
       await utils.auth.me.invalidate();
       toast.success(t("auth.registerBtn") + " ✓");
-      navigate("/admin");
+      navigate("/katail/admin");
     },
     onError: (err) => {
       toast.error(err.message || t("common.error"));
@@ -131,13 +131,13 @@ export default function Katail() {
             <div className="flex items-center gap-3">
               <LanguageSwitcher variant="light" />
               <button
-                onClick={() => navigate("/auth")}
+                onClick={() => navigate("/katail/auth")}
                 className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-4 py-2"
               >
                 {t("nav.login")}
               </button>
               <button
-                onClick={() => navigate("/auth")}
+                onClick={() => navigate("/katail/auth")}
                 className="btn-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl"
               >
                 {t("nav.start")}
@@ -167,13 +167,13 @@ export default function Katail() {
               </p>
               <div className="flex flex-wrap items-center gap-4 mb-12">
                 <button
-                  onClick={() => navigate("/auth")}
+                  onClick={() => navigate("/katail/auth")}
                   className="btn-primary text-white font-semibold px-8 py-4 rounded-xl text-base"
                 >
                   {t("hero.cta")}
                 </button>
                 <button
-                  onClick={() => navigate("/auth")}
+                  onClick={() => navigate("/katail/auth")}
                   className="flex items-center gap-2 text-gray-600 font-medium text-base hover:text-gray-900 transition-colors"
                 >
                   <span className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">▶</span>
@@ -247,7 +247,7 @@ export default function Katail() {
 
                 <p className="text-center text-xs text-gray-400 mt-5">
                   {t("register.hasAccount")}{" "}
-                  <button onClick={() => navigate("/auth")} className="text-indigo-600 font-semibold hover:underline">
+                  <button onClick={() => navigate("/katail/auth")} className="text-indigo-600 font-semibold hover:underline">
                     {t("register.loginLink")}
                   </button>
                 </p>
@@ -383,7 +383,7 @@ export default function Katail() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => navigate("/auth")}
+                  onClick={() => navigate("/katail/auth")}
                   className="btn-primary w-full text-white font-semibold py-4 rounded-xl text-base"
                 >
                   {t("pricing.cta")}
@@ -403,7 +403,7 @@ export default function Katail() {
             <span className="gradient-text">{t("cta.subtitle")}</span>
           </h2>
           <button
-            onClick={() => navigate("/auth")}
+            onClick={() => navigate("/katail/auth")}
             className="btn-primary text-white font-semibold px-10 py-4 rounded-xl text-lg"
           >
             {t("cta.button")}

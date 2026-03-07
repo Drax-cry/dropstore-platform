@@ -20,7 +20,7 @@ export default function Checkout() {
     if (loading) return;
 
     if (!isAuthenticated) {
-      navigate("/auth");
+      navigate("/katail/auth");
       return;
     }
 
@@ -45,7 +45,7 @@ export default function Checkout() {
       setMessage("Subscrição ativada com sucesso! Redirecionando...");
       toast.success("Loja desbloqueada!");
       setTimeout(() => {
-        navigate("/admin");
+        navigate("/katail/admin");
       }, 2000);
     },
     onError: (error) => {
@@ -114,7 +114,7 @@ export default function Checkout() {
             <h1 className="text-2xl font-bold mb-2">Pagamento Confirmado!</h1>
             <p className="text-gray-500 mb-6">{message}</p>
             <button
-              onClick={() => navigate("/admin")}
+              onClick={() => navigate("/katail/admin")}
               className="w-full bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors"
             >
               Ir para o Painel
@@ -128,7 +128,7 @@ export default function Checkout() {
             <h1 className="text-2xl font-bold mb-2">Erro no Pagamento</h1>
             <p className="text-gray-500 mb-6">{message}</p>
             <button
-              onClick={() => navigate("/admin")}
+              onClick={() => navigate("/katail/admin")}
               className="w-full bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors"
             >
               Voltar ao Painel

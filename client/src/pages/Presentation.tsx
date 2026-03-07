@@ -106,7 +106,7 @@ export default function Presentation() {
               Criar a minha loja
               <ArrowRight className="w-4 h-4" />
             </a>
-            <a href="/admin" className="inline-flex items-center gap-2 border border-gray-700 hover:border-gray-500 text-gray-300 px-6 py-3 rounded-full font-medium transition-all">
+            <a href="/katail/admin" className="inline-flex items-center gap-2 border border-gray-700 hover:border-gray-500 text-gray-300 px-6 py-3 rounded-full font-medium transition-all">
               Ir para o painel
             </a>
           </div>

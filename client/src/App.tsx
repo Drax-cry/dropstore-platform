@@ -30,11 +30,12 @@ function Router() {
     <Suspense fallback={<PageLoader />}>
       <Switch>
         <Route path="/" component={Auth} />
-        <Route path="/auth" component={Auth} />
-        <Route path="/admin" component={Admin} />
-        <Route path="/checkout" component={Checkout} />
-        <Route path="/loja/:slug" component={StoreFront} />
-        <Route path="/apresentacao" component={Presentation} />
+        <Route path="/katail" component={Auth} />
+        <Route path="/katail/auth" component={Auth} />
+        <Route path="/katail/admin" component={Admin} />
+        <Route path="/katail/checkout" component={Checkout} />
+        <Route path="/katail/loja/:slug" component={StoreFront} />
+        <Route path="/katail/apresentacao" component={Presentation} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

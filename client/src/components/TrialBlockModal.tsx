@@ -65,7 +65,7 @@ export default function TrialBlockModal({ storeId, trialEndsAt, onUnlock }: Prop
         </button>
 
         <button
-          onClick={() => navigate("/admin")}
+          onClick={() => navigate("/katail/admin")}
           className="w-full border border-gray-200 text-gray-600 px-6 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors"
         >
           Voltar

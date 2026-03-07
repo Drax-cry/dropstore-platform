@@ -32,7 +32,7 @@ export default function Auth() {
     onSuccess: async () => {
       await utils.auth.me.invalidate();
       toast.success(t("auth.loginTitle"));
-      navigate("/admin");
+      navigate("/katail/admin");
     },
     onError: (err) => {
       toast.error(err.message || t("common.error"));
@@ -43,7 +43,7 @@ export default function Auth() {
     onSuccess: async () => {
       await utils.auth.me.invalidate();
       toast.success(t("auth.registerBtn"));
-      navigate("/admin");
+      navigate("/katail/admin");
     },
     onError: (err) => {
       toast.error(err.message || t("common.error"));
