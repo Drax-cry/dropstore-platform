@@ -7,16 +7,12 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { CartProvider } from "./components/CartContext";
 import { lazy, Suspense } from "react";
 
-// Eager load: landing page (first paint)
-import Katail from "./pages/Katail";
-
-// Lazy load: all other pages (code-split into separate chunks)
+// Lazy load: all pages (code-split into separate chunks)
 const Auth = lazy(() => import("./pages/Auth"));
 const Admin = lazy(() => import("./pages/Admin"));
 const StoreFront = lazy(() => import("./pages/StoreFront"));
 const Presentation = lazy(() => import("./pages/Presentation"));
 const Checkout = lazy(() => import("./pages/Checkout"));
-const Home = lazy(() => import("./pages/Home"));
 
 function PageLoader() {
   return (
@@ -33,7 +29,7 @@ function Router() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
-        <Route path="/" component={Katail} />
+        <Route path="/" component={Auth} />
         <Route path="/auth" component={Auth} />
         <Route path="/admin" component={Admin} />
         <Route path="/checkout" component={Checkout} />
